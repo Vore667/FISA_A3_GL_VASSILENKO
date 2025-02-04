@@ -1,7 +1,6 @@
-﻿// See https://aka.ms/new-console-template for more information
-using System;
-using Projet_Easy_Save_grp_4;
-
+﻿using System;
+using System.Threading;
+using Projet_Easy_Save_grp_4.Controllers;
 
 class Program
 {
@@ -9,77 +8,118 @@ class Program
     {
         while (true)
         {
-            Console.WriteLine("1. Lister les tâches de sauvegarde");
-            Console.WriteLine("2. Créer une tâche de sauvegarde");
-            Console.WriteLine("3. Supprimer une/des tâche(s) de sauvegarde");
-            Console.WriteLine("4. Changer de langue");
-            Console.WriteLine("5. Quitter");
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            int menuWidth = 40;
 
-            string choice = Console.ReadLine();
+            Console.WriteLine("╔══════════════════════════════════════════╗");
+            Console.WriteLine($"║ {LangController.GetText("Menu_Title").PadRight(menuWidth)} ║");
+            Console.WriteLine("╠══════════════════════════════════════════╣");
+            Console.WriteLine($"║ 1. {LangController.GetText("Menu_Option1").PadRight(menuWidth - 3)} ║");
+            Console.WriteLine($"║ 2. {LangController.GetText("Menu_Option2").PadRight(menuWidth - 3)} ║");
+            Console.WriteLine($"║ 3. {LangController.GetText("Menu_Option3").PadRight(menuWidth - 3)} ║");
+            Console.WriteLine($"║ 4. {LangController.GetText("Menu_Option4").PadRight(menuWidth - 3)} ║");
+            Console.WriteLine($"║ 5. {LangController.GetText("Menu_Option5").PadRight(menuWidth - 3)} ║");
+            Console.WriteLine("╚══════════════════════════════════════════╝");
 
-            if (choice == "1")
-            {
-                Console.Clear();
-                Console.WriteLine("Ensemble des tâches de sauvegarde existantes");
-                // Print les tâches
-                Console.WriteLine("Recopiez le nom de la/les tâche(s) que vous souhaitez executer");
-                string task = Console.ReadLine();
-                // Appeler la classe qui gère ça
+            Console.ResetColor();
+            Console.Write($"{LangController.GetText("Menu_Option6")}");
 
-                //Si pr X ou Y raison ça marche pas
-                Console.WriteLine("Erreur de création de la/les tâche(s) de sauvegarde, retour au menu");
-                //sleep
-                Console.Clear();
-            }
-            else if (choice == "2")
-            {
-                Console.Clear();
-                // Appeler classe pr voir si y a déjà 5 tâche qui ont été crée
-                // Si c'est le cas dire erreur y a deja 5 tâches
-                // Sinon continuer dans la création de la tâche.
-                Console.WriteLine("Création d'une tâche de sauvegarde");
-                Console.WriteLine("Nom de la tâche");
-                string task_name = Console.ReadLine();
-                Console.WriteLine("Repertoire de départ");
-                string task_start_repo = Console.ReadLine();
-                Console.WriteLine("Repertoire d'arrivé");
-                string task_arrival_repo = Console.ReadLine();
-                Console.WriteLine("Type de tâche : 1 pour complète, 2 pour incrémentielle");
-                string task_type = Console.ReadLine();
-                // Verif si la tâche a été crée (vérif que les chemins sont bons si oui continuer
-                Console.WriteLine("La tâche a été crée avec succès");
-                // si non dire erreur et revenir au menu
-                Console.WriteLine("Erreur de la/les tâche(s) de sauvegarde, retour au menu");
-                //sleep
-                Console.Clear();
-            }
-            else if (choice == "3")
-            {
-                Console.Clear();
-                Console.WriteLine("Ensemble des tâches de sauvegarde existantes");
-                // Print les tâches
-                Console.WriteLine("Recopiez le nom de la/les tâche(s) que vous souhaitez supprimer");
-                string task = Console.ReadLine();
+            ConsoleKeyInfo key = Console.ReadKey();
+            Console.Clear();
 
-            }
-            else if (choice == "4")
+            switch (key.Key)
             {
-                Console.Clear();
-                Console.WriteLine("Quelle langue souhaitez vous sélectionner");
-                // Afficher les différentes langues dispo
-                // Puis revenir au menu avec la nv langue
+                case ConsoleKey.D1:
+                case ConsoleKey.NumPad1:
+                    Console.WriteLine($"{LangController.GetText("SubMenu_Option1")}");
+                    Console.WriteLine($"{LangController.GetText("Overall_SubMenu_Option1")}");
+                    ConsoleKeyInfo subKey0 = Console.ReadKey();
+                    if (subKey0.Key == ConsoleKey.Escape)
+                    {
+                        break;
+                    }
+                    // Appeler la classe qui gère ça
+                    break;
 
-            }
-            else if (choice == "5")
-            {
-                Console.Clear();
-                Console.WriteLine("Fermeture de l'application");
-                break;
-            }
-            else 
-            {
-                Console.Write("Erreur, choix invalide, retour au menu.");
+                case ConsoleKey.D2:
+                case ConsoleKey.NumPad2:
+                    Console.WriteLine($"{LangController.GetText("SubMenu_Option2")}");
+                    Console.WriteLine($"{LangController.GetText("Overall_SubMenu_Option1")}");
+                    ConsoleKeyInfo subKey1 = Console.ReadKey();
+                    if (subKey1.Key == ConsoleKey.Escape)
+                    {
+                        break;
+                    }
+                    Console.Write($"{LangController.GetText("SubMenu_Option3")}");
+                    string taskName = Console.ReadLine();
+                    Console.Write($"{LangController.GetText("SubMenu_Option4")}");
+                    string taskStartRepo = Console.ReadLine();
+                    Console.Write($"{LangController.GetText("SubMenu_Option5")}");
+                    string taskArrivalRepo = Console.ReadLine();
+                    Console.Write($"{LangController.GetText("SubMenu_Option6")}");
+                    string taskType = Console.ReadLine();
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write($"{LangController.GetText("SubMenu_Option7")}");
+                    Console.ResetColor();
+                    Thread.Sleep(1500);
+                    break;
+
+                case ConsoleKey.D3:
+                case ConsoleKey.NumPad3:
+                    Console.WriteLine($"{LangController.GetText("SubMenu_Option8")}");
+                    Console.WriteLine($"{LangController.GetText("Overall_SubMenu_Option1")}");
+                    ConsoleKeyInfo subKey2 = Console.ReadKey();
+                    if (subKey2.Key == ConsoleKey.Escape)
+                    {
+                        break;
+                    }
+                    Console.WriteLine($"{LangController.GetText("SubMenu_Option9")}");
+                    string taskToDelete = Console.ReadLine();
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"{LangController.GetText("SubMenu_Option10")}");
+                    Console.ResetColor();
+                    Thread.Sleep(1500);
+                    break;
+
+                case ConsoleKey.D4:
+                case ConsoleKey.NumPad4:
+                    Console.WriteLine($"{LangController.GetText("Select_Language")}");
+                    Console.WriteLine("1. Français");
+                    Console.WriteLine("2. English");
+                    Console.Write($"{LangController.GetText("Menu_Option6")}");
+                    string langChoice = Console.ReadLine();
+                    if (langChoice == "1")
+                    {
+                        LangController.SetLanguage("fr");
+                    }
+                    else if (langChoice == "2")
+                    {
+                        LangController.SetLanguage("en");
+                    }
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"{LangController.GetText("Update_Language")}");
+                    Console.ResetColor();
+                    Thread.Sleep(1500);
+                    break;
+
+                case ConsoleKey.D5:
+                case ConsoleKey.NumPad5:
+                    Console.ForegroundColor = ConsoleColor.Magenta;
+                    Console.WriteLine($"{LangController.GetText("Application_Exit")}");
+                    Console.ResetColor();
+                    Thread.Sleep(1000);
+                    return;
+
+                default:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"{LangController.GetText("Invalid_Choice")}");
+                    Console.ResetColor();
+                    Thread.Sleep(1500);
+                    break;
             }
         }
+
     }
 }
+
