@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Projet_Easy_Save_grp_4.Models;
 
-namespace Projet_Easy_Save_grp_4
+namespace Projet_Easy_Save_grp_4.Controllers
 {
     public class StateController
     {
-        private BackupState _backupState;
+        private BackupStateModel _backupState;
 
-        public StateController(BackupState backupState)
+        public StateController(BackupStateModel backupState)
         {
             _backupState = backupState;
         }

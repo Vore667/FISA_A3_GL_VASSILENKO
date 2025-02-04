@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Projet_Easy_Save_grp_4.Interfaces;
 
-namespace Projet_Easy_Save_grp_4
+namespace Projet_Easy_Save_grp_4.Controllers
 {
-    internal class FileManager : IFileManager
+    internal class FileController : IFile
     {
         public string CopyDirectory(string sourceDirectory, string destinationDirectory)
         {
@@ -35,9 +36,10 @@ namespace Projet_Easy_Save_grp_4
                 return "Tout les fichiers ont été copiés"
 
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return $"Erreur lors de la copie du dossier : {ex.Message}";
-            } 
+            }
         }
         public string CopyModifiedFiles(string sourceDirectory, string destinationDirectory)
         {
@@ -63,7 +65,8 @@ namespace Projet_Easy_Save_grp_4
                 }
                 return $"Tout les fichiers modifiés ont été copiés";
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return $"Erreur lors de la copie du dossier : {ex.Message}";
             }
         }

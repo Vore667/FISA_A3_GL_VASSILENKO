@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Projet_Easy_Save_grp_4
+namespace Projet_Easy_Save_grp_4.Controllers
 {
-    internal class BackupManager
+    internal class BackupController
     {
         private List<BackupTask> tasks;
         private const int MaxTasks = 5;
 
-        public BackupManager()
+        public BackupController()
         {
             tasks = new List<BackupTask>();
         }
 
-        public void AddBackupTask(string name, string source, string destination, string type)
+        public void AddBackup(string name, string source, string destination, string type)
         {
             if (tasks.Count >= MaxTasks)
             {
@@ -32,7 +32,7 @@ namespace Projet_Easy_Save_grp_4
             Console.WriteLine("Tâche de sauvegarde ajoutée avec succès.");
         }
 
-        public void ListBackupTasks()
+        public void ListBackup()
         {
             if (tasks.Count == 0)
             {
@@ -46,7 +46,7 @@ namespace Projet_Easy_Save_grp_4
             }
         }
 
-        public void ExecuteBackupTask(string name)
+        public void ExecuteBackup(string name)
         {
             BackupTask task = tasks.Find(t => t.Name == name);
             if (task == null)

@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
-namespace Projet_Easy_Save_grp_4
+namespace Projet_Easy_Save_grp_4.Interfaces
 {
     public interface IConfigurationService
     {

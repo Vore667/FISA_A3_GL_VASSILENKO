@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Projet_Easy_Save_grp_4
+namespace Projet_Easy_Save_grp_4.Models
 {
-    public class BackupState
+    public class BackupStateModel
     {
         public string JobName { get; set; }
         public DateTime Timestamp { get; set; }
@@ -17,7 +17,7 @@ namespace Projet_Easy_Save_grp_4
         public string CurrentFileSource { get; set; }
         public string CurrentFileDestination { get; set; }
 
-        public BackupState(string jobName, string status, int totalFiles, int totalSize, string progress, string currentFileSource, string currentFileDestination)
+        public BackupStateModel(string jobName, string status, int totalFiles, int totalSize, string progress, string currentFileSource, string currentFileDestination)
         {
             JobName = jobName;
             Timestamp = DateTime.Now;
@@ -35,7 +35,7 @@ namespace Projet_Easy_Save_grp_4
             Progress = progress;
             CurrentFileSource = currentFileSource;
             CurrentFileDestination = currentFileDestination;
-            Timestamp = DateTime.Now; 
+            Timestamp = DateTime.Now;
         }
 
         public string GetState()

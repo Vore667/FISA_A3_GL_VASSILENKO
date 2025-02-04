@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Projet_Easy_Save_grp_4
+namespace Projet_Easy_Save_grp_4.Other
 {
     internal class BackupSnapshot
     {
@@ -12,7 +12,7 @@ namespace Projet_Easy_Save_grp_4
 
         private void Memento(string state)
         {
-           
+
         }
 
         private List<string> GetState()

@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using Projet_Easy_Save_grp_4.Interfaces;
 
-namespace Projet_Easy_Save_grp_4
+namespace Projet_Easy_Save_grp_4.Other
 {
     public class ConfigurationService : IConfigurationService
     {

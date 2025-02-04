@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Projet_Easy_Save_grp_4
+namespace Projet_Easy_Save_grp_4.Interfaces
 {
-    internal class LocalizationService
+    internal interface IType
     {
+        void DisplayType();
+        void Execute();
     }
 }
