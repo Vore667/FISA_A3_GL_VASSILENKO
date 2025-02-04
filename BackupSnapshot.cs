@@ -17,7 +17,7 @@ namespace Projet_Easy_Save_grp_4
 
         private List<string> GetState()
         {
-
+            return new List<string>();
         }
     }
 }
