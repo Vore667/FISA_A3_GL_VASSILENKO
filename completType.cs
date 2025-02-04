@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace Projet_Easy_Save_grp_4
 {
-    internal class completType
+    internal class completType : IType
     {
+        public void DisplayType()
+        {
+            Console.WriteLine("Type de Sauvegarde : Complete");
+        }
+        public void Execute()
+        {
+            Console.WriteLine("Execute");
+        }
     }
 }

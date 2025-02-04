@@ -8,5 +8,7 @@ namespace Projet_Easy_Save_grp_4
 {
     internal interface IType
     {
+        void DisplayType();
+        void Execute();
     }
 }
