@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Projet_Easy_Save_grp_4
 {
-    internal class LocalizationService
+    internal interface IConfigurationService
     {
+
     }
 }
