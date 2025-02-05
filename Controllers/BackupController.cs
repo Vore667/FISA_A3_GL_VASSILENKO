@@ -78,6 +78,15 @@ namespace Projet_Easy_Save_grp_4.Controllers
         {
             Console.WriteLine($"Exécution de la sauvegarde: {Name}");
             // Ajouter la logique pour copie complète ou différentielle
+
+            if (this.Type == "Complete")
+            {
+                Console.WriteLine($"Type : Complete");
+            }
+            else 
+            {
+               Console.WriteLine($"Type : Differential");
+            }
         }
     }
 }
