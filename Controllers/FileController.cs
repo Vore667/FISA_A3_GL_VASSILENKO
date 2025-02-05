@@ -56,7 +56,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
                     string filename = Path.GetFileName(file);
                     string path = Path.GetFullPath(file);
                     string destFile = Path.Combine(destinationDirectory, filename);
-                    if (File.GetLastWriteTime(file) > DateTime.Now.AddDays(-1))
+                    if (File.GetLastWriteTime(file) > DateTime.Now.AddDays(-1)) // Si fichier modifié dans les -24h alors copier et remplacer si existant
                     {
                         File.Copy(file, destFile, true);
                         Console.WriteLine($"Copied: {filename}");
