@@ -8,7 +8,7 @@ namespace Projet_Easy_Save_grp_4.Interfaces
 {
     internal interface ILogListener
     {
-        public void update(filename)
+        public void update(string filename)
         {
 
         }

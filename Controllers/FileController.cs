@@ -33,7 +33,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
 
                 }
 
-                return "Tout les fichiers ont été copiés"
+                return "Tout les fichiers ont été copiés";
 
             }
             catch (Exception ex)

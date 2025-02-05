@@ -9,7 +9,7 @@ using Projet_Easy_Save_grp_4.Interfaces;
 class BackupService
 {
     //private IFileManager fileManager;
-    private IConfigurationService configService = new ConfigurationService();
+    //private IConfigurationService configService = new ConfigurationService();
     //private ILogListener backupLogger;
     //private List<BackupModel> backupJobs;
     //private IType type;
