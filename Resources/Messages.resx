@@ -120,6 +120,12 @@
   <data name="Application_Exit" xml:space="preserve">
     <value>Fermeture de l'application</value>
   </data>
+  <data name="Error_MaxBackup" xml:space="preserve">
+    <value>Erreur : Vous ne pouvez pas ajouter plus de 5 tâches de sauvegarde.</value>
+  </data>
+  <data name="Error_SourceDirectoryDoesntExist" xml:space="preserve">
+    <value>Erreur : Le répertoire source n'existe pas.</value>
+  </data>
   <data name="Invalid_Choice" xml:space="preserve">
     <value>Choix invalide, veuillez réessayer !</value>
   </data>
@@ -129,17 +135,17 @@
   <data name="Menu_Option2" xml:space="preserve">
     <value>Créer une tâche</value>
   </data>
-  <data name="Menu_Option3" xml:space="preserve">
+  <data name="Menu_Option4" xml:space="preserve">
     <value>Supprimer une tâche</value>
   </data>
-  <data name="Menu_Option4" xml:space="preserve">
+  <data name="Menu_Option5" xml:space="preserve">
     <value>Changer de langue</value>
   </data>
-  <data name="Menu_Option5" xml:space="preserve">
+  <data name="Menu_Option6" xml:space="preserve">
     <value>Quitter</value>
   </data>
-  <data name="Menu_Option6" xml:space="preserve">
-    <value>Votre choix :</value>
+  <data name="Menu_YourChoice" xml:space="preserve">
+    <value>Votre choix : </value>
   </data>
   <data name="Menu_Title" xml:space="preserve">
     <value>Menu Principal</value>
@@ -150,37 +156,79 @@
   <data name="Select_Language" xml:space="preserve">
     <value>Sélection de la langue : </value>
   </data>
-  <data name="SubMenu_Option1" xml:space="preserve">
+  <data name="SubMenu_ListOfExistingTasks" xml:space="preserve">
     <value>Liste des tâches de sauvegarde existantes :</value>
   </data>
-  <data name="SubMenu_Option10" xml:space="preserve">
+  <data name="SubMenu_TaskDeleted" xml:space="preserve">
     <value>Tâche supprimée !</value>
   </data>
-  <data name="SubMenu_Option2" xml:space="preserve">
+  <data name="SubMenu_CreatingTask" xml:space="preserve">
     <value>Création d'une tâche de sauvegarde</value>
   </data>
-  <data name="SubMenu_Option3" xml:space="preserve">
-    <value>Nom de la tâche :</value>
+  <data name="SubMenu_NameTask" xml:space="preserve">
+    <value>Nom de la tâche : </value>
   </data>
-  <data name="SubMenu_Option4" xml:space="preserve">
+  <data name="SubMenu_SourceDirectory" xml:space="preserve">
     <value>Répertoire source : </value>
   </data>
-  <data name="SubMenu_Option5" xml:space="preserve">
+  <data name="SubMenu_DestDirectory" xml:space="preserve">
     <value>Répertoire cible : </value>
   </data>
-  <data name="SubMenu_Option6" xml:space="preserve">
+  <data name="SubMenu_TaskType" xml:space="preserve">
     <value>Type de tâche (1 pour complète, 2 pour différentielle) : </value>
   </data>
-  <data name="SubMenu_Option7" xml:space="preserve">
-    <value>Tâche créée avec succès !</value>
+  <data name="Notif_TaskCreated" xml:space="preserve">
+    <value>Tâche de sauvegarde ajoutée avec succès !</value>
   </data>
-  <data name="SubMenu_Option8" xml:space="preserve">
+  <data name="SubMenu_DeletingTask" xml:space="preserve">
     <value>Suppression d'une tâche de sauvegarde</value>
   </data>
-  <data name="SubMenu_Option9" xml:space="preserve">
+  <data name="SubMenu_EnterTaskNameToDelete" xml:space="preserve">
     <value>Entrez le nom de la tâche à supprimer : </value>
   </data>
   <data name="Update_Language" xml:space="preserve">
     <value>Langue mise à jour !</value>
+  </data>
+  <data name="Error_NoTaskCreated" xml:space="preserve">
+    <value>Aucune tâche de sauvegarde disponible.</value>
+  </data>
+  <data name="TaskName" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="TaskType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="TaskSource" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="TaskDestination" xml:space="preserve">
+    <value>Destination</value>
+  </data>
+  <data name="Error_NoTaskFound" xml:space="preserve">
+    <value>Erreur : Tâche de sauvegarde introuvable.</value>
+  </data>
+  <data name="Notify_BackupExecution" xml:space="preserve">
+    <value>Exécution de la sauvegarde</value>
+  </data>
+  <data name="BackupType_Complete" xml:space="preserve">
+    <value>Complete</value>
+  </data>
+  <data name="BackupType_Differential" xml:space="preserve">
+    <value>Différientielle</value>
+  </data>
+  <data name="SubMenu_EnterTaskNameToExecute" xml:space="preserve">
+    <value>Entrez le nom de la tâche à exécuter : </value>
+  </data>
+  <data name="Notify_TaskDeleted" xml:space="preserve">
+    <value>Tâche supprimée avec succès !</value>
+  </data>
+  <data name="SubMenu_ExecutingTask" xml:space="preserve">
+    <value>Exécution d'une tâche.</value>
+  </data>
+  <data name="Menu_Option3" xml:space="preserve">
+    <value>Exécuter une tâche</value>
+  </data>
+  <data name="Overall_SubMenu_Option2" xml:space="preserve">
+    <value>Si vous souhaitez revenir au menu appuyez sur Echap.</value>
   </data>
 </root>
