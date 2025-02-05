@@ -25,7 +25,6 @@ class Program
             Console.WriteLine($"║ 5. {LangController.GetText("Menu_Option5").PadRight(menuWidth - 3)} ║");
             Console.WriteLine($"║ 6. {LangController.GetText("Menu_Option6").PadRight(menuWidth - 3)} ║");
             Console.WriteLine("╚══════════════════════════════════════════╝");
-
             Console.ResetColor();
             Console.Write($"{LangController.GetText("Menu_YourChoice")}");
 
@@ -38,12 +37,6 @@ class Program
                 case ConsoleKey.D1:
                 case ConsoleKey.NumPad1:
                     Console.WriteLine($"{LangController.GetText("SubMenu_ListOfExistingTasks")}");
-                    Console.WriteLine($"{LangController.GetText("Overall_SubMenu_Option1")}");
-                    ConsoleKeyInfo subKey0 = Console.ReadKey();
-                    if (subKey0.Key == ConsoleKey.Escape)
-                    {
-                        break;
-                    }
                     Backup.ListBackup();
                     Console.WriteLine($"\n{LangController.GetText("Overall_SubMenu_Option2")}");
                     ConsoleKeyInfo subKey001 = Console.ReadKey();
@@ -91,7 +84,12 @@ class Program
                     Console.Write($"\n{LangController.GetText("SubMenu_EnterTaskNameToExecute")}");
                     string taskNameToExecute = Console.ReadLine();
                     Backup.ExecuteBackup(taskNameToExecute);
-                    Thread.Sleep(2000);
+                    Console.WriteLine($"\n{LangController.GetText("Overall_SubMenu_Option2")}");
+                    ConsoleKeyInfo subKey02 = Console.ReadKey();
+                    if (subKey02.Key == ConsoleKey.Escape)
+                    {
+                        break;
+                    }
                     break;
 
 

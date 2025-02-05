@@ -231,4 +231,16 @@
   <data name="Overall_SubMenu_Option2" xml:space="preserve">
     <value>If you want to return to the menu press Esc.</value>
   </data>
+  <data name="Notify_Copied" xml:space="preserve">
+    <value>File copied</value>
+  </data>
+  <data name="Notify_AllFilesCopied" xml:space="preserve">
+    <value>All files have been copied !</value>
+  </data>
+  <data name="Error_WhenFileCopy" xml:space="preserve">
+    <value>Error copying folder</value>
+  </data>
+  <data name="Notify_AllModifiedFilesCopied" xml:space="preserve">
+    <value>All modified files have been copied !</value>
+  </data>
 </root>

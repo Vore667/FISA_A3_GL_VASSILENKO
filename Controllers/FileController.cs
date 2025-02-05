@@ -9,66 +9,104 @@ namespace Projet_Easy_Save_grp_4.Controllers
 {
     internal class FileController : IFile
     {
-        public string CopyDirectory(string sourceDirectory, string destinationDirectory)
+        public void CopyDirectory(string sourceDirectory, string destinationDirectory)
         {
-            // Pour l'instant je mets des try catchs à supprimer
-            // Pour le push to master
             try
             {
-                // Vérifie si le fichier de destination existe, s'il n'existe pas il en créée un.
+                if (!Directory.Exists(sourceDirectory))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"{LangController.GetText("Error_SourceDirectoryDoesntExist")}: {sourceDirectory}");
+                    Console.ResetColor();
+                    return;
+                }
+
                 if (!Directory.Exists(destinationDirectory))
                 {
                     Directory.CreateDirectory(destinationDirectory);
                 }
 
-                // Boucle qui ajoute chaque fichier dans le dossier de destination
                 foreach (string file in Directory.GetFiles(sourceDirectory))
                 {
                     string filename = Path.GetFileName(file);
-                    string path = Path.GetFullPath(file);
                     string destFile = Path.Combine(destinationDirectory, filename);
 
                     File.Copy(file, destFile, true);
-                    Console.WriteLine($"Copied: {filename}");
-
+                    Console.WriteLine($"{LangController.GetText("Notify_Copied")}: {filename}");
                 }
 
-                return "Tout les fichiers ont été copiés";
+                foreach (string subDirectory in Directory.GetDirectories(sourceDirectory))
+                {
+                    string subDirectoryName = Path.GetFileName(subDirectory);
+                    string destSubDirectory = Path.Combine(destinationDirectory, subDirectoryName);
 
+                    CopyDirectory(subDirectory, destSubDirectory); // Appel récursif
+                }
+
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"{LangController.GetText("Notify_AllFilesCopied")}");
+                Console.ResetColor();
             }
             catch (Exception ex)
             {
-                return $"Erreur lors de la copie du dossier : {ex.Message}";
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"{LangController.GetText("Error_WhenFileCopy")}: {ex.Message}");
+                Console.ResetColor();
             }
         }
-        public string CopyModifiedFiles(string sourceDirectory, string destinationDirectory)
+
+
+
+        public void CopyModifiedFiles(string sourceDirectory, string destinationDirectory)
         {
-            // Supprimer le catch pour le push master
             try
             {
+                if (!Directory.Exists(sourceDirectory))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"{LangController.GetText("Error_SourceDirectoryDoesntExist")}: {sourceDirectory}");
+                    Console.ResetColor();
+                    return;
+                }
+
                 if (!Directory.Exists(destinationDirectory))
                 {
                     Directory.CreateDirectory(destinationDirectory);
                 }
-                // Boucle qui ajoute chaque fichier dans le dossier de destination
+
                 foreach (string file in Directory.GetFiles(sourceDirectory))
                 {
                     string filename = Path.GetFileName(file);
-                    string path = Path.GetFullPath(file);
                     string destFile = Path.Combine(destinationDirectory, filename);
-                    if (File.GetLastWriteTime(file) > DateTime.Now.AddDays(-1)) // Si fichier modifié dans les -24h alors copier et remplacer si existant
+
+                    // Vérifie si le fichier a été modifié dans les dernières 24 heures
+                    if (File.GetLastWriteTime(file) > DateTime.Now.AddDays(-1))
                     {
                         File.Copy(file, destFile, true);
-                        Console.WriteLine($"Copied: {filename}");
+                        Console.WriteLine($"{LangController.GetText("Notify_Copied")}: {filename}");
                     }
-
                 }
-                return $"Tout les fichiers modifiés ont été copiés";
+
+                // Copie récursivement les fichiers modifiés dans les sous-dossiers
+                foreach (string subDirectory in Directory.GetDirectories(sourceDirectory))
+                {
+                    string subDirectoryName = Path.GetFileName(subDirectory);
+                    string destSubDirectory = Path.Combine(destinationDirectory, subDirectoryName);
+
+                    CopyModifiedFiles(subDirectory, destSubDirectory); // Appel récursif
+                }
+
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"{LangController.GetText("Notify_AllModifiedFilesCopied")}");
+                Console.ResetColor();
             }
             catch (Exception ex)
             {
-                return $"Erreur lors de la copie du dossier : {ex.Message}";
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"{LangController.GetText("Error_WhenFileCopy")}: {ex.Message}");
+                Console.ResetColor();
             }
         }
+
     }
 }

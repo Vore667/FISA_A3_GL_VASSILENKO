@@ -62,9 +62,6 @@ namespace Projet_Easy_Save_grp_4.Controllers
             if (task != null)  // Vérifie si la tâche existe
             {
                 task.Execute();
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"{LangController.GetText("Notify_BackupExecution")}");
-                Console.ResetColor();
             }
             return;
             
@@ -100,6 +97,8 @@ namespace Projet_Easy_Save_grp_4.Controllers
 
         internal class BackupTask
         {
+            private FileController fileController = new FileController();
+
             public string Name { get; }
             public string Source { get; }
             public string Destination { get; }
@@ -115,18 +114,19 @@ namespace Projet_Easy_Save_grp_4.Controllers
 
             public void Execute()
             {
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"{LangController.GetText("Notify_BackupExecution")}: {Name}");
-
-
-                // Ajouter la logique pour copie complète ou différentielle
+                Console.ResetColor();
 
                 if (this.Type == "1")
                 {
-                    Console.WriteLine($"Type : {LangController.GetText("BackupType_Complete")}");
+                    Console.WriteLine($"{LangController.GetText("TaskType")} : {LangController.GetText("BackupType_Complete")}");
+                    fileController.CopyDirectory(Source, Destination);
                 }
                 else
                 {
-                    Console.WriteLine($"Type : {LangController.GetText("BackupType_Differential")}");
+                    Console.WriteLine($"{LangController.GetText("TaskType")} : {LangController.GetText("BackupType_Differential")}");
+                    fileController.CopyModifiedFiles(Source, Destination);
                 }
             }
         }
