@@ -1,6 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Xml;
+using Newtonsoft.Json;
 
 namespace Projet_Easy_Save_grp_4.Controllers
 {
@@ -8,10 +11,11 @@ namespace Projet_Easy_Save_grp_4.Controllers
     {
         private List<BackupTask> tasks;
         private const int MaxTasks = 5;
+        private const string SaveFilePath = "backup_tasks.json";
 
         public BackupController()
         {
-            tasks = new List<BackupTask>();
+            tasks = LoadBackupTasks();
         }
 
         public void AddBackup(string name, string source, string destination, string type)
@@ -21,7 +25,6 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"{LangController.GetText("Error_MaxBackup")}");
                 Console.ResetColor();
-
                 return;
             }
 
@@ -34,10 +37,10 @@ namespace Projet_Easy_Save_grp_4.Controllers
             }
 
             tasks.Add(new BackupTask(name, source, destination, type));
+            SaveBackupTasks();
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"{LangController.GetText("Notif_TaskCreated")}");
             Console.ResetColor();
-
         }
 
         public void ListBackup()
@@ -59,12 +62,10 @@ namespace Projet_Easy_Save_grp_4.Controllers
         public void ExecuteBackup(string name)
         {
             BackupTask task = FindBackup(name);
-            if (task != null)  // Vérifie si la tâche existe
+            if (task != null)
             {
                 task.Execute();
             }
-            return;
-            
         }
 
         public void DeleteBackup(string name)
@@ -73,12 +74,11 @@ namespace Projet_Easy_Save_grp_4.Controllers
             if (task != null)
             {
                 tasks.Remove(task);
+                SaveBackupTasks();
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"{LangController.GetText("Notify_TaskDeleted")}");
                 Console.ResetColor();
             }
-            return;
-
         }
 
         public void ExecuteOrDeleteMultipleBackups(string input, bool isExecute)
@@ -107,7 +107,6 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 {
                     DeleteBackup(backupName);
                 }
-
             }
         }
 
@@ -124,15 +123,29 @@ namespace Projet_Easy_Save_grp_4.Controllers
             return task;
         }
 
+        private void SaveBackupTasks()
+        {
+            string json = JsonConvert.SerializeObject(tasks, Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText(SaveFilePath, json);
+        }
+
+        private List<BackupTask> LoadBackupTasks()
+        {
+            if (!File.Exists(SaveFilePath))
+                return new List<BackupTask>();
+
+            string json = File.ReadAllText(SaveFilePath);
+            return JsonConvert.DeserializeObject<List<BackupTask>>(json) ?? new List<BackupTask>();
+        }
 
         internal class BackupTask
         {
             private FileController fileController = new FileController();
 
-            public string Name { get; }
-            public string Source { get; }
-            public string Destination { get; }
-            public string Type { get; }
+            public string Name { get; set; }
+            public string Source { get; set; }
+            public string Destination { get; set; }
+            public string Type { get; set; }
 
             public BackupTask(string name, string source, string destination, string type)
             {
