@@ -44,7 +44,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 }
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"{LangController.GetText("Notify_AllFilesCopied")}");
+                Console.WriteLine($"\n{LangController.GetText("Notify_AllFilesCopied")}");
                 Console.ResetColor();
             }
             catch (Exception ex)

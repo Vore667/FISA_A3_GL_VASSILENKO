@@ -81,6 +81,36 @@ namespace Projet_Easy_Save_grp_4.Controllers
 
         }
 
+        public void ExecuteOrDeleteMultipleBackups(string input, bool isExecute)
+        {
+            List<string> availableBackups = tasks.Select(t => t.Name).ToList();
+            List<string> backupsToExecuteOrDelete = BackupParser.ParseBackupSelection(input, availableBackups);
+
+            if (backupsToExecuteOrDelete.Count == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"{LangController.GetText("Error_NoTaskFound")}");
+                Console.ResetColor();
+                return;
+            }
+
+            if (isExecute)
+            {
+                foreach (string backupName in backupsToExecuteOrDelete)
+                {
+                    ExecuteBackup(backupName);
+                }
+            }
+            else
+            {
+                foreach (string backupName in backupsToExecuteOrDelete)
+                {
+                    DeleteBackup(backupName);
+                }
+
+            }
+        }
+
         public BackupTask FindBackup(string name)
         {
             BackupTask task = tasks.Find(t => t.Name == name);
