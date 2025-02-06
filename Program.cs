@@ -6,6 +6,9 @@ class Program
 {
     static void Main()
     {
+
+        BackupController Backup  = new BackupController();
+
         while (true)
         {
             Console.Clear();
@@ -20,74 +23,108 @@ class Program
             Console.WriteLine($"║ 3. {LangController.GetText("Menu_Option3").PadRight(menuWidth - 3)} ║");
             Console.WriteLine($"║ 4. {LangController.GetText("Menu_Option4").PadRight(menuWidth - 3)} ║");
             Console.WriteLine($"║ 5. {LangController.GetText("Menu_Option5").PadRight(menuWidth - 3)} ║");
+            Console.WriteLine($"║ 6. {LangController.GetText("Menu_Option6").PadRight(menuWidth - 3)} ║");
             Console.WriteLine("╚══════════════════════════════════════════╝");
-
             Console.ResetColor();
-            Console.Write($"{LangController.GetText("Menu_Option6")}");
+            Console.Write($"{LangController.GetText("Menu_YourChoice")}");
 
             ConsoleKeyInfo key = Console.ReadKey();
             Console.Clear();
 
             switch (key.Key)
             {
+                //Lister les backups
                 case ConsoleKey.D1:
                 case ConsoleKey.NumPad1:
-                    Console.WriteLine($"{LangController.GetText("SubMenu_Option1")}");
-                    Console.WriteLine($"{LangController.GetText("Overall_SubMenu_Option1")}");
-                    ConsoleKeyInfo subKey0 = Console.ReadKey();
-                    if (subKey0.Key == ConsoleKey.Escape)
+                    Console.WriteLine($"{LangController.GetText("SubMenu_ListOfExistingTasks")}");
+                    Backup.ListBackup();
+                    Console.WriteLine($"\n{LangController.GetText("Overall_SubMenu_Option2")}");
+                    ConsoleKeyInfo subKey001 = Console.ReadKey();
+                    if (subKey001.Key == ConsoleKey.Escape)
                     {
                         break;
                     }
-                    // Appeler la classe qui gère ça
                     break;
 
+
+                //Ajouter une backup
                 case ConsoleKey.D2:
                 case ConsoleKey.NumPad2:
-                    Console.WriteLine($"{LangController.GetText("SubMenu_Option2")}");
+                    Console.WriteLine($"{LangController.GetText("SubMenu_CreatingTask")}");
                     Console.WriteLine($"{LangController.GetText("Overall_SubMenu_Option1")}");
                     ConsoleKeyInfo subKey1 = Console.ReadKey();
                     if (subKey1.Key == ConsoleKey.Escape)
                     {
                         break;
                     }
-                    Console.Write($"{LangController.GetText("SubMenu_Option3")}");
+                    Console.Write($"{LangController.GetText("SubMenu_NameTask")}");
                     string taskName = Console.ReadLine();
-                    Console.Write($"{LangController.GetText("SubMenu_Option4")}");
+                    Console.Write($"{LangController.GetText("SubMenu_SourceDirectory")}");
                     string taskStartRepo = Console.ReadLine();
-                    Console.Write($"{LangController.GetText("SubMenu_Option5")}");
+                    Console.Write($"{LangController.GetText("SubMenu_DestDirectory")}");
                     string taskArrivalRepo = Console.ReadLine();
-                    Console.Write($"{LangController.GetText("SubMenu_Option6")}");
+                    Console.Write($"{LangController.GetText("SubMenu_TaskType")}");
                     string taskType = Console.ReadLine();
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write($"{LangController.GetText("SubMenu_Option7")}");
-                    Console.ResetColor();
-                    Thread.Sleep(1500);
+                    Backup.AddBackup(taskName, taskStartRepo, taskArrivalRepo, taskType);
+                    Thread.Sleep(2000);
                     break;
 
+
+                //Executer une backup
                 case ConsoleKey.D3:
                 case ConsoleKey.NumPad3:
-                    Console.WriteLine($"{LangController.GetText("SubMenu_Option8")}");
+                    Console.WriteLine($"{LangController.GetText("SubMenu_ExecutingTask")}");
+                    Console.WriteLine($"{LangController.GetText("Overall_SubMenu_Option1")}");
+                    ConsoleKeyInfo subKey01 = Console.ReadKey();
+                    if (subKey01.Key == ConsoleKey.Escape)
+                    {
+                        break;
+                    }
+
+                    Console.WriteLine($"\n{LangController.GetText("SubMenu_ListOfExistingTasks")}");
+                    Backup.ListBackup();
+
+                    Console.Write($"\n{LangController.GetText("SubMenu_EnterTaskNameToExecute")}");
+                    string taskNameToExecute = Console.ReadLine();
+
+                    Backup.ExecuteOrDeleteMultipleBackups(taskNameToExecute, true);
+
+                    Console.WriteLine($"\n{LangController.GetText("Overall_SubMenu_Option2")}");
+                    ConsoleKeyInfo subKey02 = Console.ReadKey();
+                    if (subKey02.Key == ConsoleKey.Escape)
+                    {
+                        break;
+                    }
+                    break;
+
+
+
+                //Supprimer une backup
+                case ConsoleKey.D4:
+                case ConsoleKey.NumPad4:
+                    Console.WriteLine($"{LangController.GetText("SubMenu_DeletingTask")}");
                     Console.WriteLine($"{LangController.GetText("Overall_SubMenu_Option1")}");
                     ConsoleKeyInfo subKey2 = Console.ReadKey();
                     if (subKey2.Key == ConsoleKey.Escape)
                     {
                         break;
                     }
-                    Console.WriteLine($"{LangController.GetText("SubMenu_Option9")}");
+                    Console.WriteLine($"{LangController.GetText("SubMenu_ListOfExistingTasks")}");
+                    Backup.ListBackup();
+                    Console.Write($"\n{LangController.GetText("SubMenu_EnterTaskNameToDelete")}");
                     string taskToDelete = Console.ReadLine();
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"{LangController.GetText("SubMenu_Option10")}");
-                    Console.ResetColor();
+                    Backup.ExecuteOrDeleteMultipleBackups(taskToDelete, false);
                     Thread.Sleep(1500);
                     break;
 
-                case ConsoleKey.D4:
-                case ConsoleKey.NumPad4:
+
+                //Changer la langue
+                case ConsoleKey.D5:
+                case ConsoleKey.NumPad5:
                     Console.WriteLine($"{LangController.GetText("Select_Language")}");
                     Console.WriteLine("1. Français");
                     Console.WriteLine("2. English");
-                    Console.Write($"{LangController.GetText("Menu_Option6")}");
+                    Console.Write($"{LangController.GetText("Menu_YourChoice")}");
                     string langChoice = Console.ReadLine();
                     if (langChoice == "1")
                     {
@@ -102,15 +139,17 @@ class Program
                     Console.ResetColor();
                     Thread.Sleep(1500);
                     break;
-
-                case ConsoleKey.D5:
-                case ConsoleKey.NumPad5:
+                
+                 //Quitter l'application
+                case ConsoleKey.D6:
+                case ConsoleKey.NumPad6:
                     Console.ForegroundColor = ConsoleColor.Magenta;
                     Console.WriteLine($"{LangController.GetText("Application_Exit")}");
                     Console.ResetColor();
                     Thread.Sleep(1000);
                     return;
 
+                //Choix invalide
                 default:
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"{LangController.GetText("Invalid_Choice")}");
