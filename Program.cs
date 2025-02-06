@@ -69,6 +69,7 @@ class Program
                     Thread.Sleep(2000);
                     break;
 
+
                 //Executer une backup
                 case ConsoleKey.D3:
                 case ConsoleKey.NumPad3:
@@ -79,11 +80,15 @@ class Program
                     {
                         break;
                     }
-                    Console.WriteLine($"{LangController.GetText("SubMenu_ListOfExistingTasks")}");
+
+                    Console.WriteLine($"\n{LangController.GetText("SubMenu_ListOfExistingTasks")}");
                     Backup.ListBackup();
+
                     Console.Write($"\n{LangController.GetText("SubMenu_EnterTaskNameToExecute")}");
                     string taskNameToExecute = Console.ReadLine();
-                    Backup.ExecuteBackup(taskNameToExecute);
+
+                    Backup.ExecuteOrDeleteMultipleBackups(taskNameToExecute, true);
+
                     Console.WriteLine($"\n{LangController.GetText("Overall_SubMenu_Option2")}");
                     ConsoleKeyInfo subKey02 = Console.ReadKey();
                     if (subKey02.Key == ConsoleKey.Escape)
@@ -91,6 +96,7 @@ class Program
                         break;
                     }
                     break;
+
 
 
                 //Supprimer une backup
@@ -107,9 +113,10 @@ class Program
                     Backup.ListBackup();
                     Console.Write($"\n{LangController.GetText("SubMenu_EnterTaskNameToDelete")}");
                     string taskToDelete = Console.ReadLine();
-                    Backup.DeleteBackup(taskToDelete);
+                    Backup.ExecuteOrDeleteMultipleBackups(taskToDelete, false);
                     Thread.Sleep(1500);
                     break;
+
 
                 //Changer la langue
                 case ConsoleKey.D5:
