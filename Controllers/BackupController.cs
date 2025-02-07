@@ -112,7 +112,6 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 foreach (string backupName in backupsToExecuteOrDelete)
                 {
                     ExecuteBackup(backupName);
-                    logController.LogAction($"Backup '{backupName}' executed.", LogLevel.Info);
                 }
             }
             else
@@ -120,9 +119,6 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 foreach (string backupName in backupsToExecuteOrDelete)
                 {
                     DeleteBackup(backupName);
-
-                    // Log the deletion for each task
-                    logController.LogAction($"Backup task '{backupName}' deleted.", LogLevel.Info);
                 }
             }
         }
