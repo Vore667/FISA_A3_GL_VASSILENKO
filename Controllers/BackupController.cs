@@ -1,8 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml;
 using Newtonsoft.Json;
 
 namespace Projet_Easy_Save_grp_4.Controllers
@@ -12,10 +11,13 @@ namespace Projet_Easy_Save_grp_4.Controllers
         private List<BackupTask> tasks;
         private const int MaxTasks = 5;
         private const string SaveFilePath = "backup_tasks.json";
+        private LogController logController;
 
-        public BackupController()
+        // Constructeur avec un paramètre pour spécifier le répertoire des logs
+        public BackupController(string logDirectory)
         {
             tasks = LoadBackupTasks();
+            logController = new LogController(logDirectory); // Initialiser LogController avec le chemin des logs
         }
 
         public void AddBackup(string name, string source, string destination, string type)
@@ -38,6 +40,10 @@ namespace Projet_Easy_Save_grp_4.Controllers
 
             tasks.Add(new BackupTask(name, source, destination, type));
             SaveBackupTasks();
+
+            // Log the action
+            logController.LogAction($"Backup task '{name}' added.", LogLevel.Info);
+
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"{LangController.GetText("Notif_TaskCreated")}");
             Console.ResetColor();
@@ -65,6 +71,9 @@ namespace Projet_Easy_Save_grp_4.Controllers
             if (task != null)
             {
                 task.Execute();
+
+                // Log the execution action
+                logController.LogAction($"Backup '{name}' executed.", LogLevel.Info);
             }
         }
 
@@ -75,6 +84,10 @@ namespace Projet_Easy_Save_grp_4.Controllers
             {
                 tasks.Remove(task);
                 SaveBackupTasks();
+
+                // Log the deletion action
+                logController.LogAction($"Backup task '{name}' deleted.", LogLevel.Info);
+
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"{LangController.GetText("Notify_TaskDeleted")}");
                 Console.ResetColor();
@@ -99,6 +112,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 foreach (string backupName in backupsToExecuteOrDelete)
                 {
                     ExecuteBackup(backupName);
+                    logController.LogAction($"Backup '{backupName}' executed.", LogLevel.Info);
                 }
             }
             else
@@ -106,6 +120,9 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 foreach (string backupName in backupsToExecuteOrDelete)
                 {
                     DeleteBackup(backupName);
+
+                    // Log the deletion for each task
+                    logController.LogAction($"Backup task '{backupName}' deleted.", LogLevel.Info);
                 }
             }
         }
@@ -171,6 +188,41 @@ namespace Projet_Easy_Save_grp_4.Controllers
                     Console.WriteLine($"{LangController.GetText("TaskType")} : {LangController.GetText("BackupType_Differential")}");
                     fileController.CopyModifiedFiles(Source, Destination);
                 }
+            }
+        }
+
+        public enum LogLevel
+        {
+            Info,
+            Error,
+            Warning
+        }
+
+        public class LogController
+        {
+            private string logFilePath;
+
+            public LogController(string logDirectory)
+            {
+                if (!Directory.Exists(logDirectory))
+                {
+                    Directory.CreateDirectory(logDirectory);
+                }
+                logFilePath = Path.Combine(logDirectory, "log.json");
+            }
+
+            public void LogAction(string message, LogLevel level)
+            {
+                var logEntry = new
+                {
+                    Timestamp = DateTime.Now,
+                    Level = level.ToString(),
+                    Message = message
+                };
+
+                string logJson = JsonConvert.SerializeObject(logEntry, Newtonsoft.Json.Formatting.Indented);
+
+                File.AppendAllText(logFilePath, logJson + Environment.NewLine);
             }
         }
     }

@@ -1,29 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Projet_Easy_Save_grp_4.Controllers;
+using System.IO;
+using Newtonsoft.Json;
+using Projet_Easy_Save_grp_4.Interfaces;
 
 namespace Projet_Easy_Save_grp_4.Models
 {
-    internal class LogModel
+    public class LogModel
     {
-        private LogController logs;
+        private readonly List<ILogEntry> logs = new List<ILogEntry>();
+        private readonly string logFilePath;
 
-        public void Controller()
+        // Constructeur avec chemin de fichier log
+        public LogModel(string logFilePath)
         {
-
+            this.logFilePath = logFilePath;
         }
 
-        public void OpenFile()
+        // Méthode pour ajouter un log et l'écrire dans le fichier JSON
+        public void AddLog(ILogEntry logEntry)
         {
-
+            logs.Add(logEntry);
+            SaveFile();
         }
 
-        public void SaveFile()
+        // Sauvegarde les logs dans un fichier JSON
+        private void SaveFile()
         {
-
+            string json = JsonConvert.SerializeObject(logs, Formatting.Indented);
+            File.WriteAllText(logFilePath, json);
         }
     }
 }
