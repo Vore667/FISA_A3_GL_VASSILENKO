@@ -1,9 +1,21 @@
-﻿<build>
-    <plugins>
-        <plugin>
-            <groupId>org.sonarsource.scanner.maven</groupId>
-            <artifactId>sonar-maven-plugin</artifactId>
-            <version>3.9.1.2184</version> <!-- Vérifiez la version la plus récente -->
-        </plugin>
-    </plugins>
-</build>
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.example</groupId>
+	<artifactId>FISA_A3_GL_VASSILENKO</artifactId>
+	<version>1.0-SNAPSHOT</version>
+
+	<build>
+		<plugins>
+			<!-- Plugin pour SonarQube -->
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>3.9.1.2184</version>
+			</plugin>
+		</plugins>
+	</build>
+</project>
