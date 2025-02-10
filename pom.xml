@@ -8,6 +8,16 @@
 	<artifactId>FISA_A3_GL_VASSILENKO</artifactId>
 	<version>1.0-SNAPSHOT</version>
 
+	<properties>
+		<sonar.projectKey>FISA_A3_GL_VASSILENKO</sonar.projectKey>
+		<sonar.organization>MonOrganisation</sonar.organization>
+		<sonar.host.url>https://sonarqube.example.com</sonar.host.url>
+		<sonar.login>mon-token-sonarqube</sonar.login>
+		<sonar.language>cs</sonar.language>
+		<sonar.dotnet.visualstudio.solution.file>FISA_A3_GL_VASSILENKO.sln</sonar.dotnet.visualstudio.solution.file>
+		<sonar.cs.analyzer.projectOutPaths>bin\Debug\net6.0</sonar.cs.analyzer.projectOutPaths>
+	</properties>
+
 	<build>
 		<plugins>
 			<!-- Plugin pour SonarQube -->
