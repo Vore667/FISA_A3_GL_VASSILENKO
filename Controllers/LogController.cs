@@ -1,17 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using Projet_Easy_Save_grp_4.Interfaces;
 using Projet_Easy_Save_grp_4.Models;
+using static Projet_Easy_Save_grp_4.Controllers.BackupController;
 
 namespace Projet_Easy_Save_grp_4.Controllers
 {
+
+    public enum LogLevel
+    {
+        Info,
+        Error,
+        Warning
+    }
+
     internal class LogController
     {
         private readonly List<ILogListener> listeners;
 
-        public LogController()
+        private string logFilePath;
+
+        public LogController(string logDirectory)
         {
-            listeners = new List<ILogListener>();
+            if (!Directory.Exists(logDirectory))
+            {
+                Directory.CreateDirectory(logDirectory);
+            }
+            logFilePath = Path.Combine(logDirectory, "log.json");
+        }
+
+        public void LogAction(string message, LogLevel level)
+        {
+            var logEntry = new
+            {
+                Timestamp = DateTime.Now,
+                Level = level.ToString(),
+                Message = message
+            };
+
+            string logJson = JsonConvert.SerializeObject(logEntry, Newtonsoft.Json.Formatting.Indented);
+
+            File.AppendAllText(logFilePath, logJson + Environment.NewLine);
         }
 
         // Méthode pour s'abonner à un ou plusieurs écouteurs

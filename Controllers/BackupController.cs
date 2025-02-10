@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using Projet_Easy_Save_grp_4.Controllers;
 
 namespace Projet_Easy_Save_grp_4.Controllers
 {
@@ -19,6 +20,8 @@ namespace Projet_Easy_Save_grp_4.Controllers
             tasks = LoadBackupTasks();
             logController = new LogController(logDirectory); // Initialiser LogController avec le chemin des logs
         }
+
+
 
         public void AddBackup(string name, string source, string destination, string type)
         {
@@ -185,41 +188,8 @@ namespace Projet_Easy_Save_grp_4.Controllers
                     fileController.CopyModifiedFiles(Source, Destination);
                 }
             }
+
         }
 
-        public enum LogLevel
-        {
-            Info,
-            Error,
-            Warning
-        }
-
-        public class LogController
-        {
-            private string logFilePath;
-
-            public LogController(string logDirectory)
-            {
-                if (!Directory.Exists(logDirectory))
-                {
-                    Directory.CreateDirectory(logDirectory);
-                }
-                logFilePath = Path.Combine(logDirectory, "log.json");
-            }
-
-            public void LogAction(string message, LogLevel level)
-            {
-                var logEntry = new
-                {
-                    Timestamp = DateTime.Now,
-                    Level = level.ToString(),
-                    Message = message
-                };
-
-                string logJson = JsonConvert.SerializeObject(logEntry, Newtonsoft.Json.Formatting.Indented);
-
-                File.AppendAllText(logFilePath, logJson + Environment.NewLine);
-            }
-        }
     }
 }
