@@ -7,7 +7,12 @@ class Program
     static void Main()
     {
 
-        BackupController Backup  = new BackupController();
+        // Obtenez le chemin du dossier racine du projet
+        string logDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
+
+        // Créez une instance de BackupController avec le chemin des logs
+        BackupController Backup = new BackupController(logDirectory);
+
 
         while (true)
         {

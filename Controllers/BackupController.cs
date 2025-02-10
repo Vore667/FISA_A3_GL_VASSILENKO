@@ -1,9 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml;
+using System.Xml.Linq;
 using Newtonsoft.Json;
+using Projet_Easy_Save_grp_4.Controllers;
 
 namespace Projet_Easy_Save_grp_4.Controllers
 {
@@ -12,11 +13,16 @@ namespace Projet_Easy_Save_grp_4.Controllers
         private List<BackupTask> tasks;
         private const int MaxTasks = 5;
         private const string SaveFilePath = "backup_tasks.json";
+        private LogController logController;
 
-        public BackupController()
+        // Constructeur avec un paramètre pour spécifier le répertoire des logs
+        public BackupController(string logDirectory)
         {
             tasks = LoadBackupTasks();
+            logController = new LogController(logDirectory); // Initialiser LogController avec le chemin des logs
         }
+
+
 
         public void AddBackup(string name, string source, string destination, string type)
         {
@@ -25,6 +31,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"{LangController.GetText("Error_MaxBackup")}");
                 Console.ResetColor();
+                logController.LogAction($"Error when adding Backup task '{name}', already 5 BackupTask are existing.", LogLevel.Error);
                 return;
             }
 
@@ -33,15 +40,21 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"{LangController.GetText("Error_SourceDirectoryDoesntExist")}");
                 Console.ResetColor();
+                logController.LogAction($"Error when adding Backup task '{name}', Source Directory doesn'y exist.", LogLevel.Error);
                 return;
             }
 
             tasks.Add(new BackupTask(name, source, destination, type));
             SaveBackupTasks();
+
+            // Log de l'ajout de la tâche de backup
+            logController.LogAction($"Backup task '{name}' added.", LogLevel.Info);
+
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"{LangController.GetText("Notif_TaskCreated")}");
             Console.ResetColor();
         }
+
 
         public void ListBackup()
         {
@@ -50,6 +63,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"{LangController.GetText("Error_NoTaskCreated")}");
                 Console.ResetColor();
+                logController.LogAction($"Error 0 task are existing.", LogLevel.Error);
                 return;
             }
 
@@ -65,8 +79,24 @@ namespace Projet_Easy_Save_grp_4.Controllers
             if (task != null)
             {
                 task.Execute();
+
+                // Vérifier que le dossier de destination existe et récupérer la liste de tous les fichiers copiés
+                if (Directory.Exists(task.Destination))
+                {
+                    List<string> files = Directory.GetFiles(task.Destination, "*.*", SearchOption.AllDirectories).ToList();
+                    long totalSize = 0;
+                    foreach (string file in files)
+                    {
+                        FileInfo fi = new FileInfo(file);
+                        totalSize += fi.Length;
+                    }
+
+                    // Enregistrer le log détaillé de l'exécution du backup
+                    logController.LogBackupExecution(task.Name, "Finished", files, totalSize);
+                }
             }
         }
+
 
         public void DeleteBackup(string name)
         {
@@ -75,6 +105,10 @@ namespace Projet_Easy_Save_grp_4.Controllers
             {
                 tasks.Remove(task);
                 SaveBackupTasks();
+
+                // Log the deletion action
+                logController.LogAction($"Backup task '{name}' deleted.", LogLevel.Info);
+
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"{LangController.GetText("Notify_TaskDeleted")}");
                 Console.ResetColor();
@@ -172,6 +206,8 @@ namespace Projet_Easy_Save_grp_4.Controllers
                     fileController.CopyModifiedFiles(Source, Destination);
                 }
             }
+
         }
+
     }
 }
