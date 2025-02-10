@@ -28,20 +28,57 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 Directory.CreateDirectory(logDirectory);
             }
             logFilePath = Path.Combine(logDirectory, "log.json");
+
+            // Initialiser le fichier de log s'il n'existe pas
+            if (!File.Exists(logFilePath))
+            {
+                File.WriteAllText(logFilePath, "[]");
+            }
         }
 
+        // Méthode générique pour les logs simples (ajout, suppression, etc.)
         public void LogAction(string message, LogLevel level)
         {
+            List<dynamic> logs = LoadLogs();
             var logEntry = new
             {
-                Timestamp = DateTime.Now,
+                Timestamp = DateTime.Now.ToString("o"),
                 Level = level.ToString(),
                 Message = message
             };
 
-            string logJson = JsonConvert.SerializeObject(logEntry, Newtonsoft.Json.Formatting.Indented);
+            logs.Add(logEntry);
+            SaveLogs(logs);
+        }
 
-            File.AppendAllText(logFilePath, logJson + Environment.NewLine);
+        // Méthode pour enregistrer le log détaillé d'une exécution de backup
+        public void LogBackupExecution(string backupName, string status, List<string> files, long totalSize)
+        {
+            List<dynamic> logs = LoadLogs();
+            var logEntry = new
+            {
+                Timestamp = DateTime.Now.ToString("o"),
+                BackupName = backupName,
+                Status = status,
+                TotalFiles = files.Count,
+                TotalSize = totalSize,
+                Files = files
+            };
+
+            logs.Add(logEntry);
+            SaveLogs(logs);
+        }
+
+        private List<dynamic> LoadLogs()
+        {
+            string content = File.ReadAllText(logFilePath);
+            var logs = JsonConvert.DeserializeObject<List<dynamic>>(content) ?? new List<dynamic>();
+            return logs;
+        }
+
+        private void SaveLogs(List<dynamic> logs)
+        {
+            File.WriteAllText(logFilePath, JsonConvert.SerializeObject(logs, Formatting.Indented));
         }
 
         // Méthode pour s'abonner à un ou plusieurs écouteurs

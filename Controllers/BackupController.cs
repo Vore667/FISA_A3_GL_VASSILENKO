@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 using Newtonsoft.Json;
 using Projet_Easy_Save_grp_4.Controllers;
 
@@ -30,6 +31,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"{LangController.GetText("Error_MaxBackup")}");
                 Console.ResetColor();
+                logController.LogAction($"Error when adding Backup task '{name}', already 5 BackupTask are existing.", LogLevel.Error);
                 return;
             }
 
@@ -38,19 +40,21 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"{LangController.GetText("Error_SourceDirectoryDoesntExist")}");
                 Console.ResetColor();
+                logController.LogAction($"Error when adding Backup task '{name}', Source Directory doesn'y exist.", LogLevel.Error);
                 return;
             }
 
             tasks.Add(new BackupTask(name, source, destination, type));
             SaveBackupTasks();
 
-            // Log the action
+            // Log de l'ajout de la tâche de backup
             logController.LogAction($"Backup task '{name}' added.", LogLevel.Info);
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"{LangController.GetText("Notif_TaskCreated")}");
             Console.ResetColor();
         }
+
 
         public void ListBackup()
         {
@@ -59,6 +63,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"{LangController.GetText("Error_NoTaskCreated")}");
                 Console.ResetColor();
+                logController.LogAction($"Error 0 task are existing.", LogLevel.Error);
                 return;
             }
 
@@ -75,10 +80,23 @@ namespace Projet_Easy_Save_grp_4.Controllers
             {
                 task.Execute();
 
-                // Log the execution action
-                logController.LogAction($"Backup '{name}' executed.", LogLevel.Info);
+                // Vérifier que le dossier de destination existe et récupérer la liste de tous les fichiers copiés
+                if (Directory.Exists(task.Destination))
+                {
+                    List<string> files = Directory.GetFiles(task.Destination, "*.*", SearchOption.AllDirectories).ToList();
+                    long totalSize = 0;
+                    foreach (string file in files)
+                    {
+                        FileInfo fi = new FileInfo(file);
+                        totalSize += fi.Length;
+                    }
+
+                    // Enregistrer le log détaillé de l'exécution du backup
+                    logController.LogBackupExecution(task.Name, "Finished", files, totalSize);
+                }
             }
         }
+
 
         public void DeleteBackup(string name)
         {
