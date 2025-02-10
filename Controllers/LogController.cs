@@ -52,22 +52,36 @@ namespace Projet_Easy_Save_grp_4.Controllers
         }
 
         // Méthode pour enregistrer le log détaillé d'une exécution de backup
-        public void LogBackupExecution(string backupName, string status, List<string> files, long totalSize)
+        public void LogBackupExecution(string backupName, string status, List<string> files, long totalSize, string SourceDirectory, string DestinationDirectory, int actual_files)
         {
             List<dynamic> logs = LoadLogs();
+
+            double progressPourcentage = 0;
+            if (files.Count > 0)
+            {
+                progressPourcentage = ((double)actual_files / files.Count) * 100;
+            }
+            string progressPourcentageText = progressPourcentage.ToString("F2") + " %";
+
+
             var logEntry = new
             {
                 Timestamp = DateTime.Now.ToString("o"),
                 BackupName = backupName,
                 Status = status,
-                TotalFiles = files.Count,
                 TotalSize = totalSize,
+                TotalFiles = files.Count,
+                ActualFile = actual_files,
+                ProgressPourcentage = progressPourcentageText,
+                SourceDirectory = SourceDirectory,
+                DestinationDirectory = DestinationDirectory,
                 Files = files
             };
 
             logs.Add(logEntry);
             SaveLogs(logs);
         }
+
 
         private List<dynamic> LoadLogs()
         {
