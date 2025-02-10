@@ -14,6 +14,8 @@
         <sonar.host.url>${env.SONARQUBE_URL}</sonar.host.url>
         <sonar.login>${env.SONARQUBE_TOKEN}</sonar.login>
         <sonar.language>cs</sonar.language>
+         <sonar.analysis.mode>preview</sonar.analysis.mode>
+         <sonar.issuesReport.html.enable>true</sonar.issuesReport.html.enable>
         <sonar.dotnet.visualstudio.solution.file>Projet_Easy_Save_grp_4.sln</sonar.dotnet.visualstudio.project.file>Projet_Easy_Save_grp_4.csproj</sonar.dotnet.visualstudio.project.file>
     </properties>
     
