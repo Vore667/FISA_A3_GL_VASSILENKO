@@ -85,14 +85,18 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 {
                     List<string> files = Directory.GetFiles(task.Destination, "*.*", SearchOption.AllDirectories).ToList();
                     long totalSize = 0;
+                    int actual_files = 0;
                     foreach (string file in files)
                     {
                         FileInfo fi = new FileInfo(file);
                         totalSize += fi.Length;
+                        logController.LogBackupExecution(task.Name, "InProgress", files,  totalSize, task.Destination, task.Source, actual_files);
+                        actual_files++;
                     }
 
                     // Enregistrer le log détaillé de l'exécution du backup
-                    logController.LogBackupExecution(task.Name, "Finished", files, totalSize);
+                    logController.LogBackupExecution(task.Name, "Finished", files, totalSize, task.Destination, task.Source, actual_files);
+                    actual_files = 0;
                 }
             }
         }
