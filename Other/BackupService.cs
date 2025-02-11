@@ -5,15 +5,17 @@ using System.Runtime.CompilerServices;
 using Projet_Easy_Save_grp_4;
 using Projet_Easy_Save_grp_4.Interfaces;
 
-
-class BackupService
+namespace Projet_Easy_Save_grp_4.Models
 {
-    //private IFileManager fileManager;
-    //private IConfigurationService configService = new ConfigurationService();
-    //private ILogListener backupLogger;
-    //private List<BackupModel> backupJobs;
-    //private IType type;
-    //private BackupSnapshot state; 
+    class BackupService
+    {
+        //private IFileManager fileManager;
+        //private IConfigurationService configService = new ConfigurationService();
+        //private ILogListener backupLogger;
+        //private List<BackupModel> backupJobs;
+        //private IType type;
+        //private BackupSnapshot state; 
 
 
+    }
 }

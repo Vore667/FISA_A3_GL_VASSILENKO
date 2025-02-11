@@ -7,7 +7,7 @@ using Projet_Easy_Save_grp_4.Interfaces;
 
 namespace Projet_Easy_Save_grp_4.Other
 {
-    internal class differentialType : IType
+    internal class DifferentialType : IType
     {
         public void DisplayType()
         {
