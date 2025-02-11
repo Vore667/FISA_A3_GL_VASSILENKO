@@ -5,10 +5,11 @@ using System.Linq;
 using System.Xml.Linq;
 using Newtonsoft.Json;
 using Projet_Easy_Save_grp_4.Controllers;
+using Projet_Easy_Save_grp_4.Interfaces;
 
 namespace Projet_Easy_Save_grp_4.Controllers
 {
-    internal class BackupController
+    internal class BackupController : IBackupService
     {
         private readonly List<BackupTask> tasks;
         private const int MaxTasks = 5;
@@ -209,7 +210,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
         }
 
         // Afficher toutes les backups sauvegardées
-        private static List<BackupTask> LoadBackupTasks()
+        private static List<BackupTask>? LoadBackupTasks()
         {
             if (!File.Exists(SaveFilePath))
                 return new List<BackupTask>();
