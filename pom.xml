@@ -1,26 +1,27 @@
-﻿<project xmlns="http://maven.apache.org/POM/4.0.0"
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.example</groupId>
-	<artifactId>FISA_A3_GL_VASSILENKO</artifactId>
+	<artifactId>cs-sonarqube-analysis</artifactId>
 	<version>1.0-SNAPSHOT</version>
 
 	<properties>
-		<sonar.projectKey>FISA_A3_GL_VASSILENKO</sonar.projectKey>
+		<sonar.projectKey>MonProjetCS</sonar.projectKey>
 		<sonar.organization>MonOrganisation</sonar.organization>
-		<sonar.host.url>https://sonarqube.example.com</sonar.host.url>
-		<sonar.login>mon-token-sonarqube</sonar.login>
+		<sonar.host.url>${env.SONARQUBE_URL}</sonar.host.url>
+		<sonar.login>${env.SONARQUBE_TOKEN}</sonar.login>
 		<sonar.language>cs</sonar.language>
-		<sonar.dotnet.visualstudio.solution.file>FISA_A3_GL_VASSILENKO.sln</sonar.dotnet.visualstudio.solution.file>
-		<sonar.cs.analyzer.projectOutPaths>bin\Debug\net6.0</sonar.cs.analyzer.projectOutPaths>
-	</properties>
+		<sonar.analysis.mode>preview</sonar.analysis.mode>
+		<sonar.issuesReport.html.enable>true</sonar.issuesReport.html.enable>
+		<sonar.dotnet.visualstudio.solution.file>
+			Projet_Easy_Save_grp_4.sln</sonar.dotnet.visualstudio.project.file>Projet_Easy_Save_grp_4.csproj</sonar.dotnet.visualstudio.project.file>
+		</properties>
 
 	<build>
 		<plugins>
-			<!-- Plugin pour SonarQube -->
 			<plugin>
 				<groupId>org.sonarsource.scanner.maven</groupId>
 				<artifactId>sonar-maven-plugin</artifactId>
