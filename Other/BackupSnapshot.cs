@@ -12,7 +12,7 @@ namespace Projet_Easy_Save_grp_4.Other
 
         private void Memento(string state)
         {
-
+            // Methode de base qui 
         }
 
         private List<string> GetState()

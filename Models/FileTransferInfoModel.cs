@@ -12,9 +12,9 @@ namespace Projet_Easy_Save_grp_4.Models
         private int fileSize { get; set; }
         private DateTime transferTime { get; set; }
 
-        public string ToJson()
+        /* public string ToJson()
         {
             return "JSON à faire";
-        }
+        }*/ 
     }
 }

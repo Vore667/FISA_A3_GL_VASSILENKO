@@ -17,12 +17,14 @@ namespace Projet_Easy_Save_grp_4.Controllers
 
     internal class LogController
     {
-        private readonly List<ILogListener> listeners;
+        private readonly List<ILogListener>? listeners = new List<ILogListener>();
 
-        private string logFilePath;
+        private readonly string logFilePath;
 
         public LogController(string logDirectory)
         {
+            listeners = new List<ILogListener>();
+
             if (!Directory.Exists(logDirectory))
             {
                 Directory.CreateDirectory(logDirectory);

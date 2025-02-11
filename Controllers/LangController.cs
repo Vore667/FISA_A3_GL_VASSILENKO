@@ -6,22 +6,23 @@ using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 using Projet_Easy_Save_grp_4;
+using Projet_Easy_Save_grp_4.Interfaces;
 using Projet_Easy_Save_grp_4.Resources;
 
 
 
 namespace Projet_Easy_Save_grp_4.Controllers
 {
-    internal class LangController
+    internal class LangController : ILang
     {
         private static CultureInfo _currentCulture = new CultureInfo("fr"); // Langue par défaut
 
-        public static void SetLanguage(string langCode)
+        public static new void SetLanguage(string langCode)
         {
             _currentCulture = new CultureInfo(langCode);
         }
 
-        public static string GetText(string key)
+        public static new string GetText(string key)
         {
             return LangResources.GetText(key, _currentCulture.Name);
         }
