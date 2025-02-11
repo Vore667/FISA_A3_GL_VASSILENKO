@@ -243,4 +243,16 @@
   <data name="Notify_AllModifiedFilesCopied" xml:space="preserve">
     <value>All modified files have been copied !</value>
   </data>
+  <data name="Error_NoTaskName" xml:space="preserve">
+    <value>Error: No task name specified</value>
+  </data>
+  <data name="Error_NoTaskSource" xml:space="preserve">
+    <value>No task source specified</value>
+  </data>
+  <data name="Error_NoTaskDestination" xml:space="preserve">
+    <value>Error, no destination directory specified ! </value>
+  </data>
+  <data name="Error_NoTaskType" xml:space="preserve">
+    <value>Error, no task type !</value>
+  </data>
 </root>

@@ -10,17 +10,24 @@ namespace Projet_Easy_Save_grp_4.Interfaces
     {
         public void AddBackup()
         {
-
+            // Ajouter une backup
         }
 
         public void ExecuteBackup()
         {
-
+            // Executer une backup
         }
 
         public void DeleteBackup()
         {
-
+            // Supprimer une backup
         }
+
+        public void ListBackup()
+        {
+            // Lister les backups
+        }
+
+
     }
 }

@@ -12,7 +12,7 @@ using Projet_Easy_Save_grp_4.Resources;
 
 namespace Projet_Easy_Save_grp_4.Controllers
 {
-    internal class LangController
+    internal static class LangController
     {
         private static CultureInfo _currentCulture = new CultureInfo("fr"); // Langue par défaut
 

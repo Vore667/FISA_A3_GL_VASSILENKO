@@ -10,10 +10,10 @@ namespace Projet_Easy_Save_grp_4.Controllers
 {
     internal class BackupController
     {
-        private List<BackupTask> tasks;
+        private readonly List<BackupTask> tasks;
         private const int MaxTasks = 5;
         private const string SaveFilePath = "backup_tasks.json";
-        private LogController logController;
+        private readonly LogController logController;
 
         // Constructeur avec un paramètre pour spécifier le répertoire des logs
         public BackupController(string logDirectory)
@@ -23,8 +23,8 @@ namespace Projet_Easy_Save_grp_4.Controllers
         }
 
 
-
-        public void AddBackup(string name, string source, string destination, string type)
+        // Ajouter une backup
+        public void AddBackup(string? name, string? source, string? destination, string? type)
         {
             if (tasks.Count >= MaxTasks)
             {
@@ -44,6 +44,42 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 return;
             }
 
+            if (name == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"{LangController.GetText("Error_NoTaskName")}");
+                Console.ResetColor();
+                logController.LogAction($"Error when adding Backup task '{name}', No name for backup task.", LogLevel.Error);
+                return;
+            }
+
+            if (source == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"{LangController.GetText("Error_NoTaskSource")}");
+                Console.ResetColor();
+                logController.LogAction($"Error when adding Backup task '{name}', No source for backup task.", LogLevel.Error);
+                return;
+            }
+
+            if (destination == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"{LangController.GetText("Error_NoTaskDestination")}");
+                Console.ResetColor();
+                logController.LogAction($"Error when adding Backup task '{name}', No destination for backup task.", LogLevel.Error);
+                return;
+            }
+
+            if (type == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"{LangController.GetText("Error_NoTaskType")}");
+                Console.ResetColor();
+                logController.LogAction($"Error when adding Backup task '{name}', No type for backup task.", LogLevel.Error);
+                return;
+            }
+
             tasks.Add(new BackupTask(name, source, destination, type));
             SaveBackupTasks();
 
@@ -55,7 +91,8 @@ namespace Projet_Easy_Save_grp_4.Controllers
             Console.ResetColor();
         }
 
-
+        
+        // Lister les backups existantes
         public void ListBackup()
         {
             if (tasks.Count == 0)
@@ -73,9 +110,10 @@ namespace Projet_Easy_Save_grp_4.Controllers
             }
         }
 
+        // Executer une backup
         public void ExecuteBackup(string name)
         {
-            BackupTask task = FindBackup(name);
+            BackupTask? task = FindBackup(name);
             if (task != null)
             {
                 task.Execute();
@@ -90,7 +128,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
                     {
                         FileInfo fi = new FileInfo(file);
                         totalSize += fi.Length;
-                        logController.LogBackupExecution(task.Name, "InProgress", files,  totalSize, task.Destination, task.Source, actual_files);
+                        logController.LogBackupExecution(task.Name, "InProgress", files, totalSize, task.Destination, task.Source, actual_files);
                         actual_files++;
                     }
 
@@ -101,10 +139,10 @@ namespace Projet_Easy_Save_grp_4.Controllers
             }
         }
 
-
+        // Supprimer une backup
         public void DeleteBackup(string name)
         {
-            BackupTask task = FindBackup(name);
+            BackupTask? task = FindBackup(name);
             if (task != null)
             {
                 tasks.Remove(task);
@@ -119,7 +157,8 @@ namespace Projet_Easy_Save_grp_4.Controllers
             }
         }
 
-        public void ExecuteOrDeleteMultipleBackups(string input, bool isExecute)
+        // Première fonction appelée qui appèle ensuite la fonction pr supprimer ou executer une backup plusieurs fois si dmd par l'user
+        public void ExecuteOrDeleteMultipleBackups(string? input, bool isExecute)
         {
             List<string> availableBackups = tasks.Select(t => t.Name).ToList();
             List<string> backupsToExecuteOrDelete = BackupParser.ParseBackupSelection(input, availableBackups);
@@ -148,9 +187,10 @@ namespace Projet_Easy_Save_grp_4.Controllers
             }
         }
 
-        public BackupTask FindBackup(string name)
+        // Trouver une backup via son nom, utilisée pour les fonctions executer et supprimer
+        public BackupTask? FindBackup(string name)
         {
-            BackupTask task = tasks.Find(t => t.Name == name);
+            BackupTask? task = tasks.Find(t => t.Name == name);
             if (task == null)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -160,14 +200,16 @@ namespace Projet_Easy_Save_grp_4.Controllers
             }
             return task;
         }
-
+        
+        // Ajouter une backup dans le fichier json pour une persistance.
         private void SaveBackupTasks()
         {
             string json = JsonConvert.SerializeObject(tasks, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(SaveFilePath, json);
         }
 
-        private List<BackupTask> LoadBackupTasks()
+        // Afficher toutes les backups sauvegardées
+        private static List<BackupTask> LoadBackupTasks()
         {
             if (!File.Exists(SaveFilePath))
                 return new List<BackupTask>();
@@ -176,9 +218,11 @@ namespace Projet_Easy_Save_grp_4.Controllers
             return JsonConvert.DeserializeObject<List<BackupTask>>(json) ?? new List<BackupTask>();
         }
 
+
+        // Tout ce qui caractérise une tâche de backup
         internal class BackupTask
         {
-            private FileController fileController = new FileController();
+            private readonly FileController fileController = new FileController();
 
             public string Name { get; set; }
             public string Source { get; set; }
@@ -193,6 +237,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 Type = type;
             }
 
+            // Executer la backup, c'est appelé via la fonction BackupExecute. Appelle les fonctions qui vont copier les fichiers.
             public void Execute()
             {
                 Console.ForegroundColor = ConsoleColor.Green;
