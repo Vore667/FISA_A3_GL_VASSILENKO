@@ -243,4 +243,16 @@
   <data name="Notify_AllModifiedFilesCopied" xml:space="preserve">
     <value>Tous les fichiers modifiés ont été copiés !</value>
   </data>
+  <data name="Error_NoTaskName" xml:space="preserve">
+    <value>Erreur : pas de nom de tâche renseignée !</value>
+  </data>
+  <data name="Error_NoTaskSource" xml:space="preserve">
+    <value>Erreur : pas de source spécifiée</value>
+  </data>
+  <data name="Error_NoTaskDestination" xml:space="preserve">
+    <value>Erreur, pas de répertoire de destination spécifié</value>
+  </data>
+  <data name="Error_NoTaskType" xml:space="preserve">
+    <value>Erreur, pas de type renseigné !</value>
+  </data>
 </root>

@@ -15,5 +15,25 @@ class BackupService
     //private IType type;
     //private BackupSnapshot state; 
 
+    public void AddBackup()
+    {
+        // Ajouter une backup
+    }
+
+    public void ExecuteBackup()
+    {
+        // Executer une backup
+    }
+
+    public void DeleteBackup()
+    {
+        // Supprimer une backup
+    }
+
+    public void listBackup()
+    {
+        // Lister les backup existantes
+    }
+
 
 }

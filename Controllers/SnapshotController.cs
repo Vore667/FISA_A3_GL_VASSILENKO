@@ -15,12 +15,12 @@ namespace Projet_Easy_Save_grp_4.Controllers
 
         public void doSomething()
         {
-
+            //Gérer les snapshot (par exemple en enregistrer).
         }
 
         public void undo()
         {
-
+            //Revenir en arrière à une snapshot précédente enregistrée.
         }
     }
 }
