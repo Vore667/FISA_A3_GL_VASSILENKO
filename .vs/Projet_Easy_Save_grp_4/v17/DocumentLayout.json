@@ -1,62 +1,60 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\",
+  "WorkspaceRootPath": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\arthu\\documents\\cesi\\a3\\fisa_a3\\genie logiciel\\projet\\controllers\\filecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\leoho\\documents\\programmation\\genie logiciel\\projet grp 4\\fisa_a3_gl_vassilenko\\controllers\\filecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|solutionrelative:controllers\\filecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\arthu\\documents\\cesi\\a3\\fisa_a3\\genie logiciel\\projet\\controllers\\langcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\leoho\\documents\\programmation\\genie logiciel\\projet grp 4\\fisa_a3_gl_vassilenko\\controllers\\langcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|solutionrelative:controllers\\langcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\arthu\\documents\\cesi\\a3\\fisa_a3\\genie logiciel\\projet\\interfaces\\ifile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\leoho\\documents\\programmation\\genie logiciel\\projet grp 4\\fisa_a3_gl_vassilenko\\interfaces\\ifile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|solutionrelative:interfaces\\ifile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\arthu\\documents\\cesi\\a3\\fisa_a3\\genie logiciel\\projet\\interfaces\\iconfigurationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\leoho\\documents\\programmation\\genie logiciel\\projet grp 4\\fisa_a3_gl_vassilenko\\interfaces\\iconfigurationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|solutionrelative:interfaces\\iconfigurationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\arthu\\documents\\cesi\\a3\\fisa_a3\\genie logiciel\\projet\\interfaces\\iloglistener.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|solutionrelative:interfaces\\iloglistener.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\arthu\\documents\\cesi\\a3\\fisa_a3\\genie logiciel\\projet\\interfaces\\itype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\leoho\\documents\\programmation\\genie logiciel\\projet grp 4\\fisa_a3_gl_vassilenko\\interfaces\\itype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|solutionrelative:interfaces\\itype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\arthu\\documents\\cesi\\a3\\fisa_a3\\genie logiciel\\projet\\models\\backupstatemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\leoho\\documents\\programmation\\genie logiciel\\projet grp 4\\fisa_a3_gl_vassilenko\\models\\backupstatemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|solutionrelative:models\\backupstatemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\arthu\\documents\\cesi\\a3\\fisa_a3\\genie logiciel\\projet\\models\\backupmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\leoho\\documents\\programmation\\genie logiciel\\projet grp 4\\fisa_a3_gl_vassilenko\\models\\backupmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|solutionrelative:models\\backupmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\arthu\\documents\\cesi\\a3\\fisa_a3\\genie logiciel\\projet\\other\\backupservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|solutionrelative:other\\backupservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\arthu\\documents\\cesi\\a3\\fisa_a3\\genie logiciel\\projet\\other\\backupsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\leoho\\documents\\programmation\\genie logiciel\\projet grp 4\\fisa_a3_gl_vassilenko\\other\\backupsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|solutionrelative:other\\backupsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\arthu\\documents\\cesi\\a3\\fisa_a3\\genie logiciel\\projet\\other\\complettype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\leoho\\documents\\programmation\\genie logiciel\\projet grp 4\\fisa_a3_gl_vassilenko\\other\\complettype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|solutionrelative:other\\complettype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\arthu\\documents\\cesi\\a3\\fisa_a3\\genie logiciel\\projet\\other\\configurationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\leoho\\documents\\programmation\\genie logiciel\\projet grp 4\\fisa_a3_gl_vassilenko\\other\\configurationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|solutionrelative:other\\configurationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\arthu\\documents\\cesi\\a3\\fisa_a3\\genie logiciel\\projet\\other\\differentialtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\leoho\\documents\\programmation\\genie logiciel\\projet grp 4\\fisa_a3_gl_vassilenko\\other\\differentialtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|solutionrelative:other\\differentialtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\arthu\\documents\\cesi\\a3\\fisa_a3\\genie logiciel\\projet\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|c:\\users\\leoho\\documents\\programmation\\genie logiciel\\projet grp 4\\fisa_a3_gl_vassilenko\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{139BA1E5-5335-4121-8BE7-FE351F9EA82E}|Projet_Easy_Save_grp_4.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Interfaces\\ILogListener.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Other\\BackupService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -66,17 +64,25 @@
       "DocumentGroups": [
         {
           "DockedWidth": 168,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e5c86464-96be-4d7c-9a8b-abcb3bbf5f92}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "FileController.cs",
-              "DocumentMoniker": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Controllers\\FileController.cs",
+              "DocumentMoniker": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Controllers\\FileController.cs",
               "RelativeDocumentMoniker": "Controllers\\FileController.cs",
-              "ToolTip": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Controllers\\FileController.cs",
+              "ToolTip": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Controllers\\FileController.cs",
               "RelativeToolTip": "Controllers\\FileController.cs",
-              "ViewState": "AgIAACIAAAAAAAAAAAAYwDoAAACZAAAAAAAAAA==",
+              "ViewState": "AgIAACIAAAAAAAAAAAAYwCoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-05T13:10:16.828Z",
               "EditorCaption": ""
@@ -85,170 +91,157 @@
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "LangController.cs",
-              "DocumentMoniker": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Controllers\\LangController.cs",
+              "DocumentMoniker": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Controllers\\LangController.cs",
               "RelativeDocumentMoniker": "Controllers\\LangController.cs",
-              "ToolTip": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Controllers\\LangController.cs",
+              "ToolTip": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Controllers\\LangController.cs",
               "RelativeToolTip": "Controllers\\LangController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-05T13:10:35.721Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-05T13:10:35.721Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
               "Title": "IConfigurationService.cs",
-              "DocumentMoniker": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Interfaces\\IConfigurationService.cs",
+              "DocumentMoniker": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Interfaces\\IConfigurationService.cs",
               "RelativeDocumentMoniker": "Interfaces\\IConfigurationService.cs",
-              "ToolTip": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Interfaces\\IConfigurationService.cs",
+              "ToolTip": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Interfaces\\IConfigurationService.cs",
               "RelativeToolTip": "Interfaces\\IConfigurationService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-05T13:10:05.331Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-05T13:10:05.331Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "IFile.cs",
-              "DocumentMoniker": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Interfaces\\IFile.cs",
+              "DocumentMoniker": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Interfaces\\IFile.cs",
               "RelativeDocumentMoniker": "Interfaces\\IFile.cs",
-              "ToolTip": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Interfaces\\IFile.cs",
+              "ToolTip": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Interfaces\\IFile.cs",
               "RelativeToolTip": "Interfaces\\IFile.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAABWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-05T13:10:04.353Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "ILogListener.cs",
-              "DocumentMoniker": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Interfaces\\ILogListener.cs",
-              "RelativeDocumentMoniker": "Interfaces\\ILogListener.cs",
-              "ToolTip": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Interfaces\\ILogListener.cs",
-              "RelativeToolTip": "Interfaces\\ILogListener.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-05T13:10:03.384Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "IType.cs",
-              "DocumentMoniker": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Interfaces\\IType.cs",
-              "RelativeDocumentMoniker": "Interfaces\\IType.cs",
-              "ToolTip": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Interfaces\\IType.cs",
-              "RelativeToolTip": "Interfaces\\IType.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-05T13:10:02.487Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "BackupStateModel.cs",
-              "DocumentMoniker": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Models\\BackupStateModel.cs",
-              "RelativeDocumentMoniker": "Models\\BackupStateModel.cs",
-              "ToolTip": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Models\\BackupStateModel.cs",
-              "RelativeToolTip": "Models\\BackupStateModel.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAA9wAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-05T13:09:53.702Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "BackupModel.cs",
-              "DocumentMoniker": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Models\\BackupModel.cs",
-              "RelativeDocumentMoniker": "Models\\BackupModel.cs",
-              "ToolTip": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Models\\BackupModel.cs",
-              "RelativeToolTip": "Models\\BackupModel.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-05T13:09:52.794Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "BackupService.cs",
-              "DocumentMoniker": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Other\\BackupService.cs",
-              "RelativeDocumentMoniker": "Other\\BackupService.cs",
-              "ToolTip": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Other\\BackupService.cs",
-              "RelativeToolTip": "Other\\BackupService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-05T13:09:37.907Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "BackupSnapshot.cs",
-              "DocumentMoniker": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Other\\BackupSnapshot.cs",
-              "RelativeDocumentMoniker": "Other\\BackupSnapshot.cs",
-              "ToolTip": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Other\\BackupSnapshot.cs",
-              "RelativeToolTip": "Other\\BackupSnapshot.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAUAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-05T13:09:32.682Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "completType.cs",
-              "DocumentMoniker": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Other\\completType.cs",
-              "RelativeDocumentMoniker": "Other\\completType.cs",
-              "ToolTip": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Other\\completType.cs",
-              "RelativeToolTip": "Other\\completType.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-05T13:09:30.197Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "ConfigurationService.cs",
-              "DocumentMoniker": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Other\\ConfigurationService.cs",
-              "RelativeDocumentMoniker": "Other\\ConfigurationService.cs",
-              "ToolTip": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Other\\ConfigurationService.cs",
-              "RelativeToolTip": "Other\\ConfigurationService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-05T13:09:24.297Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-05T13:10:04.353Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 12,
-              "Title": "differentialType.cs",
-              "DocumentMoniker": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Other\\differentialType.cs",
-              "RelativeDocumentMoniker": "Other\\differentialType.cs",
-              "ToolTip": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Other\\differentialType.cs",
-              "RelativeToolTip": "Other\\differentialType.cs",
+              "Title": "ILogListener.cs",
+              "DocumentMoniker": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Interfaces\\ILogListener.cs",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Interfaces\\ILogListener.cs",
+              "ToolTip": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Interfaces\\ILogListener.cs",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\..\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Interfaces\\ILogListener.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-05T13:09:22.606Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-05T13:10:03.384Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "IType.cs",
+              "DocumentMoniker": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Interfaces\\IType.cs",
+              "RelativeDocumentMoniker": "Interfaces\\IType.cs",
+              "ToolTip": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Interfaces\\IType.cs",
+              "RelativeToolTip": "Interfaces\\IType.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-05T13:10:02.487Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "BackupStateModel.cs",
+              "DocumentMoniker": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Models\\BackupStateModel.cs",
+              "RelativeDocumentMoniker": "Models\\BackupStateModel.cs",
+              "ToolTip": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Models\\BackupStateModel.cs",
+              "RelativeToolTip": "Models\\BackupStateModel.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAA9wAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-05T13:09:53.702Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "BackupModel.cs",
+              "DocumentMoniker": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Models\\BackupModel.cs",
+              "RelativeDocumentMoniker": "Models\\BackupModel.cs",
+              "ToolTip": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Models\\BackupModel.cs",
+              "RelativeToolTip": "Models\\BackupModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-05T13:09:52.794Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 13,
+              "Title": "BackupService.cs",
+              "DocumentMoniker": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Other\\BackupService.cs",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Other\\BackupService.cs",
+              "ToolTip": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Other\\BackupService.cs",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\..\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Other\\BackupService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-05T13:09:37.907Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "BackupSnapshot.cs",
+              "DocumentMoniker": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Other\\BackupSnapshot.cs",
+              "RelativeDocumentMoniker": "Other\\BackupSnapshot.cs",
+              "ToolTip": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Other\\BackupSnapshot.cs",
+              "RelativeToolTip": "Other\\BackupSnapshot.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-05T13:09:32.682Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "completType.cs",
+              "DocumentMoniker": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Other\\completType.cs",
+              "RelativeDocumentMoniker": "Other\\completType.cs",
+              "ToolTip": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Other\\completType.cs",
+              "RelativeToolTip": "Other\\completType.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-05T13:09:30.197Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "ConfigurationService.cs",
+              "DocumentMoniker": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Other\\ConfigurationService.cs",
+              "RelativeDocumentMoniker": "Other\\ConfigurationService.cs",
+              "ToolTip": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Other\\ConfigurationService.cs",
+              "RelativeToolTip": "Other\\ConfigurationService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-05T13:09:24.297Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "differentialType.cs",
+              "DocumentMoniker": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Other\\differentialType.cs",
+              "RelativeDocumentMoniker": "Other\\differentialType.cs",
+              "ToolTip": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Other\\differentialType.cs",
+              "RelativeToolTip": "Other\\differentialType.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-05T13:09:22.606Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\arthu\\Documents\\CESI\\A3\\FISA_A3\\Genie Logiciel\\Projet\\Program.cs",
+              "ToolTip": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\Projet grp 4\\FISA_A3_GL_VASSILENKO\\Program.cs",
               "RelativeToolTip": "Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-05T13:05:33.901Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-05T13:05:33.901Z"
             }
           ]
         }
