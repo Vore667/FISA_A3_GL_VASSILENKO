@@ -8,7 +8,9 @@ namespace Projet_Easy_Save_grp_4.Views
     {
         internal static void DisplayMenu(BackupController backup)
         {
-            while (true)
+            bool isRunning = true; // Flag to control loop execution
+
+            while (isRunning)
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Cyan;
@@ -29,11 +31,11 @@ namespace Projet_Easy_Save_grp_4.Views
 
                 ConsoleKeyInfo key = Console.ReadKey();
                 Console.Clear();
-                HandleUserChoice(key, backup);
+                HandleUserChoice(key, backup, ref isRunning);
             }
         }
 
-        private static void HandleUserChoice(ConsoleKeyInfo key, BackupController backup)
+        private static void HandleUserChoice(ConsoleKeyInfo key, BackupController backup, ref bool isRunning)
         {
             switch (key.Key)
             {
@@ -70,7 +72,7 @@ namespace Projet_Easy_Save_grp_4.Views
                     Console.WriteLine($"{LangController.GetText("Application_Exit")}");
                     Console.ResetColor();
                     Thread.Sleep(1000);
-                    Environment.Exit(0);
+                    isRunning = false; // Stop loop instead of Environment.Exit
                     break;
 
                 default:

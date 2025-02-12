@@ -21,4 +21,10 @@
     <Folder Include="Images\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="LogClassLibrary">
+      <HintPath>LogClassLibrary\bin\Debug\net8.0\LogClassLibrary.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

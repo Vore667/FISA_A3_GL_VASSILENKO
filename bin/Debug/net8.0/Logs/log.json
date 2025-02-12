@@ -1,0 +1,50 @@
+[
+  {
+    "Timestamp": "2025-02-12T14:40:49.4639842+01:00",
+    "Level": "Error",
+    "Message": "Error 0 task are existing."
+  },
+  {
+    "Timestamp": "2025-02-12T14:40:53.411247+01:00",
+    "Level": "Error",
+    "Message": "Error 0 task are existing."
+  },
+  {
+    "Timestamp": "2025-02-12T14:41:22.1378356+01:00",
+    "Level": "Info",
+    "Message": "Backup task 'Leo est nul' added."
+  },
+  {
+    "Timestamp": "2025-02-12T14:41:39.8198226+01:00",
+    "BackupName": "Leo est nul",
+    "Status": "InProgress",
+    "TotalSize": 5,
+    "TotalFiles": 1,
+    "ActualFile": 0,
+    "ProgressPourcentage": "0.00 %",
+    "SourceDirectory": "\\\\vmware-host\\Shared Folders\\Documents\\destination",
+    "DestinationDirectory": "\\\\vmware-host\\Shared Folders\\Documents\\test",
+    "Files": [
+      "\\\\vmware-host\\Shared Folders\\Documents\\destination\\fff.txt"
+    ]
+  },
+  {
+    "Timestamp": "2025-02-12T14:41:39.8470933+01:00",
+    "BackupName": "Leo est nul",
+    "Status": "Finished",
+    "TotalSize": 5,
+    "TotalFiles": 1,
+    "ActualFile": 1,
+    "ProgressPourcentage": "100.00 %",
+    "SourceDirectory": "\\\\vmware-host\\Shared Folders\\Documents\\destination",
+    "DestinationDirectory": "\\\\vmware-host\\Shared Folders\\Documents\\test",
+    "Files": [
+      "\\\\vmware-host\\Shared Folders\\Documents\\destination\\fff.txt"
+    ]
+  },
+  {
+    "Timestamp": "2025-02-12T14:42:08.0043545+01:00",
+    "Level": "Error",
+    "Message": "Error when adding Backup task '', Source Directory doesn'y exist."
+  }
+]

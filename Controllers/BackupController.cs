@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using Newtonsoft.Json;
 using Projet_Easy_Save_grp_4.Controllers;
 using Projet_Easy_Save_grp_4.Interfaces;
+using LogClassLibrary;
 
 namespace Projet_Easy_Save_grp_4.Controllers
 {

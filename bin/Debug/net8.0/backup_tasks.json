@@ -1,0 +1,8 @@
+[
+  {
+    "Name": "Leo est nul",
+    "Source": "\\\\vmware-host\\Shared Folders\\Documents\\test",
+    "Destination": "\\\\vmware-host\\Shared Folders\\Documents\\destination",
+    "Type": "1"
+  }
+]
