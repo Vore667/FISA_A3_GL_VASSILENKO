@@ -17,9 +17,6 @@ namespace Projet_Easy_Save_grp_4.Controllers
             {
                 if (!Directory.Exists(sourceDirectory))
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"{LangController.GetText("Error_SourceDirectoryDoesntExist")}: {sourceDirectory}");
-                    Console.ResetColor();
                     return;
                 }
 
@@ -34,7 +31,6 @@ namespace Projet_Easy_Save_grp_4.Controllers
                     string destFile = Path.Combine(destinationDirectory, filename);
 
                     File.Copy(file, destFile, true);
-                    Console.WriteLine($"{LangController.GetText("Notify_Copied")}: {filename}");
                 }
 
                 foreach (string subDirectory in Directory.GetDirectories(sourceDirectory))
@@ -45,15 +41,10 @@ namespace Projet_Easy_Save_grp_4.Controllers
                     CopyDirectory(subDirectory, destSubDirectory); // Appel récursif
                 }
 
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"\n{LangController.GetText("Notify_AllFilesCopied")}");
-                Console.ResetColor();
             }
             catch (Exception ex)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"{LangController.GetText("Error_WhenFileCopy")}: {ex.Message}");
-                Console.ResetColor();
+                return;
             }
         }
 
@@ -65,9 +56,6 @@ namespace Projet_Easy_Save_grp_4.Controllers
             {
                 if (!Directory.Exists(sourceDirectory))
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"{LangController.GetText("Error_SourceDirectoryDoesntExist")}: {sourceDirectory}");
-                    Console.ResetColor();
                     return;
                 }
 
@@ -85,7 +73,6 @@ namespace Projet_Easy_Save_grp_4.Controllers
                     if (File.GetLastWriteTime(file) > DateTime.Now.AddDays(-1))
                     {
                         File.Copy(file, destFile, true);
-                        Console.WriteLine($"{LangController.GetText("Notify_Copied")}: {filename}");
                     }
                 }
 
@@ -97,16 +84,10 @@ namespace Projet_Easy_Save_grp_4.Controllers
 
                     CopyModifiedFiles(subDirectory, destSubDirectory); // Appel récursif
                 }
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"{LangController.GetText("Notify_AllModifiedFilesCopied")}");
-                Console.ResetColor();
             }
             catch (Exception ex)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"{LangController.GetText("Error_WhenFileCopy")}: {ex.Message}");
-                Console.ResetColor();
+                return;
             }
         }
 

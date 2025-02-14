@@ -12,7 +12,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
 {
     internal class BackupController : IBackupService
     {
-        private readonly List<BackupTask> tasks;
+        private List<BackupTask> tasks;
         private const int MaxTasks = 5;
         private const string SaveFilePath = "backup_tasks.json";
         private readonly LogController logController;
@@ -87,38 +87,23 @@ namespace Projet_Easy_Save_grp_4.Controllers
 
             // Log de l'ajout de la tâche de backup
             logController.LogAction($"Backup task '{name}' added.", LogLevel.Info);
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"{LangController.GetText("Notif_TaskCreated")}");
-            Console.ResetColor();
         }
 
         
         // Lister les backups existantes
-        public void ListBackup()
+        public List<BackupTask> ListBackup()
         {
-            if (tasks.Count == 0)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"{LangController.GetText("Error_NoTaskCreated")}");
-                Console.ResetColor();
-                logController.LogAction($"Error 0 task are existing.", LogLevel.Error);
-                return;
-            }
-
-            foreach (var task in tasks)
-            {
-                Console.WriteLine($"{LangController.GetText("TaskName")}: {task.Name}, {LangController.GetText("TaskType")}: {task.Type}, {LangController.GetText("TaskSource")}: {task.Source}, {LangController.GetText("TaskDestination")}: {task.Destination}");
-            }
+            tasks = LoadBackupTasks();
+            return tasks;
         }
 
         // Executer une backup
-        public void ExecuteBackup(string name)
+        public bool ExecuteBackup(string name)
         {
             BackupTask? task = FindBackup(name);
             if (task != null)
             {
-                task.Execute();
+               task.Execute();
 
                 // Vérifier que le dossier de destination existe et récupérer la liste de tous les fichiers copiés
                 if (Directory.Exists(task.Destination))
@@ -138,7 +123,11 @@ namespace Projet_Easy_Save_grp_4.Controllers
                     logController.LogBackupExecution(task.Name, "Finished", files, totalSize, task.Destination, task.Source, actual_files);
                     actual_files = 0;
                 }
+
+                return true;
             }
+
+            return false;
         }
 
         // Supprimer une backup
@@ -152,10 +141,6 @@ namespace Projet_Easy_Save_grp_4.Controllers
 
                 // Log the deletion action
                 logController.LogAction($"Backup task '{name}' deleted.", LogLevel.Info);
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"{LangController.GetText("Notify_TaskDeleted")}");
-                Console.ResetColor();
             }
         }
 
@@ -195,9 +180,6 @@ namespace Projet_Easy_Save_grp_4.Controllers
             BackupTask? task = tasks.Find(t => t.Name == name);
             if (task == null)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"{LangController.GetText("Error_NoTaskFound")}");
-                Console.ResetColor();
                 return null;
             }
             return task;
@@ -242,18 +224,12 @@ namespace Projet_Easy_Save_grp_4.Controllers
             // Executer la backup, c'est appelé via la fonction BackupExecute. Appelle les fonctions qui vont copier les fichiers.
             public void Execute()
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"{LangController.GetText("Notify_BackupExecution")}: {Name}");
-                Console.ResetColor();
-
                 if (this.Type == "1")
                 {
-                    Console.WriteLine($"{LangController.GetText("TaskType")} : {LangController.GetText("BackupType_Complete")}");
                     fileController.CopyDirectory(Source, Destination);
                 }
                 else
                 {
-                    Console.WriteLine($"{LangController.GetText("TaskType")} : {LangController.GetText("BackupType_Differential")}");
                     fileController.CopyModifiedFiles(Source, Destination);
                 }
             }
