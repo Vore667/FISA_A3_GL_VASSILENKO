@@ -18,10 +18,10 @@ namespace Projet_Easy_Save_grp_4.Controllers
         private readonly LogController logController;
 
         // Constructeur avec un paramètre pour spécifier le répertoire des logs
-        public BackupController(string logDirectory)
+        public BackupController(string logDirectory, LogController logController)
         {
             tasks = LoadBackupTasks();
-            logController = new LogController(logDirectory); // Initialiser LogController avec le chemin des logs
+            this.logController = logController; // On initialise LogController avec le chemin des logs
         }
 
 
@@ -46,7 +46,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 return;
             }
 
-            if (name == null)
+            if (string.IsNullOrEmpty(name))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"{LangController.GetText("Error_NoTaskName")}");
@@ -55,7 +55,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 return;
             }
 
-            if (source == null)
+            if (string.IsNullOrEmpty(source))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"{LangController.GetText("Error_NoTaskSource")}");
@@ -64,7 +64,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 return;
             }
 
-            if (destination == null)
+            if (string.IsNullOrEmpty(destination))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"{LangController.GetText("Error_NoTaskDestination")}");
@@ -73,7 +73,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 return;
             }
 
-            if (type == null)
+            if (string.IsNullOrEmpty(type))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"{LangController.GetText("Error_NoTaskType")}");
@@ -123,19 +123,19 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 // Vérifier que le dossier de destination existe et récupérer la liste de tous les fichiers copiés
                 if (Directory.Exists(task.Destination))
                 {
-                    List<string> files = Directory.GetFiles(task.Destination, "*.*", SearchOption.AllDirectories).ToList();
+                    List<string> files = Directory.GetFiles(task.Source, "*.*", SearchOption.AllDirectories).ToList();
                     long totalSize = 0;
                     int actual_files = 0;
                     foreach (string file in files)
                     {
                         FileInfo fi = new FileInfo(file);
                         totalSize += fi.Length;
-                        logController.LogBackupExecution(task.Name, "InProgress", files, totalSize, task.Destination, task.Source, actual_files);
+                        logController.LogBackupExecution(task.Name, "InProgress", files, totalSize, task.Source, task.Destination, actual_files);
                         actual_files++;
                     }
 
                     // Enregistrer le log détaillé de l'exécution du backup
-                    logController.LogBackupExecution(task.Name, "Finished", files, totalSize, task.Destination, task.Source, actual_files);
+                    logController.LogBackupExecution(task.Name, "Finished", files, totalSize, task.Source, task.Destination, actual_files);
                     actual_files = 0;
                 }
             }

@@ -16,12 +16,14 @@ namespace LogClassLibrary
         private readonly string realTimeLogFile;
         private Dictionary<string, StatusLogEntry> statuses = new Dictionary<string, StatusLogEntry>();
 
+        // Constructeur qui prend un chemin de répertoire de journalisation
         public RealTimeLogListener(string logDirectory)
         {
             realTimeLogFile = Path.Combine(logDirectory, "backup_status.json");
             LoadStatuses();
         }
 
+        //Met à jour le fichier de sauvegarde en mémoire
         public void Update(object logData)
         {
             if (logData is StatusLogEntry statusLog)
@@ -31,6 +33,7 @@ namespace LogClassLibrary
             }
         }
 
+        //Peut charger un statut de sauvegarde ancien depuis un fichier JSON
         public void LoadStatuses()
         {
             if (File.Exists(realTimeLogFile))
@@ -40,6 +43,7 @@ namespace LogClassLibrary
             }
         }
 
+        // Enregistre un nouveau statut de sauvegarde dans le fichier JSON
         public void SaveStatuses()
         {
             var json = JsonConvert.SerializeObject(statuses, Formatting.Indented);

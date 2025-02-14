@@ -142,7 +142,7 @@
     <value>Changer de langue</value>
   </data>
   <data name="Menu_Option6" xml:space="preserve">
-    <value>Quitter</value>
+    <value>Paramètres</value>
   </data>
   <data name="Menu_YourChoice" xml:space="preserve">
     <value>Votre choix : </value>
@@ -254,5 +254,14 @@
   </data>
   <data name="Error_NoTaskType" xml:space="preserve">
     <value>Erreur, pas de type renseigné !</value>
+  </data>
+  <data name="Menu_Option7" xml:space="preserve">
+    <value>Quitter</value>
+  </data>
+  <data name="Select_TypeOfLog" xml:space="preserve">
+    <value>Choisissez le type de logs souhaités parmi : </value>
+  </data>
+  <data name="Update_LogType" xml:space="preserve">
+    <value>Mise à jour du type de logs</value>
   </data>
 </root>

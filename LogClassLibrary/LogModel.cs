@@ -1,38 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Xml;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
 using Formatting = Newtonsoft.Json.Formatting;
-
 
 namespace LogClassLibrary
 {
     public class LogModel
     {
-        private readonly List<ILogEntry> logs = new List<ILogEntry>();
+        private readonly List<LogEntryBase> logs = new List<LogEntryBase>();
         private readonly string logFilePath;
+        private readonly LogType currentLogType;
 
-        // Constructeur avec chemin de fichier log
-        public LogModel(string logFilePath)
+        public LogModel(string logFilePath, LogType logType = LogType.JSON)
         {
             this.logFilePath = logFilePath;
+            currentLogType = logType;
         }
 
-        // Méthode pour ajouter un log et l'écrire dans le fichier JSON
-        public void AddLog(ILogEntry logEntry)
+       
+        public void AddLog(LogEntryBase logEntry)
         {
             logs.Add(logEntry);
             SaveFile();
         }
 
-        // Sauvegarde les logs dans un fichier JSON
+        // Enregistre les logs dans un fichier en le serialisant soit en JSON soit en XML
         public void SaveFile()
         {
-            string json = JsonConvert.SerializeObject(logs, Formatting.Indented);
-            File.WriteAllText(logFilePath, json);
+            if (currentLogType == LogType.JSON)
+            {
+                string json = JsonConvert.SerializeObject(logs, Formatting.Indented);
+                File.WriteAllText(logFilePath, json);
+            }
+            else
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(List<LogEntryBase>));
+                using (StringWriter writer = new StringWriter())
+                {
+                    serializer.Serialize(writer, logs);
+                    File.WriteAllText(logFilePath, writer.ToString());
+                }
+            }
         }
     }
 }

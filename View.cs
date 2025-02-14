@@ -1,12 +1,13 @@
 ﻿using System;
 using Projet_Easy_Save_grp_4.Controllers;
-
-
+using LogClassLibrary;
 namespace Projet_Easy_Save_grp_4.Views
+
 {
     public static class View
     {
-        internal static void DisplayMenu(BackupController backup)
+
+        internal static void DisplayMenu(BackupController backup, LogController logController) // Internal permet de rendre la méthode accessible uniquement dans le projet
         {
             bool isRunning = true; // Flag to control loop execution
 
@@ -25,17 +26,18 @@ namespace Projet_Easy_Save_grp_4.Views
                 Console.WriteLine($"║ 4. {LangController.GetText("Menu_Option4").PadRight(menuWidth - 3)} ║");
                 Console.WriteLine($"║ 5. {LangController.GetText("Menu_Option5").PadRight(menuWidth - 3)} ║");
                 Console.WriteLine($"║ 6. {LangController.GetText("Menu_Option6").PadRight(menuWidth - 3)} ║");
+                Console.WriteLine($"║ 7. {LangController.GetText("Menu_Option7").PadRight(menuWidth - 3)} ║");
                 Console.WriteLine("╚══════════════════════════════════════════╝");
                 Console.ResetColor();
                 Console.Write($"{LangController.GetText("Menu_YourChoice")}");
 
                 ConsoleKeyInfo key = Console.ReadKey();
                 Console.Clear();
-                HandleUserChoice(key, backup, ref isRunning);
+                HandleUserChoice(key, backup, logController, ref isRunning); // Permet de gérer les choix de l'utilisateur
             }
         }
 
-        private static void HandleUserChoice(ConsoleKeyInfo key, BackupController backup, ref bool isRunning)
+        private static void HandleUserChoice(ConsoleKeyInfo key, BackupController backup, LogController logController, ref bool isRunning) // BackupsController et LogController sont passés en paramètre pour pouvoir les utiliser
         {
             switch (key.Key)
             {
@@ -68,6 +70,11 @@ namespace Projet_Easy_Save_grp_4.Views
 
                 case ConsoleKey.D6:
                 case ConsoleKey.NumPad6:
+                    Parameters(logController); // Permet de changer le type de log (JSON ou XML)
+                    break;
+
+                case ConsoleKey.D7:
+                case ConsoleKey.NumPad7:
                     Console.ForegroundColor = ConsoleColor.Magenta;
                     Console.WriteLine($"{LangController.GetText("Application_Exit")}");
                     Console.ResetColor();
@@ -132,9 +139,42 @@ namespace Projet_Easy_Save_grp_4.Views
                 LangController.SetLanguage("fr");
             else if (langChoice == "2")
                 LangController.SetLanguage("en");
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write($"{LangController.GetText("Invalid_Choice")}");
+                Console.ResetColor();
+                Thread.Sleep(1500);
+                return;
+            }
 
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine($"{LangController.GetText("Update_Language")}");
+            Console.ResetColor();
+            Thread.Sleep(1500);
+        }
+
+        private static void Parameters(LogController logController) // LogController est passé en paramètre pour pouvoir le modifier
+        {
+            Console.WriteLine($"{LangController.GetText("Select_TypeOfLog")}");
+            Console.WriteLine("1. JSON");
+            Console.WriteLine("2. XML");
+            Console.Write($"{LangController.GetText("Menu_YourChoice")}");
+            string? logTypeChoice = Console.ReadLine();
+            if (logTypeChoice == "1")
+                logController.SetLogType(LogType.JSON); // Choisir grâce à un ENUM
+            else if (logTypeChoice == "2")
+                logController.SetLogType(LogType.XML);
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write($"{LangController.GetText("Invalid_Choice")}");
+                Console.ResetColor();
+                Thread.Sleep(1500);
+                return;
+            }
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"{LangController.GetText("Update_LogType")}");
             Console.ResetColor();
             Thread.Sleep(1500);
         }

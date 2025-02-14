@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <Reference Include="LogClassLibrary">
-      <HintPath>LogClassLibrary\bin\Debug\net8.0\LogClassLibrary.dll</HintPath>
+      <HintPath>LogClassLibrary.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
