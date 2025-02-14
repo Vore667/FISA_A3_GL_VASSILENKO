@@ -1,0 +1,31 @@
+﻿<Window x:Class="WpfApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Application WPF"
+        Loaded="Window_Loaded"
+        WindowStartupLocation="CenterScreen">
+
+    <DockPanel Margin="10">
+
+        <!-- Bouton Paramètres (Engrenage) à gauche -->
+        <Button Content="⚙" Width="40" Height="40" DockPanel.Dock="Left" Click="BtnParametres_Click"/>
+
+        <!-- Contenu Principal (Liste des attributs) -->
+        <Grid DockPanel.Dock="Top" Margin="10,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Liste des attributs -->
+            <ListBox x:Name="lstAttributs" Grid.Row="0" Margin="0,10,0,10"/>
+
+            <!-- Boutons en bas -->
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="Ajouter" Width="100" Click="BtnAjouter_Click" Margin="5,0,0,0"/>
+                <Button Content="Exécuter" Width="100" Margin="5,0,0,0"/>
+                <Button Content="Supprimer" Width="100" Margin="5,0,0,0"/>
+            </StackPanel>
+        </Grid>
+    </DockPanel>
+</Window>
