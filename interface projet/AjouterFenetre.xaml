@@ -1,0 +1,52 @@
+﻿<Window x:Class="WpfApp.AjouterFenetre"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Ajouter un élément" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterOwner">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Champ Nom -->
+        <TextBlock Text="Nom :" VerticalAlignment="Center"/>
+        <TextBox x:Name="txtNom" Grid.Row="0" Margin="100,0,0,0" Width="200"/>
+
+        <!-- Chemin Source -->
+        <TextBlock Grid.Row="1" Text="Chemin Source :" VerticalAlignment="Center"/>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="100,0,0,0">
+            <Label x:Name="lblSource" Content="Aucun" Width="150"/>
+            <Button Content="..." Width="30" Click="BtnSource_Click"/>
+        </StackPanel>
+
+        <!-- Chemin Destination -->
+        <TextBlock Grid.Row="2" Text="Chemin Destination :" VerticalAlignment="Center"/>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="100,0,0,0">
+            <Label x:Name="lblDestination" Content="Aucun" Width="150"/>
+            <Button Content="..." Width="30" Click="BtnDestination_Click"/>
+        </StackPanel>
+
+        <!-- Crypter -->
+        <TextBlock Grid.Row="3" Text="Crypter :" VerticalAlignment="Center"/>
+        <CheckBox Grid.Row="3" Grid.Column="1" Margin="100,0,0,0"/>
+
+        <!-- Type de sauvegarde -->
+        <TextBlock Grid.Row="4" Text="Type de sauvegarde :" VerticalAlignment="Center"/>
+        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="100,0,0,0">
+            <RadioButton Content="Incrémentielle" GroupName="Sauvegarde"/>
+            <RadioButton Content="Complète" GroupName="Sauvegarde" Margin="10,0,0,0"/>
+        </StackPanel>
+
+        <!-- Boutons -->
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="Annuler" Width="80" Click="BtnAnnuler_Click"/>
+            <Button Content="Valider" Width="80" Margin="10,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</Window>
