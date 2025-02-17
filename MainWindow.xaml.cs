@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Threading;
+using interface_projet;
 using Projet_Easy_Save_grp_4.Controllers;
 
 namespace WpfApp
@@ -121,6 +122,17 @@ namespace WpfApp
                 MessageBox.Show("Aucun élément sélectionné.");
             }
         }
+
+        private void BtnLang_Click(object sender, RoutedEventArgs e)
+        {
+            if (Application.Current is App app)
+            {
+                // Alterner entre français et anglais
+                string newLang = (app.Resources.MergedDictionaries[0].Source.ToString().Contains("Lang_fr.xaml")) ? "en" : "fr";
+                app.ChangeLanguage(newLang);
+            }
+        }
+
 
         private void StartProgressTracking()
         {

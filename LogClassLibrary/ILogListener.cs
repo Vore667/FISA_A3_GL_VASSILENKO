@@ -8,7 +8,7 @@ namespace LogClassLibrary
 {
     public interface ILogListener
     {
-        // Modifiez la signature pour accepter un objet générique
+        //objet générique
         void Update(object logData);
     }
 }

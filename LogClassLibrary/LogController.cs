@@ -1,8 +1,10 @@
-﻿using System.Xml;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Xml;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
 using Formatting = Newtonsoft.Json.Formatting;
-
 
 namespace LogClassLibrary
 {
@@ -13,157 +15,175 @@ namespace LogClassLibrary
         Warning
     }
 
+    public enum LogType
+    {
+        JSON,
+        XML
+    }
+
     public class LogController
     {
-        private readonly List<ILogListener>? listeners = new List<ILogListener>();
-
-        private readonly string logFilePath;
-
+        private readonly List<ILogListener> listeners = new List<ILogListener>();
+        private readonly List<LogEntryBase> logs = new List<LogEntryBase>();
+        private readonly List<LogEntryBase> dayLogs = new List<LogEntryBase>();
         private double progressPourcentage;
+
+
+        private readonly string logDirectory;
+        private string logFilePath;
+        private string dayLogFilePath;
+        private LogType currentLogType;
 
         public double GetProgressPourcentage()
         {
             return this.progressPourcentage;
         }
 
-        public LogController(string logDirectory)
+
+        // Constructeur : on spécifie le dossier de log et on peut choisir le type (JSON par défaut)
+        public LogController(string logDirectory, LogType logType = LogType.JSON)
         {
-            listeners = new List<ILogListener>();
+            this.logDirectory = logDirectory;
+            currentLogType = logType;
 
             if (!Directory.Exists(logDirectory))
             {
                 Directory.CreateDirectory(logDirectory);
             }
-            logFilePath = Path.Combine(logDirectory, "log.json");
+            string dayDate = DateTime.Now.ToString("yyyy-MM-dd");
+            string hourDayDate = DateTime.Now.ToString("yyyy-MM-dd-HH");
 
-            // Initialiser le fichier de log s'il n'existe pas
+            // Détermine le chemin du fichier en fonction du type choisi
+            logFilePath = Path.Combine(logDirectory, currentLogType == LogType.JSON ? $"log_{hourDayDate}.json" : $"log_{hourDayDate}.xml");
+            dayLogFilePath = Path.Combine(logDirectory, currentLogType == LogType.JSON ? $"DayLog_{dayDate}.json" : $"DayLog_{dayDate}.xml");
+
+
+            // Initialise le fichier s'il n'existe pas
             if (!File.Exists(logFilePath))
             {
-                File.WriteAllText(logFilePath, "[]");
+                File.WriteAllText(logFilePath, currentLogType == LogType.JSON ? "[]" : "<Logs></Logs>");
             }
         }
 
-        // Méthode générique pour les logs simples (ajout, suppression, etc.)
+        // Méthode pour changer dynamiquement le type de log
+        public void SetLogType(LogType logType)
+        {
+            currentLogType = logType;
+            logFilePath = Path.Combine(logDirectory, currentLogType == LogType.JSON ? "log.json" : "log.xml");
+            dayLogFilePath = Path.Combine(logDirectory, currentLogType == LogType.JSON ? "DayLog.json" : "DayLog.xml");
+
+
+            if (!File.Exists(logFilePath))
+            {
+                File.WriteAllText(logFilePath, currentLogType == LogType.JSON ? "[]" : "<Logs></Logs>");
+            }
+        }
+
+        // Log d'une action simple EXP : Création d'une backup
+        // Fichier Log Journalier
         public void LogAction(string message, LogLevel level)
         {
-            List<dynamic> logs = LoadLogs();
-            var logEntry = new
+            ActionLogEntry logEntry = new ActionLogEntry
             {
-                Timestamp = DateTime.Now.ToString("o"),
+                Timestamp = DateTime.Now,
                 Level = level.ToString(),
                 Message = message
             };
 
-            logs.Add(logEntry);
-            SaveLogs(logs);
+            dayLogs.Add(logEntry); // 'logs' est la List<LogEntryBase> de LogController
+            bool isDayLogs = true;
+            SaveLogs(isDayLogs);
         }
 
-        // Méthode pour enregistrer le log détaillé d'une exécution de backup
-        public void LogBackupExecution(string backupName, string status, List<string> files, long totalSize, string SourceDirectory, string DestinationDirectory, int actual_files)
+        //Fichier log journalier
+        public void LogBackupExecutionDay(string backupName, string sourceDirectory, string destinationDirectory, long fileSize, long fileTransfertTime, long encryptionTime)
         {
-            List<dynamic> logs = LoadLogs();
+            BackupExecutionLogEntryDay logEntryDay = new BackupExecutionLogEntryDay
+            {
+                Timestamp = DateTime.Now, //Horodatage
+                BackupName = backupName, //Nom du backup
+                SourceDirectory = sourceDirectory, // Dossier source
+                DestinationDirectory = destinationDirectory, // Dossier de destination
+                FileSize = fileSize,//Afficher taille du fichier
+                FileTransfertTime = fileTransfertTime,// Afficher temps de transfert du fichier
+                EncryptionTime = encryptionTime // Afficher temps de cryptage du fichier
+            };
+            dayLogs.Add(logEntryDay);
+            bool isDayLogs = true;
+            SaveLogs(isDayLogs);
+        }
 
+
+        // Log détaillé d'une exécution de backup
+        //Fichier log
+        public void LogBackupExecution(string backupName, string status, List<string> files, long totalSize, string sourceDirectory, string destinationDirectory, int actualFiles, long totalSizeFilesRemaining)
+        {
             this.progressPourcentage = 0;
             if (files.Count > 0)
             {
-                this.progressPourcentage = ((double)actual_files / files.Count) * 100;
+                this.progressPourcentage = ((double)actualFiles / files.Count) * 100;
             }
             string progressPourcentageText = this.progressPourcentage.ToString("F2") + " %";
+            int filesRemaining = files.Count - actualFiles;
 
-
-            var logEntry = new
+            BackupExecutionLogEntry logEntry = new BackupExecutionLogEntry
             {
-                Timestamp = DateTime.Now.ToString("o"),
-                BackupName = backupName,
-                Status = status,
-                TotalSize = totalSize,
-                TotalFiles = files.Count,
-                ActualFile = actual_files,
-                ProgressPourcentage = progressPourcentageText,
-                SourceDirectory = SourceDirectory,
-                DestinationDirectory = DestinationDirectory,
-                Files = files
+                Timestamp = DateTime.Now, //Horodatage
+                BackupName = backupName, //Nom du backup
+                Status = status, //In progress / Finished
+                TotalSize = totalSize, //Taille totale de ts les fichiers
+                TotalFiles = files.Count, // Nombre total de fichiers
+                FilesProcessed = actualFiles, // Nombre de fichiers traités
+                FilesRemaining = filesRemaining, // Nombre de fichiers restants
+                TotalSizeFilesRemaining = totalSizeFilesRemaining, // Taille totale des fichiers restants
+                ProgressPercentage = progressPourcentageText, // Pourcentage de progression
+                SourceDirectory = sourceDirectory, // Dossier source
+                DestinationDirectory = destinationDirectory, // Dossier de destination
+                Files = files // Liste des fichiers
             };
 
             logs.Add(logEntry);
-            SaveLogs(logs);
+            bool isDayLogs = false;
+            SaveLogs(isDayLogs);
         }
 
-
-        public List<dynamic> LoadLogs()
+        // Sauvegarde les logs dans le fichier selon le format choisi
+        public void SaveLogs(bool isDayLogs)
         {
-            string content = File.ReadAllText(logFilePath);
-            var logs = JsonConvert.DeserializeObject<List<dynamic>>(content) ?? new List<dynamic>();
-            return logs;
-        }
-
-        public void SaveLogs(List<dynamic> logs)
-        {
-            File.WriteAllText(logFilePath, JsonConvert.SerializeObject(logs, Formatting.Indented));
-        }
-
-        // Méthode pour s'abonner à un ou plusieurs écouteurs
-        public void Subscribe(ILogListener listener)
-        {
-            if (!listeners.Contains(listener))
+            if (currentLogType == LogType.JSON)
             {
-                listeners.Add(listener);
-                Console.WriteLine("Listener ajouté.");
+                if (isDayLogs)
+                {
+                    string json = JsonConvert.SerializeObject(dayLogs, Formatting.Indented);
+                    File.WriteAllText(dayLogFilePath, json);
+                }
+                else
+                {
+                    string json = JsonConvert.SerializeObject(logs, Formatting.Indented);
+                    File.WriteAllText(logFilePath, json);
+                }
             }
-        }
-
-        // Méthode pour se désabonner d'un écouteur
-        public void Unsubscribe(ILogListener listener)
-        {
-            if (listeners.Contains(listener))
+            else
             {
-                listeners.Remove(listener);
-                Console.WriteLine("Listener supprimé.");
+                if (isDayLogs)
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(List<LogEntryBase>));
+                    using (StringWriter writer = new StringWriter())
+                    {
+                        serializer.Serialize(writer, dayLogs);
+                        File.WriteAllText(dayLogFilePath, writer.ToString());
+                    }
+                }
+                else
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(List<LogEntryBase>));
+                    using (StringWriter writer = new StringWriter())
+                    {
+                        serializer.Serialize(writer, logs);
+                        File.WriteAllText(logFilePath, writer.ToString());
+                    }
+                }
             }
-        }
-
-        // Méthode pour notifier tous les écouteurs d'un nouvel événement de log
-        public void Notify(object logData)
-        {
-            foreach (var listener in listeners)
-            {
-                listener.Update(logData);  // On envoie le log aux écouteurs
-            }
-        }
-
-        // Méthode pour créer un log de fichier et le notifier
-        public void LogFileTransfer(string backupName, string sourcePath, string destinationPath, long fileSize, long transferTime)
-        {
-            var fileLog = new FileLogEntry
-            {
-                Timestamp = DateTime.Now,
-                BackupName = backupName,
-                SourcePath = sourcePath,
-                DestinationPath = destinationPath,
-                FileSize = fileSize,
-                TransferTimeMs = transferTime
-            };
-
-            Notify(fileLog);  // Notifier tous les écouteurs avec le log de fichier
-        }
-
-        // Méthode pour enregistrer un log en temps réel et le notifier
-        public void LogRealTimeStatus(string backupName, string status, int totalFiles, long totalSize, int filesProcessed, long sizeProcessed, string currentSourceFile, string currentDestinationFile)
-        {
-            var statusLog = new StatusLogEntry
-            {
-                Timestamp = DateTime.Now,
-                BackupName = backupName,
-                Status = status,
-                TotalFiles = totalFiles,
-                TotalSize = totalSize,
-                FilesProcessed = filesProcessed,
-                SizeProcessed = sizeProcessed,
-                CurrentSourceFile = currentSourceFile,
-                CurrentDestinationFile = currentDestinationFile
-            };
-
-            Notify(statusLog);  // Notifier tous les écouteurs avec le log de statut
         }
     }
 }

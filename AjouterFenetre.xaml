@@ -1,42 +1,48 @@
 ﻿<Window x:Class="WpfApp.AjouterFenetre"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Ajouter un élément"
+        Title="{DynamicResource WindowTitle}"
         Width="400" Height="400"
         Background="#F5F5F5"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize">
-
     <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <!-- Titre -->
             <RowDefinition Height="Auto"/>
+            <!-- Champ Nom -->
             <RowDefinition Height="Auto"/>
+            <!-- Chemin Source -->
             <RowDefinition Height="Auto"/>
+            <!-- Chemin Destination -->
             <RowDefinition Height="Auto"/>
+            <!-- Crypter -->
             <RowDefinition Height="Auto"/>
+            <!-- Type de sauvegarde -->
             <RowDefinition Height="Auto"/>
+            <!-- Boutons -->
         </Grid.RowDefinitions>
 
         <!-- Titre -->
-        <TextBlock Text="Ajouter une tâche de sauvegarde"
+        <TextBlock Grid.Row="0" Text="{DynamicResource TitleTask}"
                    FontSize="16" FontWeight="Bold" Foreground="#333"
                    HorizontalAlignment="Center" Margin="0,0,0,10"/>
 
         <!-- Champ Nom -->
-        <StackPanel Grid.Row="0" Orientation="Vertical" Margin="0,5">
-            <TextBlock Text="Nom :" FontWeight="Bold" Foreground="#444"/>
+        <StackPanel Grid.Row="1" Orientation="Vertical" Margin="0,5">
+            <TextBlock Text="{DynamicResource LabelNom}" FontWeight="Bold" Foreground="#444"/>
             <Border BorderBrush="#AAA" BorderThickness="1" CornerRadius="5" Background="White">
                 <TextBox x:Name="txtNom" Width="300" Height="30" Padding="5" BorderThickness="0"/>
             </Border>
         </StackPanel>
 
         <!-- Chemin Source -->
-        <StackPanel Grid.Row="1" Orientation="Vertical" Margin="0,5">
-            <TextBlock Text="Chemin Source :" FontWeight="Bold" Foreground="#444"/>
+        <StackPanel Grid.Row="2" Orientation="Vertical" Margin="0,5">
+            <TextBlock Text="{DynamicResource LabelCheminSource}" FontWeight="Bold" Foreground="#444"/>
             <Border BorderBrush="#AAA" BorderThickness="1" CornerRadius="5" Background="White">
                 <StackPanel Orientation="Horizontal">
-                    <Label x:Name="lblSource" Content="Aucun" Width="325" Padding="5"/>
+                    <Label x:Name="lblSource" Content="{DynamicResource TextAucun}" Width="325" Padding="5"/>
                     <Button Content="📂" Width="30" Click="BtnSource_Click"
                             Background="#0078D7" Foreground="White"
                             BorderThickness="0" Cursor="Hand"/>
@@ -45,11 +51,11 @@
         </StackPanel>
 
         <!-- Chemin Destination -->
-        <StackPanel Grid.Row="2" Orientation="Vertical" Margin="0,5">
-            <TextBlock Text="Chemin Destination :" FontWeight="Bold" Foreground="#444"/>
+        <StackPanel Grid.Row="3" Orientation="Vertical" Margin="0,5">
+            <TextBlock Text="{DynamicResource LabelCheminDestination}" FontWeight="Bold" Foreground="#444"/>
             <Border BorderBrush="#AAA" BorderThickness="1" CornerRadius="5" Background="White">
                 <StackPanel Orientation="Horizontal">
-                    <Label x:Name="lblDestination" Content="Aucun" Width="325" Padding="5"/>
+                    <Label x:Name="lblDestination" Content="{DynamicResource TextAucun}" Width="325" Padding="5"/>
                     <Button Content="📂" Width="30" Click="BtnDestination_Click"
                             Background="#0078D7" Foreground="White"
                             BorderThickness="0" Cursor="Hand"/>
@@ -58,28 +64,30 @@
         </StackPanel>
 
         <!-- Crypter -->
-        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,5">
-            <CheckBox x:Name="chkCrypter" Content="Crypter la sauvegarde"
+        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,5">
+            <CheckBox x:Name="chkCrypter" Content="{DynamicResource CheckboxCrypter}" 
                       FontWeight="Bold" Foreground="#444"/>
         </StackPanel>
 
         <!-- Type de sauvegarde -->
-        <StackPanel Grid.Row="4" Orientation="Vertical" Margin="0,5">
-            <TextBlock Text="Type de sauvegarde :" FontWeight="Bold" Foreground="#444"/>
+        <StackPanel Grid.Row="5" Orientation="Vertical" Margin="0,5">
+            <TextBlock Text="{DynamicResource LabelTypeSauvegarde}" FontWeight="Bold" Foreground="#444"/>
             <StackPanel Orientation="Horizontal" Margin="5,0">
-                <RadioButton x:Name="rbIncrem" Content="Incrémentielle" GroupName="Sauvegarde" IsChecked="True"/>
-                <RadioButton x:Name="rbComplete" Content="Complète" GroupName="Sauvegarde" Margin="15,0,0,0"/>
+                <RadioButton x:Name="rbIncrem" Content="{DynamicResource RadioIncrement}" 
+                             GroupName="Sauvegarde" IsChecked="True"/>
+                <RadioButton x:Name="rbComplete" Content="{DynamicResource RadioComplete}" 
+                             GroupName="Sauvegarde" Margin="15,0,0,0"/>
             </StackPanel>
         </StackPanel>
 
-
         <!-- Boutons -->
-        <StackPanel Grid.Row="5" Orientation="Horizontal"
+        <StackPanel Grid.Row="6" Orientation="Horizontal"
                     HorizontalAlignment="Right" Margin="0,10,0,0">
-            <Button Content="Annuler" Width="100" Click="BtnAnnuler_Click"
+            <Button Content="{DynamicResource BtnAnnuler}" Width="100" Click="BtnAnnuler_Click"
                     Background="#AAA" Foreground="White"
                     BorderThickness="0" Cursor="Hand"/>
-            <Button Content="Valider" Width="100" Margin="10,0,0,0" Click="ButtonValider_Click"
+            <Button Content="{DynamicResource BtnValider}" Width="100" Margin="10,0,0,0" 
+                    Click="ButtonValider_Click"
                     Background="#28A745" Foreground="White"
                     BorderThickness="0" Cursor="Hand"/>
         </StackPanel>

@@ -8,7 +8,7 @@ namespace Projet_Easy_Save_grp_4.Interfaces
 {
     internal interface IFile
     {
-        void CopyDirectory(string sourceDirectory, string destinationDirectory, bool crypter);
-        void CopyModifiedFiles(string sourceDirectory, string destinationDirectory);
+        List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)> CopyDirectory(string sourceDirectory, string destinationDirectory, bool crypter);
+        List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)> CopyModifiedFiles(string sourceDirectory, string destinationDirectory, bool crypter);
     }
 }

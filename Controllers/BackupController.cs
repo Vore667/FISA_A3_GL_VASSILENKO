@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Projet_Easy_Save_grp_4.Controllers;
 using Projet_Easy_Save_grp_4.Interfaces;
 using LogClassLibrary;
+using System.Diagnostics;
 
 namespace Projet_Easy_Save_grp_4.Controllers
 {
@@ -103,32 +104,39 @@ namespace Projet_Easy_Save_grp_4.Controllers
             BackupTask? task = FindBackup(name);
             if (task != null)
             {
-               task.Execute();
+                // Exécute la backup et récupère les mesures de chaque copie
+                var fileCopyMetrics = task.Execute();
 
-                // Vérifier que le dossier de destination existe et récupérer la liste de tous les fichiers copiés
-                if (Directory.Exists(task.Destination))
+                // Calculer la taille totale des fichiers
+                List<string> files = Directory.GetFiles(task.Source, "*.*", SearchOption.AllDirectories).ToList();
+                long totalSize = 0;
+                foreach (string file in files)
                 {
-                    List<string> files = Directory.GetFiles(task.Destination, "*.*", SearchOption.AllDirectories).ToList();
-                    long totalSize = 0;
-                    int actual_files = 0;
-                    foreach (string file in files)
-                    {
-                        FileInfo fi = new FileInfo(file);
-                        totalSize += fi.Length;
-                        logController.LogBackupExecution(task.Name, "InProgress", files, totalSize, task.Destination, task.Source, actual_files);
-                        actual_files++;
-                    }
+                    FileInfo fi = new FileInfo(file);
+                    totalSize += fi.Length;
+                }
+                long totalSizeFilesRemaining = totalSize;
+                int actual_files = 0;
 
-                    // Enregistrer le log détaillé de l'exécution du backup
-                    logController.LogBackupExecution(task.Name, "Finished", files, totalSize, task.Destination, task.Source, actual_files);
-                    actual_files = 0;
+                // Parcours des métriques pour enregistrer les logs journaliers
+                foreach (var (filePath, transferTime, fileSize, encryptionTime) in fileCopyMetrics)
+                {
+                    totalSizeFilesRemaining -= fileSize;
+                    logController.LogBackupExecution(task.Name, "InProgress", files, totalSize, task.Source, task.Destination, actual_files, totalSizeFilesRemaining);
+
+                    logController.LogBackupExecutionDay(task.Name, task.Source, task.Destination, fileSize, transferTime, encryptionTime);
+                    actual_files++;
                 }
 
+                // Log final
+                logController.LogBackupExecution(task.Name, "Finished", files, totalSize, task.Source, task.Destination, actual_files, totalSizeFilesRemaining);
                 return true;
             }
-
             return false;
         }
+
+
+
 
         public double GetProgressPourcentage()
         {
@@ -229,17 +237,18 @@ namespace Projet_Easy_Save_grp_4.Controllers
             }
 
             // Executer la backup, c'est appelé via la fonction BackupExecute. Appelle les fonctions qui vont copier les fichiers.
-            public void Execute()
+            public List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)> Execute()
             {
-                if (this.Type == "1")
+                if (this.Type == "1") //Su save complete on copie tout le dossier
                 {
-                    fileController.CopyDirectory(Source, Destination, Crypter);
+                    return fileController.CopyDirectory(Source, Destination, Crypter);
                 }
-                else
+                else //Sinon on copie seulement les fichiers modifiés au cours des 24 dernières heures
                 {
-                    fileController.CopyModifiedFiles(Source, Destination);
+                    return fileController.CopyModifiedFiles(Source, Destination, Crypter);
                 }
             }
+
 
         }
 

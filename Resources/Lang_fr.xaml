@@ -1,0 +1,23 @@
+﻿<!-- Ressources FR -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <!-- MENU AJOUTER -->
+    <system:String x:Key="WindowTitle">Ajouter un élément</system:String>
+    <system:String x:Key="TitleTask">Ajouter une tâche de sauvegarde</system:String>
+    <system:String x:Key="LabelNom">Nom :</system:String>
+    <system:String x:Key="LabelCheminSource">Chemin Source :</system:String>
+    <system:String x:Key="LabelCheminDestination">Chemin Destination :</system:String>
+    <system:String x:Key="TextAucun">Aucun</system:String>
+    <system:String x:Key="CheckboxCrypter">Crypter la sauvegarde</system:String>
+    <system:String x:Key="LabelTypeSauvegarde">Type de sauvegarde :</system:String>
+    <system:String x:Key="RadioIncrement">Incrémentielle</system:String>
+    <system:String x:Key="RadioComplete">Complète</system:String>
+    <system:String x:Key="BtnAnnuler">Annuler</system:String>
+    <system:String x:Key="BtnValider">Valider</system:String>
+    <!-- MENU PRINCIPAL -->
+    <system:String x:Key="Add">Ajouter</system:String>
+    <system:String x:Key="Execute">Exécuter</system:String>
+    <system:String x:Key="Delete">Supprimer</system:String>
+    <system:String x:Key="Refresh">Rafraîchir</system:String>
+</ResourceDictionary>

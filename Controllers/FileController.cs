@@ -6,97 +6,138 @@ using System.Text;
 using System.Threading.Tasks;
 using CryptoSoft;
 using Projet_Easy_Save_grp_4.Interfaces;
+using System.Diagnostics;
 
 
 namespace Projet_Easy_Save_grp_4.Controllers
 {
     internal class FileController : IFile
     {
-        public void CopyDirectory(string sourceDirectory, string destinationDirectory, bool Crypter)
+        // Retourne une liste pour chaque fichier copié
+        public List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)> CopyDirectory(string sourceDirectory, string destinationDirectory, bool crypter)
         {
+            List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)> fileCopyMetrics = new List<(string, long, long, long)>();
             try
             {
                 if (!Directory.Exists(sourceDirectory))
-                {
-                    return;
-                }
+                    return fileCopyMetrics;
 
                 if (!Directory.Exists(destinationDirectory))
-                {
                     Directory.CreateDirectory(destinationDirectory);
-                }
 
                 foreach (string file in Directory.GetFiles(sourceDirectory))
                 {
-                    string filename = Path.GetFileName(file);
-                    string destFile = Path.Combine(destinationDirectory, filename);
+                    string fileName = Path.GetFileName(file);
+                    string destFile = Path.Combine(destinationDirectory, fileName);
+                    FileInfo fi = new FileInfo(file);
 
+                    // Mesure du temps de copie
+                    Stopwatch stopwatchCopy = Stopwatch.StartNew();
                     File.Copy(file, destFile, true);
+                    stopwatchCopy.Stop();
+                    long transferTime = stopwatchCopy.ElapsedMilliseconds;
 
-                    if (Crypter)
+                    // Mesure du temps de cryptage (si activé)
+                    long encryptionTime = 0;
+                    if (crypter)
                     {
-
-                        CryptoService.Transformer(destFile, "CESI_EST_MA_CLE_DE_CHIFFREMENT");
+                        try
+                        {
+                            Stopwatch stopwatchEncryption = Stopwatch.StartNew();
+                            CryptoService.Transformer(destFile, "CESI_EST_MA_CLE_DE_CHIFFREMENT");
+                            stopwatchEncryption.Stop();
+                            encryptionTime = stopwatchEncryption.ElapsedMilliseconds;
+                        }
+                        catch (Exception)
+                        {
+                            encryptionTime = -1; // Code erreur comme dmd
+                        }
                     }
+
+                    fileCopyMetrics.Add((file, transferTime, fi.Length, encryptionTime));
                 }
 
+                // Appel récursif pour les sous-répertoires
                 foreach (string subDirectory in Directory.GetDirectories(sourceDirectory))
                 {
-                    string subDirectoryName = Path.GetFileName(subDirectory);
-                    string destSubDirectory = Path.Combine(destinationDirectory, subDirectoryName);
-
-                    CopyDirectory(subDirectory, destSubDirectory, Crypter); 
+                    string subDirName = Path.GetFileName(subDirectory);
+                    string destSubDir = Path.Combine(destinationDirectory, subDirName);
+                    var subMetrics = CopyDirectory(subDirectory, destSubDir, crypter);
+                    fileCopyMetrics.AddRange(subMetrics);
                 }
-
             }
             catch (Exception ex)
             {
-                return;
+
             }
+            return fileCopyMetrics;
         }
 
 
 
-        public void CopyModifiedFiles(string sourceDirectory, string destinationDirectory)
+
+        // Retourne une liste pour chaque fichier copié
+        public List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)> CopyModifiedFiles(string sourceDirectory, string destinationDirectory, bool crypter)
         {
+            List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)> fileCopyMetrics = new List<(string, long, long, long)>();
             try
             {
                 if (!Directory.Exists(sourceDirectory))
-                {
-                    return;
-                }
+                    return fileCopyMetrics;
 
                 if (!Directory.Exists(destinationDirectory))
-                {
                     Directory.CreateDirectory(destinationDirectory);
-                }
 
                 foreach (string file in Directory.GetFiles(sourceDirectory))
                 {
-                    string filename = Path.GetFileName(file);
-                    string destFile = Path.Combine(destinationDirectory, filename);
-
                     // Vérifie si le fichier a été modifié dans les dernières 24 heures
                     if (File.GetLastWriteTime(file) > DateTime.Now.AddDays(-1))
                     {
+                        string filename = Path.GetFileName(file);
+                        string destFile = Path.Combine(destinationDirectory, filename);
+                        FileInfo fi = new FileInfo(file);
+
+                        Stopwatch stopwatchCopy = Stopwatch.StartNew();
                         File.Copy(file, destFile, true);
+                        stopwatchCopy.Stop();
+                        long transferTime = stopwatchCopy.ElapsedMilliseconds;
+
+                        long encryptionTime = 0;
+                        if (crypter)
+                        {
+                            try
+                            {
+                                Stopwatch stopwatchEncryption = Stopwatch.StartNew();
+                                CryptoService.Transformer(destFile, "CESI_EST_MA_CLE_DE_CHIFFREMENT");
+                                stopwatchEncryption.Stop();
+                                encryptionTime = stopwatchEncryption.ElapsedMilliseconds;
+                            }
+                            catch (Exception)
+                            {
+                                encryptionTime = -1;
+                            }
+                        }
+                        fileCopyMetrics.Add((file, transferTime, fi.Length, encryptionTime));
                     }
                 }
 
-                // Copie récursivement les fichiers modifiés dans les sous-dossiers
+                // Appel récursif sur les sous-dossiers
                 foreach (string subDirectory in Directory.GetDirectories(sourceDirectory))
                 {
                     string subDirectoryName = Path.GetFileName(subDirectory);
                     string destSubDirectory = Path.Combine(destinationDirectory, subDirectoryName);
-
-                    CopyModifiedFiles(subDirectory, destSubDirectory); // Appel récursif
+                    var subMetrics = CopyModifiedFiles(subDirectory, destSubDirectory, crypter);
+                    fileCopyMetrics.AddRange(subMetrics);
                 }
             }
             catch (Exception ex)
             {
-                return;
+
             }
+            return fileCopyMetrics;
         }
+
+
 
     }
 }
