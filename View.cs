@@ -93,6 +93,12 @@ namespace Projet_Easy_Save_grp_4.Views
 
         private static void AddBackup(BackupController backup)
         {
+            Console.WriteLine($"{LangController.GetText("Overall_SubMenu_Option1")}");
+            ConsoleKeyInfo subkey = Console.ReadKey();
+            if (subkey.Key == ConsoleKey.Escape)
+            {
+                return;
+            }
             Console.WriteLine($"{LangController.GetText("SubMenu_CreatingTask")}");
             Console.Write($"{LangController.GetText("SubMenu_NameTask")}");
             string? taskName = Console.ReadLine();
@@ -108,6 +114,12 @@ namespace Projet_Easy_Save_grp_4.Views
 
         private static void ExecuteBackup(BackupController backup)
         {
+            Console.WriteLine($"{LangController.GetText("Overall_SubMenu_Option1")}");
+            ConsoleKeyInfo subkey = Console.ReadKey();
+            if (subkey.Key == ConsoleKey.Escape)
+            {
+                return;
+            }
             Console.WriteLine($"{LangController.GetText("SubMenu_ExecutingTask")}");
             Console.WriteLine($"{LangController.GetText("SubMenu_ListOfExistingTasks")}");
             backup.ListBackup();
@@ -119,6 +131,12 @@ namespace Projet_Easy_Save_grp_4.Views
 
         private static void DeleteBackup(BackupController backup)
         {
+            Console.WriteLine($"{LangController.GetText("Overall_SubMenu_Option1")}");
+            ConsoleKeyInfo subkey = Console.ReadKey();
+            if (subkey.Key == ConsoleKey.Escape)
+            {
+                return;
+            }
             Console.WriteLine($"{LangController.GetText("SubMenu_DeletingTask")}");
             Console.WriteLine($"{LangController.GetText("SubMenu_ListOfExistingTasks")}");
             backup.ListBackup();

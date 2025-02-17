@@ -44,9 +44,12 @@ namespace LogClassLibrary
             {
                 Directory.CreateDirectory(logDirectory);
             }
+            string dayDate = DateTime.Now.ToString("yyyy-MM-dd");
+            string hourDayDate = DateTime.Now.ToString("yyyy-MM-dd-HH");
+
             // Détermine le chemin du fichier en fonction du type choisi
-            logFilePath = Path.Combine(logDirectory, currentLogType == LogType.JSON ? "log.json" : "log.xml");
-            dayLogFilePath = Path.Combine(logDirectory, currentLogType == LogType.JSON ? "DayLog.json" : "DayLog.xml");
+            logFilePath = Path.Combine(logDirectory, currentLogType == LogType.JSON ? $"log_{hourDayDate}.json" : $"log_{hourDayDate}.xml");
+            dayLogFilePath = Path.Combine(logDirectory, currentLogType == LogType.JSON ? $"DayLog_{dayDate}.json" : $"DayLog_{dayDate}.xml");
 
 
             // Initialise le fichier s'il n'existe pas
