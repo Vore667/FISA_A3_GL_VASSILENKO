@@ -63,7 +63,7 @@ namespace WpfApp
             }
             this.Close();
 
-            mainWindow.AjouterTache(nom, source, destination, typeSauvegarde);
+            mainWindow.AjouterTache(nom, source, destination, typeSauvegarde, crypter);
         }
     }
 }

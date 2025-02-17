@@ -1,4 +1,4 @@
-# ----  Build / Bin / Obj ----
+# ---- Build / Bin / Obj ----
 bin/
 obj/
 *.exe
@@ -13,12 +13,12 @@ obj/
 *.tt
 *.vscode/
 
-# ----  Packages et dépendances ----
+# ---- Packages et dépendances ----
 # (Ne pas ignorer les DLLs internes dans `Libs/`)
 packages/
 !LogClassLibrary.dll   # On garde la DLL interne
 
-# ----  Configurations de l'IDE ----
+# ---- Configurations de l'IDE ----
 .vs/
 *.sln.docstates
 .idea/
@@ -31,7 +31,7 @@ packages/
 *.aps
 *.res
 
-# ----  Logs et cache ----
+# ---- Logs et cache ----
 *.log
 *.tlog
 *.lastbuildstate
@@ -39,14 +39,21 @@ packages/
 *.snk
 Thumbs.db
 
-# ----  Fichiers de publication ----
+# ---- Fichiers de publication ----
 publish/
 wwwroot/
 app.publish/
 
-# ----  Spécifique à Git ----
-.gitattributes
+# ---- Fichiers temporaires ou spécifiques à l'IDE ----
+# IntelliJ, JetBrains Rider et autres IDE
+.idea/
 
+# Spécifique à macOS
 .DS_Store
-Thumbs.db
-```
+
+# Fichiers générés par Visual Studio pour des fichiers temporaires ou spécifiques à l'IDE
+.vs/
+
+# ---- WPF spécifique ----
+# Ne pas ignorer le fichier XAML (WPF)
+*.xaml~

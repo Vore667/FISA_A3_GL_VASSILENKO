@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CryptoSoft;
 using Projet_Easy_Save_grp_4.Interfaces;
 
 
@@ -11,7 +12,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
 {
     internal class FileController : IFile
     {
-        public void CopyDirectory(string sourceDirectory, string destinationDirectory)
+        public void CopyDirectory(string sourceDirectory, string destinationDirectory, bool Crypter)
         {
             try
             {
@@ -31,6 +32,12 @@ namespace Projet_Easy_Save_grp_4.Controllers
                     string destFile = Path.Combine(destinationDirectory, filename);
 
                     File.Copy(file, destFile, true);
+
+                    if (Crypter)
+                    {
+
+                        CryptoService.Transformer(destFile, "CESI_EST_MA_CLE_DE_CHIFFREMENT");
+                    }
                 }
 
                 foreach (string subDirectory in Directory.GetDirectories(sourceDirectory))
@@ -38,7 +45,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
                     string subDirectoryName = Path.GetFileName(subDirectory);
                     string destSubDirectory = Path.Combine(destinationDirectory, subDirectoryName);
 
-                    CopyDirectory(subDirectory, destSubDirectory); // Appel récursif
+                    CopyDirectory(subDirectory, destSubDirectory, Crypter); 
                 }
 
             }

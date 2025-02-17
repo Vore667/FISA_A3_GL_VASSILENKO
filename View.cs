@@ -95,7 +95,6 @@ namespace Projet_Easy_Save_grp_4.Views
             string? taskArrivalRepo = Console.ReadLine();
             Console.Write($"{LangController.GetText("SubMenu_TaskType")}");
             string? taskType = Console.ReadLine();
-            backup.AddBackup(taskName, taskStartRepo, taskArrivalRepo, taskType);
             Thread.Sleep(2000);
         }
 

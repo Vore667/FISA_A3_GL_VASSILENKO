@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
+using System.Windows.Threading;
 using Projet_Easy_Save_grp_4.Controllers;
 
 namespace WpfApp
@@ -40,7 +41,8 @@ namespace WpfApp
                     Name = task.Name,
                     Source = task.Source,
                     Destination = task.Destination,
-                    Type = task.Type
+                    Type = task.Type,
+                    Cryptage = task.Crypter,
                 };
 
                 // Ajouter l'élément dans la ListBox
@@ -72,9 +74,9 @@ namespace WpfApp
             LoadBackupTasks();
         }
 
-        public void AjouterTache(string nom, string source, string destination, string typeSauvegarde)
+        public void AjouterTache(string nom, string source, string destination, string typeSauvegarde, bool crypter)
         {
-            backupController.AddBackup(nom, source, destination, typeSauvegarde);
+            backupController.AddBackup(nom, source, destination, typeSauvegarde, crypter);
             LoadBackupTasks(); 
         }
 
@@ -94,21 +96,24 @@ namespace WpfApp
             }
         }
 
-        private void ButtonExecute_Click(object sender, RoutedEventArgs e)
+        private DispatcherTimer progressTimer;
+
+        private async void ButtonExecute_Click(object sender, RoutedEventArgs e)
         {
-            // Récupérer l'élément sélectionné dans la ListBox
             var selectedItem = lstAttributs.SelectedItem as BackupItem;
 
             if (selectedItem != null)
             {
-                bool response = backupController.ExecuteBackup(selectedItem.Name);
-                if (response == true)
+                // Démarrer le suivi de la progression
+                StartProgressTracking();
+
+                // Lancer la sauvegarde en tâche asynchrone pour ne pas bloquer l'UI
+                bool response = await Task.Run(() => backupController.ExecuteBackup(selectedItem.Name));
+
+                if (!response)
                 {
-                    MessageBox.Show("Sauvgarde executee avec succes.");
-                }
-                else
-                {
-                    MessageBox.Show("L'execution de la sauvgarde a echoue.");
+                    MessageBox.Show("L'exécution de la sauvegarde a échoué.");
+                    progressTimer.Stop(); // Arrêter le suivi si la sauvegarde échoue
                 }
             }
             else
@@ -116,6 +121,30 @@ namespace WpfApp
                 MessageBox.Show("Aucun élément sélectionné.");
             }
         }
+
+        private void StartProgressTracking()
+        {
+            progressTimer = new DispatcherTimer();
+            progressTimer.Interval = TimeSpan.FromSeconds(0.01);
+            progressTimer.Tick += ProgressTimer_Tick;
+            progressTimer.Start();
+        }
+
+        private void ProgressTimer_Tick(object sender, EventArgs e)
+        {
+            double progress = Math.Round(backupController.GetProgressPourcentage(), 2);
+
+            // Mettre à jour l'UI avec la progression arrondie
+            progressBar.Value = progress;
+            lblProgress.Content = $"{progress}%";
+
+            if (progress >= 100)
+            {
+                progressTimer.Stop();
+                MessageBox.Show("Sauvegarde terminée !");
+            }
+        }
+
     }
 
     public class BackupItem
@@ -124,13 +153,14 @@ namespace WpfApp
         public string Source { get; set; }
         public string Destination { get; set; }
         public string Type { get; set; }
+        public bool Cryptage { get; set; }
 
         public override string ToString()
         {
             // Utilisez une expression conditionnelle pour afficher "Complète" ou "Incrémentielle"
             string typeStr = Type == "1" ? "Complète" : "Incrémentielle";
 
-            return $"{Name}, ( From : {Source} → {Destination} ) and with type : {typeStr}";
+            return $"{Name}, ( From : {Source} → {Destination} ) and with type : {typeStr}. Encrypt :{Cryptage}";
         }
     }
 

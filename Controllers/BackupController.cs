@@ -26,7 +26,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
 
 
         // Ajouter une backup
-        public void AddBackup(string? name, string? source, string? destination, string? type)
+        public void AddBackup(string? name, string? source, string? destination, string? type, bool crypter)
         {
             if (tasks.Count >= MaxTasks)
             {
@@ -82,7 +82,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 return;
             }
 
-            tasks.Add(new BackupTask(name, source, destination, type));
+            tasks.Add(new BackupTask(name, source, destination, type, crypter));
             SaveBackupTasks();
 
             // Log de l'ajout de la tâche de backup
@@ -128,6 +128,11 @@ namespace Projet_Easy_Save_grp_4.Controllers
             }
 
             return false;
+        }
+
+        public double GetProgressPourcentage()
+        {
+            return logController.GetProgressPourcentage();
         }
 
         // Supprimer une backup
@@ -212,13 +217,15 @@ namespace Projet_Easy_Save_grp_4.Controllers
             public string Source { get; set; }
             public string Destination { get; set; }
             public string Type { get; set; }
+            public bool Crypter {  get; set; }
 
-            public BackupTask(string name, string source, string destination, string type)
+            public BackupTask(string name, string source, string destination, string type, bool crypter)
             {
                 Name = name;
                 Source = source;
                 Destination = destination;
                 Type = type;
+                Crypter = crypter;
             }
 
             // Executer la backup, c'est appelé via la fonction BackupExecute. Appelle les fonctions qui vont copier les fichiers.
@@ -226,7 +233,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
             {
                 if (this.Type == "1")
                 {
-                    fileController.CopyDirectory(Source, Destination);
+                    fileController.CopyDirectory(Source, Destination, Crypter);
                 }
                 else
                 {

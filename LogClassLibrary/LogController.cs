@@ -19,6 +19,13 @@ namespace LogClassLibrary
 
         private readonly string logFilePath;
 
+        private double progressPourcentage;
+
+        public double GetProgressPourcentage()
+        {
+            return this.progressPourcentage;
+        }
+
         public LogController(string logDirectory)
         {
             listeners = new List<ILogListener>();
@@ -56,12 +63,12 @@ namespace LogClassLibrary
         {
             List<dynamic> logs = LoadLogs();
 
-            double progressPourcentage = 0;
+            this.progressPourcentage = 0;
             if (files.Count > 0)
             {
-                progressPourcentage = ((double)actual_files / files.Count) * 100;
+                this.progressPourcentage = ((double)actual_files / files.Count) * 100;
             }
-            string progressPourcentageText = progressPourcentage.ToString("F2") + " %";
+            string progressPourcentageText = this.progressPourcentage.ToString("F2") + " %";
 
 
             var logEntry = new
