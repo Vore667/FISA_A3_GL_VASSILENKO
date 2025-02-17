@@ -6,6 +6,7 @@ namespace LogClassLibrary
     [XmlInclude(typeof(FileLogEntry))]
     [XmlInclude(typeof(StatusLogEntry))]
     [XmlInclude(typeof(BackupExecutionLogEntry))]
+    [XmlInclude(typeof(BackupExecutionLogEntryDay))]
     [XmlInclude(typeof(ActionLogEntry))]
     public abstract class LogEntryBase : ILogEntry
     {
@@ -41,6 +42,8 @@ namespace LogClassLibrary
         public long TotalSize { get; set; }
         public int TotalFiles { get; set; }
         public int FilesProcessed { get; set; }
+        public int FilesRemaining {get; set; }
+        public long TotalSizeFilesRemaining {get; set; }
         public string? ProgressPercentage { get; set; }
         public string? SourceDirectory { get; set; }
         public string? DestinationDirectory { get; set; }
@@ -48,6 +51,15 @@ namespace LogClassLibrary
         [XmlArray("Files")]
         [XmlArrayItem("File")]
         public List<string> Files { get; set; } = new List<string>();
+    }
+
+    public class BackupExecutionLogEntryDay : LogEntryBase
+    {
+        public string? BackupName { get; set; }
+        public string? SourceDirectory { get; set; }
+        public string? DestinationDirectory { get; set; }
+        public long? FileSize { get; set; }
+        public long? FileTransfertTime { get; set; }
     }
 
     public class ActionLogEntry : LogEntryBase

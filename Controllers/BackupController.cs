@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Projet_Easy_Save_grp_4.Controllers;
 using Projet_Easy_Save_grp_4.Interfaces;
 using LogClassLibrary;
+using System.Diagnostics;
 
 namespace Projet_Easy_Save_grp_4.Controllers
 {
@@ -120,22 +121,39 @@ namespace Projet_Easy_Save_grp_4.Controllers
             {
                 task.Execute();
 
-                // Vérifier que le dossier de destination existe et récupérer la liste de tous les fichiers copiés
+                // On vérifie que le dossier de destination existe et récupérer la liste de tous les fichiers copiés
                 if (Directory.Exists(task.Destination))
                 {
                     List<string> files = Directory.GetFiles(task.Source, "*.*", SearchOption.AllDirectories).ToList();
                     long totalSize = 0;
+                    long totalSizeFilesRemaining = 0;
                     int actual_files = 0;
+
+                    // Calculer la taille totale des fichiers
                     foreach (string file in files)
                     {
                         FileInfo fi = new FileInfo(file);
                         totalSize += fi.Length;
-                        logController.LogBackupExecution(task.Name, "InProgress", files, totalSize, task.Source, task.Destination, actual_files);
+                    }
+
+                    totalSizeFilesRemaining = totalSize;
+
+                    foreach (string file in files)
+                    {
+                        FileInfo fi = new FileInfo(file);
+                        Stopwatch stopwatch = Stopwatch.StartNew();
+                        // On simule la copie du fichier
+                        File.Copy(file, Path.Combine(task.Destination, Path.GetFileName(file)), true);
+                        stopwatch.Stop();
+                        long fileTransfertTime = stopwatch.ElapsedMilliseconds;
+                        totalSizeFilesRemaining -= fi.Length;
+                        logController.LogBackupExecution(task.Name, "InProgress", files, totalSize, task.Source, task.Destination, actual_files, totalSizeFilesRemaining);
+                        logController.LogBackupExecutionDay(task.Name, task.Source, task.Destination, fi.Length, fileTransfertTime);
                         actual_files++;
                     }
 
                     // Enregistrer le log détaillé de l'exécution du backup
-                    logController.LogBackupExecution(task.Name, "Finished", files, totalSize, task.Source, task.Destination, actual_files);
+                    logController.LogBackupExecution(task.Name, "Finished", files, totalSize, task.Source, task.Destination, actual_files, totalSizeFilesRemaining);
                     actual_files = 0;
                 }
             }
