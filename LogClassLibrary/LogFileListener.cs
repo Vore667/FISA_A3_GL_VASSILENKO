@@ -10,23 +10,14 @@ namespace LogClassLibrary
 {
     public class LogFileListener : ILogListener
     {
-        private readonly string logDirectory;
-        private readonly LogType currentLogType;
+        private string logDirectory = interface_projet.Properties.Settings.Default.LogsPath;
+        private string currentLogType = interface_projet.Properties.Settings.Default.LogsType;
 
         // Constructeur : on spécifie le dossier de log et prend en paramètre le type de log (JSON par défaut)
-        public LogFileListener(string logDirectory, LogType logType = LogType.JSON)
+        public LogFileListener(string logDirectory, string logType)
         {
             this.logDirectory = logDirectory;
-            currentLogType = logType;
-            Directory.CreateDirectory(logDirectory);
-            if (!Directory.Exists(logDirectory))
-            {
-                Console.WriteLine($"Échec de la création du dossier : {logDirectory}");
-            }
-            else
-            {
-                Console.WriteLine("Log créé avec succès");
-            }
+            this.currentLogType = logType;
         }
 
         // Désérialise le fichier de log qd est au format XML
@@ -42,12 +33,15 @@ namespace LogClassLibrary
         // Met à jour le fichier de log soit au format JSON soit XML
         public void Update(object logData)
         {
+            string currentLogType = interface_projet.Properties.Settings.Default.LogsType;
+            string logDirectory = interface_projet.Properties.Settings.Default.LogsPath;
+
             if (logData is LogEntryBase logEntry)
             {
-                string extension = currentLogType == LogType.JSON ? "json" : "xml";
+                string extension = currentLogType == "JSON" ? "json" : "xml";
                 string logFile = Path.Combine(logDirectory, $"log_{DateTime.UtcNow:yyyy-MM-dd}.{extension}");
 
-                if (currentLogType == LogType.JSON) // Si le type est JSON
+                if (currentLogType == "JSON") // Si le type est JSON
                 {
                     List<LogEntryBase> logs = File.Exists(logFile)
                         ? JsonConvert.DeserializeObject<List<LogEntryBase>>(File.ReadAllText(logFile)) ?? new List<LogEntryBase>()

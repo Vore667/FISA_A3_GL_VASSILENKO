@@ -8,5 +8,8 @@
     <Setting Name="Language" Type="System.String" Scope="User">
       <Value Profile="(Default)">fr</Value>
     </Setting>
+    <Setting Name="LogsType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">JSON</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

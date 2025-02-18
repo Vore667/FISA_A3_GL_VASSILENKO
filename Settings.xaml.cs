@@ -18,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using interface_projet.Properties;
+using LogClassLibrary;
 
 
 namespace interface_projet
@@ -31,30 +32,39 @@ namespace interface_projet
 
         public Settings()
         {
-
             ILang langController = new LangController();
-            settingsController = new SettingsController(langController);
+            LogController logController = LogController.Instance;
+            settingsController = new SettingsController(langController, logController);
 
             // Charge la langue sauvegardée dans le dossier Properties -> Settings.settings
             string savedLang = Properties.Settings.Default.Language;
             if (!string.IsNullOrEmpty(savedLang))
             {
-                // Mett à jour la culture dans LangController pour que GetCurrentLanguage() renvoie la bonne valeur
                 LangController.SetLanguage(savedLang);
+            }
+
+            string savedLogsType = Properties.Settings.Default.LogsType;
+            if (!string.IsNullOrEmpty(savedLogsType))
+            {
+                logController.SetLogType(savedLogsType);
             }
 
             InitializeComponent();
             string logsPath = Properties.Settings.Default.LogsPath;
             tbLogsPath.Text = logsPath;
-            
-            // Met à jour l'interface (coche le radio button correspondant)
+
             SetDefaultLanguage();
+            SetDefaultLogType();
         }
+
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
 
         }
+
+
+
         private void LanguageRadioButton_Checked(object sender, RoutedEventArgs e)
         {
             if (sender is System.Windows.Controls.RadioButton rb && rb.IsChecked == true)
@@ -67,10 +77,12 @@ namespace interface_projet
             }
         }
 
+
+
         private void SetDefaultLanguage()
         {
             // Obtenir la langue actuelle
-            string currentLang = LangController.GetCurrentLanguage(); // Ajoutez une méthode pour récupérer la langue actuelle
+            string currentLang = LangController.GetCurrentLanguage(); //récupérer la langue actuelle
 
             // Sélectionner le bon radio button
             if (currentLang == "fr")
@@ -79,13 +91,32 @@ namespace interface_projet
                 rbEnglish.IsChecked = true;
         }
 
-        private void UpdateUILanguage()
+
+        private void LogTypeRadioButton_Checked(object sender, RoutedEventArgs e)
         {
-            // Exemple de mise à jour des textes de l'UI après changement de langue
-            this.Title = LangController.GetText("SettingsTitle");
-            rbFrench.Content = LangController.GetText("French");
-            rbEnglish.Content = LangController.GetText("English");
-            // Ajoutez ici tous les autres éléments dont le texte doit être mis à jour
+            if (sender is System.Windows.Controls.RadioButton rb && rb.IsChecked == true)
+            {
+                string logType = rb.Tag.ToString();
+                // _settingsController est maintenant initialisé
+                // Appel la fonction dans LogController pour changer le type de logs
+                settingsController.SetLogType(logType);
+
+                Properties.Settings.Default.LogsType = logType;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+
+        private void SetDefaultLogType()
+        {
+            // Obtenir le type de log actuel
+            string currentLogType = Properties.Settings.Default.LogsType; // Utiliser l'instance settingsController pour appeler GetLogType()
+
+            // Sélectionner le bon radio button
+            if (currentLogType == "JSON")
+                rbJSON.IsChecked = true;
+            else if (currentLogType == "XML")
+                rbXML.IsChecked = true;
         }
 
         private void btnVoirLogs_Click(object sender, RoutedEventArgs e)
@@ -120,11 +151,17 @@ namespace interface_projet
 
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    tbLogsPath.Text = dialog.SelectedPath.Trim();
+                    string selectedPath = dialog.SelectedPath.Trim();
+                    tbLogsPath.Text = selectedPath;
 
+
+                    settingsController.SetLogDirectory(selectedPath);
                 }
             }
         }
+
+
+        // Pas utilisé 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
             base.OnClosing(e);

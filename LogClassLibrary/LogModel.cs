@@ -12,9 +12,9 @@ namespace LogClassLibrary
     {
         private readonly List<LogEntryBase> logs = new List<LogEntryBase>();
         private readonly string logFilePath;
-        private readonly LogType currentLogType;
+        private readonly string currentLogType;
 
-        public LogModel(string logFilePath, LogType logType = LogType.JSON)
+        public LogModel(string logFilePath, string logType = "JSON")
         {
             this.logFilePath = logFilePath;
             currentLogType = logType;
@@ -30,7 +30,7 @@ namespace LogClassLibrary
         // Enregistre les logs dans un fichier en le serialisant soit en JSON soit en XML
         public void SaveFile()
         {
-            if (currentLogType == LogType.JSON)
+            if (currentLogType == "JSON")
             {
                 string json = JsonConvert.SerializeObject(logs, Formatting.Indented);
                 File.WriteAllText(logFilePath, json);

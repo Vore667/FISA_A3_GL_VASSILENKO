@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
@@ -15,24 +16,33 @@ namespace LogClassLibrary
         Warning
     }
 
-    public enum LogType
-    {
-        JSON,
-        XML
-    }
-
     public class LogController
     {
+        private static LogController instance;
+        public static LogController Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new LogController();
+                }
+                return instance;
+            }
+        }
+
+
         private readonly List<ILogListener> listeners = new List<ILogListener>();
         private readonly List<LogEntryBase> logs = new List<LogEntryBase>();
         private readonly List<LogEntryBase> dayLogs = new List<LogEntryBase>();
         private double progressPourcentage;
 
 
-        private readonly string logDirectory = interface_projet.Properties.Settings.Default.LogsPath;
         private string logFilePath;
         private string dayLogFilePath;
-        private LogType currentLogType;
+        private string currentLogType;
+        private string logDirectory;
+
 
         public double GetProgressPourcentage()
         {
@@ -49,42 +59,52 @@ namespace LogClassLibrary
 
 
         // Constructeur : on spécifie le dossier de log et on peut choisir le type (JSON par défaut)
-        public LogController(string logDirectory, LogType logType = LogType.JSON)
+        private LogController()
         {
             this.logDirectory = interface_projet.Properties.Settings.Default.LogsPath;
-            currentLogType = logType;
+            this.currentLogType = interface_projet.Properties.Settings.Default.LogsType;
 
-            if (!Directory.Exists(logDirectory))
+            // Si le dossier n'existe pas, le créer
+            if (!Directory.Exists(this.logDirectory))
             {
-                Directory.CreateDirectory(logDirectory);
+                Directory.CreateDirectory(this.logDirectory);
             }
+
+            // Refresh les chemins à la construction
+            RefreshPaths();
+
+        }
+
+        // Méthode pour recalculer les chemins de fichiers en fonction des settings actuels
+        private void RefreshPaths()
+        {
+            // Mise à jour du dossier de logs si jamais il a été modifié
+            this.logDirectory = interface_projet.Properties.Settings.Default.LogsPath;
+            this.currentLogType = interface_projet.Properties.Settings.Default.LogsType;
+
             string dayDate = DateTime.Now.ToString("yyyy-MM-dd");
             string hourDayDate = DateTime.Now.ToString("yyyy-MM-dd-HH");
 
-            // Détermine le chemin du fichier en fonction du type choisi
-            logFilePath = Path.Combine(logDirectory, currentLogType == LogType.JSON ? $"log_{hourDayDate}.json" : $"log_{hourDayDate}.xml");
-            dayLogFilePath = Path.Combine(logDirectory, currentLogType == LogType.JSON ? $"DayLog_{dayDate}.json" : $"DayLog_{dayDate}.xml");
-
-
-            // Initialise le fichier s'il n'existe pas
-            if (!File.Exists(logFilePath))
-            {
-                File.WriteAllText(logFilePath, currentLogType == LogType.JSON ? "[]" : "<Logs></Logs>");
-            }
+            logFilePath = Path.Combine(logDirectory, currentLogType == "JSON" ? $"log_{hourDayDate}.json" : $"log_{hourDayDate}.xml");
+            dayLogFilePath = Path.Combine(logDirectory, currentLogType == "JSON" ? $"DayLog_{dayDate}.json" : $"DayLog_{dayDate}.xml");
         }
 
+
         // Méthode pour changer dynamiquement le type de log
-        public void SetLogType(LogType logType)
+        public void SetLogType(string logType)
         {
+            interface_projet.Properties.Settings.Default.LogsType = logType;
+            interface_projet.Properties.Settings.Default.Save();
             currentLogType = logType;
-            logFilePath = Path.Combine(logDirectory, currentLogType == LogType.JSON ? "log.json" : "log.xml");
-            dayLogFilePath = Path.Combine(logDirectory, currentLogType == LogType.JSON ? "DayLog.json" : "DayLog.xml");
+            RefreshPaths();
+        }
 
-
-            if (!File.Exists(logFilePath))
-            {
-                File.WriteAllText(logFilePath, currentLogType == LogType.JSON ? "[]" : "<Logs></Logs>");
-            }
+        public void SetLogDirectory(string newDirectory)
+        {
+            interface_projet.Properties.Settings.Default.LogsPath = newDirectory;
+            interface_projet.Properties.Settings.Default.Save();
+            logDirectory = newDirectory;
+            RefreshPaths();
         }
 
         // Log d'une action simple EXP : Création d'une backup
@@ -158,7 +178,7 @@ namespace LogClassLibrary
         // Sauvegarde les logs dans le fichier selon le format choisi
         public void SaveLogs(bool isDayLogs)
         {
-            if (currentLogType == LogType.JSON)
+            if (currentLogType == "JSON")
             {
                 if (isDayLogs)
                 {

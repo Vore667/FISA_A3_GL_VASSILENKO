@@ -46,5 +46,17 @@ namespace interface_projet.Properties {
                 this["Language"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("JSON")]
+        public string LogsType {
+            get {
+                return ((string)(this["LogsType"]));
+            }
+            set {
+                this["LogsType"] = value;
+            }
+        }
     }
 }

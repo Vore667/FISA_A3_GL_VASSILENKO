@@ -183,9 +183,9 @@ namespace Projet_Easy_Save_grp_4.Views
             Console.Write($"{LangController.GetText("Menu_YourChoice")}");
             string? logTypeChoice = Console.ReadLine();
             if (logTypeChoice == "1")
-                logController.SetLogType(LogType.JSON); // Choisir grâce à un ENUM
+                logController.SetLogType("JSON"); // Choisir grâce à un ENUM
             else if (logTypeChoice == "2")
-                logController.SetLogType(LogType.XML);
+                logController.SetLogType("XML");
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
