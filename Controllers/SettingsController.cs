@@ -17,6 +17,6 @@ namespace interface_projet.Controllers
             this.langController = langController;
         }
 
-        public void SetLanguage(string lang) => langController.SetLanguage(lang);
+        public void ChangeLanguage(string lang) => langController.ChangeLanguage(lang);
     }
 }

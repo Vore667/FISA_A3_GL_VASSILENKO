@@ -29,7 +29,7 @@ namespace LogClassLibrary
         private double progressPourcentage;
 
 
-        private readonly string logDirectory;
+        private readonly string logDirectory = interface_projet.Properties.Settings.Default.LogsPath;
         private string logFilePath;
         private string dayLogFilePath;
         private LogType currentLogType;
@@ -51,7 +51,7 @@ namespace LogClassLibrary
         // Constructeur : on spécifie le dossier de log et on peut choisir le type (JSON par défaut)
         public LogController(string logDirectory, LogType logType = LogType.JSON)
         {
-            this.logDirectory = logDirectory;
+            this.logDirectory = interface_projet.Properties.Settings.Default.LogsPath;
             currentLogType = logType;
 
             if (!Directory.Exists(logDirectory))

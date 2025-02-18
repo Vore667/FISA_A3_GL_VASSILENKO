@@ -16,7 +16,7 @@ namespace WpfApp
         public MainWindow()
         {
             InitializeComponent();
-            string logDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
+            string logDirectory = interface_projet.Properties.Settings.Default.LogsPath;
             LogController logController = new LogController(logDirectory); // Instance unique de LogController pour tout le programme qui est utilisé dans View et BackupController
             backupController = new BackupController(logDirectory, logController); //TODO VOIR SI CA POSE PROBLEME D'INSTANCIER LE CONTROLLER ICI A LA PLACE DE L'INSTANCIER SEULEMENT DANS LE MAIN
             LoadBackupTasks();
