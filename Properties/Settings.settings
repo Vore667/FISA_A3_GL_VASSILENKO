@@ -2,10 +2,9 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="interface_projet.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-
     <Setting Name="LogsPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Logs</Value>
-	</Setting>
+    </Setting>
     <Setting Name="Language" Type="System.String" Scope="User">
       <Value Profile="(Default)">fr</Value>
     </Setting>

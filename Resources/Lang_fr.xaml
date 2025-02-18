@@ -22,10 +22,12 @@
     <system:String x:Key="Refresh">Rafraîchir</system:String>
     <!-- MENU PARAMETRES -->
     <system:String x:Key="Settings">Paramètres</system:String>
-    <system:String x:Key="Language">Langue :</system:String>
-    <system:String x:Key="TypeLog">Type de logs :</system:String>
-    <system:String x:Key="ExtensionCrypter">Extension à crypter :</system:String>
+    <system:String x:Key="Language">Langue : </system:String>
+    <system:String x:Key="TypeLog">Type de logs : </system:String>
+    <system:String x:Key="ExtensionCrypter">Extension à crypter : </system:String>
     <system:String x:Key="AddExtension">Ajouter</system:String>
     <system:String x:Key="DeleteExtension">Supprimer</system:String>
     <system:String x:Key="ViewLogs">Voir les logs</system:String>
+    <system:String x:Key="logPath">Chemin des logs : </system:String>
+
 </ResourceDictionary>
