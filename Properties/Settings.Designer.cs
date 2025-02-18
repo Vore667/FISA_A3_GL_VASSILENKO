@@ -25,6 +25,15 @@ namespace interface_projet.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Logs")]
+        public string LogsPath {
+            get {
+                return ((string)(this["LogsPath"]));
+            }
+            set {
+                this["LogsPath"] = value;
+
         [global::System.Configuration.DefaultSettingValueAttribute("fr")]
         public string Language {
             get {
