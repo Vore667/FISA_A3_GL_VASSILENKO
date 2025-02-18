@@ -20,8 +20,20 @@
     <system:String x:Key="Execute">Exécuter</system:String>
     <system:String x:Key="Delete">Supprimer</system:String>
     <system:String x:Key="Refresh">Rafraîchir</system:String>
-    <!-- MENU PARAMETRES -->
+    <system:String x:Key="Title">Liste des Tâches de Sauvegarde</system:String>
     <system:String x:Key="Settings">Paramètres</system:String>
+    <system:String x:Key="ProgressLabel">Progression :</system:String>
+    <system:String x:Key="BackupName">Nom</system:String>
+    <system:String x:Key="BackupSource">Source</system:String>
+    <system:String x:Key="BackupDestination">Destination</system:String>
+    <system:String x:Key="BackupType">Type</system:String>
+    <system:String x:Key="BackupEncryption">Cryptage</system:String>
+    <system:String x:Key="BackupComplete">Complète</system:String>
+    <system:String x:Key="BackupIncremental">Incrémentielle</system:String>
+    <system:String x:Key="NoItemSelected">Aucun élément sélectionné.</system:String>
+    <system:String x:Key="BackupFailed">L'exécution de la sauvegarde a échoué.</system:String>
+    <system:String x:Key="BackupCompleted">Sauvegarde terminée avec succès !</system:String>
+    <!-- MENU PARAMETRES -->
     <system:String x:Key="Language">Langue : </system:String>
     <system:String x:Key="TypeLog">Type de logs : </system:String>
     <system:String x:Key="ExtensionCrypter">Extension à crypter : </system:String>

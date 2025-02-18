@@ -19,6 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using interface_projet.Properties;
 using LogClassLibrary;
+using WpfApp;
 
 
 namespace interface_projet
@@ -29,12 +30,14 @@ namespace interface_projet
     public partial class Settings : Window
     {
         private SettingsController settingsController;
+        private MainWindow mainWindow; // Add a reference to MainWindow
 
         public Settings()
         {
             ILang langController = LangController.Instance;
             LogController logController = LogController.Instance;
             settingsController = new SettingsController(langController, logController);
+            mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow; // Initialize the reference to MainWindow
 
             // Charge la langue sauvegardée dans le dossier Properties -> Settings.settings
             string savedLang = Properties.Settings.Default.Language;
@@ -74,6 +77,7 @@ namespace interface_projet
 
                 // Appel la fonction dans LangController pour changer la langue
                 settingsController.ChangeLanguage(langCode);
+                mainWindow.LoadBackupTasks(); // Use the instance of MainWindow to call LoadBackupTasks
             }
         }
 

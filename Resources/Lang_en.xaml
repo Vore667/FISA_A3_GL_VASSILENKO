@@ -20,8 +20,21 @@
     <system:String x:Key="Execute">Execute</system:String>
     <system:String x:Key="Delete">Delete</system:String>
     <system:String x:Key="Refresh">Refresh</system:String>
-    <!-- MENU PARAMETRES -->
     <system:String x:Key="Settings">Settings</system:String>
+    <system:String x:Key="ProgressLabel">Progress:</system:String>
+    <system:String x:Key="BackupName">Name</system:String>
+    <system:String x:Key="BackupSource">Source</system:String>
+    <system:String x:Key="BackupDestination">Destination</system:String>
+    <system:String x:Key="BackupType">Type</system:String>
+    <system:String x:Key="BackupEncryption">Encryption</system:String>
+    <system:String x:Key="BackupComplete">Full</system:String>
+    <system:String x:Key="BackupIncremental">Incremental</system:String>
+    <system:String x:Key="NoItemSelected">No item selected.</system:String>
+    <system:String x:Key="BackupFailed">Backup execution failed.</system:String>
+    <system:String x:Key="BackupCompleted">Backup completed successfully!</system:String>
+    <system:String x:Key="Title">Backup Task List</system:String>
+
+    <!-- MENU PARAMETRES -->
     <system:String x:Key="Language">Language : </system:String>
     <system:String x:Key="TypeLog">Type of logs : </system:String>
     <system:String x:Key="ExtensionCrypter">Extension to encrypt : </system:String>
@@ -29,5 +42,4 @@
     <system:String x:Key="DeleteExtension">Delete</system:String>
     <system:String x:Key="ViewLogs">View logs</system:String>
     <system:String x:Key="logPath">Logs path : </system:String>
-
 </ResourceDictionary>

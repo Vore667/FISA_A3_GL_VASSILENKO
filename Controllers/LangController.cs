@@ -20,6 +20,9 @@ namespace Projet_Easy_Save_grp_4.Controllers
     public class LangController : ILang
     {
         private static LangController instance;
+
+        public static event Action LanguageChanged;
+
         public static LangController Instance
         {
             get
@@ -80,6 +83,8 @@ namespace Projet_Easy_Save_grp_4.Controllers
             // Sauvegarde la langue choisie dans les paramètres de l'application dossier Properties fichier Settings.settings
             Settings.Default.Language = langCode;
             Settings.Default.Save();
+
+            LanguageChanged?.Invoke();
         }
 
     }

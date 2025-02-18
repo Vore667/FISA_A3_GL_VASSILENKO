@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Threading;
 using interface_projet;
 using LogClassLibrary;
@@ -21,39 +23,75 @@ namespace WpfApp
             LangController langController = LangController.Instance;
             LogController logController = LogController.Instance; // On récupère l'instance du singleton
             backupController = new BackupController(logDirectory, logController); //TODO VOIR SI CA POSE PROBLEME D'INSTANCIER LE CONTROLLER ICI A LA PLACE DE L'INSTANCIER SEULEMENT DANS LE MAIN
+            LangController.LanguageChanged += RefreshDataGridHeaders;
             LoadBackupTasks();
         }
 
-        
+        private void RefreshDataGridHeaders()
+        {
+            dgBackupTasks.Columns.Clear();
+
+            dgBackupTasks.Columns.Add(new DataGridTextColumn
+            {
+                Header = FindResource("BackupName"),
+                Binding = new Binding("Name"),
+                Width = new DataGridLength(150)
+            });
+
+            dgBackupTasks.Columns.Add(new DataGridTextColumn
+            {
+                Header = FindResource("BackupSource"),
+                Binding = new Binding("Source"),
+                Width = new DataGridLength(1, DataGridLengthUnitType.Star)
+            });
+
+            dgBackupTasks.Columns.Add(new DataGridTextColumn
+            {
+                Header = FindResource("BackupDestination"),
+                Binding = new Binding("Destination"),
+                Width = new DataGridLength(1, DataGridLengthUnitType.Star)
+            });
+
+            dgBackupTasks.Columns.Add(new DataGridTextColumn
+            {
+                Header = FindResource("BackupType"),
+                Binding = new Binding("Type"),
+                Width = new DataGridLength(100)
+            });
+
+            dgBackupTasks.Columns.Add(new DataGridCheckBoxColumn
+            {
+                Header = FindResource("BackupEncryption"),
+                Binding = new Binding("Cryptage"),
+                Width = new DataGridLength(80)
+            });
+        }
+
 
         private void BtnRefresh_Click(object sender, RoutedEventArgs e)
         {
             LoadBackupTasks();
         }
 
-        private void LoadBackupTasks()
+        public void LoadBackupTasks()
         {
             List<BackupController.BackupTask> tasks = backupController.ListBackup();
 
-            // Afficher les tâches dans la ListBox
-            lstAttributs.Items.Clear();
-
-            foreach (var task in tasks)
+            // Transformation de vos tâches en BackupItem (votre classe modèle)
+            var backupItems = tasks.Select(task => new BackupItem
             {
-                // Créer un objet BackupItem pour chaque tâche
-                var item = new BackupItem
-                {
-                    Name = task.Name,
-                    Source = task.Source,
-                    Destination = task.Destination,
-                    Type = task.Type,
-                    Cryptage = task.Crypter,
-                };
+                Name = task.Name,
+                Source = task.Source,
+                Destination = task.Destination,
+                Type = task.Type == "1" ? (FindResource("BackupComplete") as string) : (FindResource("BackupIncremental") as string),
+                Cryptage = task.Crypter,
+            }).ToList();
 
-                // Ajouter l'élément dans la ListBox
-                lstAttributs.Items.Add(item);
-            }
+            // Affecter la liste au DataGrid
+            dgBackupTasks.ItemsSource = backupItems;
         }
+
+
 
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -88,9 +126,7 @@ namespace WpfApp
 
         private void ButtonDelete_Click(object sender, RoutedEventArgs e)
         {
-            // Récupérer l'élément sélectionné dans la ListBox
-            var selectedItem = lstAttributs.SelectedItem as BackupItem;
-
+            var selectedItem = dgBackupTasks.SelectedItem as BackupItem;
             if (selectedItem != null)
             {
                 backupController.DeleteBackup(selectedItem.Name);
@@ -98,15 +134,16 @@ namespace WpfApp
             }
             else
             {
-                MessageBox.Show("Aucun élément sélectionné.");
+                MessageBox.Show(FindResource("NoItemSelected") as string);
             }
         }
+
 
         private DispatcherTimer progressTimer;
 
         private async void ButtonExecute_Click(object sender, RoutedEventArgs e)
         {
-            var selectedItem = lstAttributs.SelectedItem as BackupItem;
+            var selectedItem = dgBackupTasks.SelectedItem as BackupItem;
 
             if (selectedItem != null)
             {
@@ -118,13 +155,13 @@ namespace WpfApp
 
                 if (!response)
                 {
-                    MessageBox.Show("L'exécution de la sauvegarde a échoué.");
+                    MessageBox.Show(FindResource("BackupFailed") as string);
                     progressTimer.Stop(); // Arrêter le suivi si la sauvegarde échoue
                 }
             }
             else
             {
-                MessageBox.Show("Aucun élément sélectionné.");
+                MessageBox.Show(FindResource("NoItemSelected") as string);
             }
         }
 
@@ -147,7 +184,7 @@ namespace WpfApp
             if (progress >= 100)
             {
                 progressTimer.Stop();
-                MessageBox.Show("Sauvegarde terminée !");
+                MessageBox.Show(FindResource("BackupCompleted") as string);
                 progressBar.Value = 0;
                 lblProgress.Content = $"0%";
             }
@@ -163,13 +200,6 @@ namespace WpfApp
         public string Type { get; set; }
         public bool Cryptage { get; set; }
 
-        public override string ToString()
-        {
-            // Utilisez une expression conditionnelle pour afficher "Complète" ou "Incrémentielle"
-            string typeStr = Type == "1" ? "Complète" : "Incrémentielle";
-
-            return $"{Name}, ( From : {Source} → {Destination} ) and with type : {typeStr}. Encrypt :{Cryptage}";
-        }
     }
 
 }
