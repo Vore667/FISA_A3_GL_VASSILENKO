@@ -13,7 +13,7 @@ using Projet_Easy_Save_grp_4.Resources;
 
 namespace Projet_Easy_Save_grp_4.Controllers
 {
-    internal class LangController : ILang
+    class LangController : ILang
     {
         private static CultureInfo _currentCulture = new CultureInfo("fr"); // Langue par défaut
 
@@ -26,5 +26,11 @@ namespace Projet_Easy_Save_grp_4.Controllers
         {
             return LangResources.GetText(key, _currentCulture.Name);
         }
+        public static string GetCurrentLanguage()
+        {
+            return _currentCulture.TwoLetterISOLanguageName; // Renvoie "fr" ou "en"
+        }
+
+
     }
 }
