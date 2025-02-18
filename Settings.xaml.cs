@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
+
 namespace interface_projet
 {
     /// <summary>
@@ -26,11 +27,21 @@ namespace interface_projet
 
         public Settings()
         {
-            
+
             ILang langController = new LangController();
             settingsController = new SettingsController(langController);
+
+            // Charge la langue sauvegardée dans le dossier Properties -> Settings.settings
+            string savedLang = Properties.Settings.Default.Language;
+            if (!string.IsNullOrEmpty(savedLang))
+            {
+                // Mett à jour la culture dans LangController pour que GetCurrentLanguage() renvoie la bonne valeur
+                LangController.SetLanguage(savedLang);
+            }
+
             InitializeComponent();
-            // Définir la langue par défaut en fonction de la langue actuelle
+
+            // Met à jour l'interface (coche le radio button correspondant)
             SetDefaultLanguage();
         }
 
@@ -44,8 +55,8 @@ namespace interface_projet
             {
                 string langCode = rb.Tag.ToString();
                 // _settingsController est maintenant initialisé
-                settingsController.SetLanguage(langCode);
-                MessageBox.Show($"Langue changée en : {langCode}", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                // Appel la fonction dans LangController pour changer la langue
+                settingsController.ChangeLanguage(langCode);
             }
         }
 

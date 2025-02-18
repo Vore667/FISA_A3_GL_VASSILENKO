@@ -5,12 +5,12 @@
     <!-- MENU AJOUTER -->
     <system:String x:Key="WindowTitle">Add an item</system:String>
     <system:String x:Key="TitleTask">Add a backup task</system:String>
-    <system:String x:Key="LabelNom">Name:</system:String>
-    <system:String x:Key="LabelCheminSource">Source Path:</system:String>
-    <system:String x:Key="LabelCheminDestination">Destination Path:</system:String>
+    <system:String x:Key="LabelNom">Name :</system:String>
+    <system:String x:Key="LabelCheminSource">Source Path :</system:String>
+    <system:String x:Key="LabelCheminDestination">Destination Path :</system:String>
     <system:String x:Key="TextAucun">None</system:String>
     <system:String x:Key="CheckboxCrypter">Encrypt backup</system:String>
-    <system:String x:Key="LabelTypeSauvegarde">Backup type:</system:String>
+    <system:String x:Key="LabelTypeSauvegarde">Backup type :</system:String>
     <system:String x:Key="RadioIncrement">Incremental</system:String>
     <system:String x:Key="RadioComplete">Full</system:String>
     <system:String x:Key="BtnAnnuler">Cancel</system:String>
@@ -20,4 +20,12 @@
     <system:String x:Key="Execute">Execute</system:String>
     <system:String x:Key="Delete">Delete</system:String>
     <system:String x:Key="Refresh">Refresh</system:String>
+    <!-- MENU PARAMETRES -->
+    <system:String x:Key="Settings">Settings</system:String>
+    <system:String x:Key="Language">Language :</system:String>
+    <system:String x:Key="TypeLog">Type of logs :</system:String>
+    <system:String x:Key="ExtensionCrypter">Extension to encrypt :</system:String>
+    <system:String x:Key="AddExtension">Add</system:String>
+    <system:String x:Key="DeleteExtension">Delete</system:String>
+    <system:String x:Key="ViewLogs">View logs</system:String>
 </ResourceDictionary>
