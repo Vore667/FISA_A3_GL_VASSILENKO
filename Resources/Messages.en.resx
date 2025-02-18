@@ -264,4 +264,7 @@
   <data name="Update_LogType" xml:space="preserve">
     <value>Log type updated !</value>
   </data>
+  <data name="SubMenu_CrypteType" xml:space="preserve">
+    <value>Souhaitez vous crypter ? 0 pour non 1 pour oui</value>
+  </data>
 </root>

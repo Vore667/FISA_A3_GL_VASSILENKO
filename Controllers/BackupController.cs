@@ -19,10 +19,10 @@ namespace Projet_Easy_Save_grp_4.Controllers
         private readonly LogController logController;
 
         // Constructeur avec un paramètre pour spécifier le répertoire des logs
-        public BackupController(string logDirectory)
+        public BackupController(string logDirectory, LogController logController)
         {
             tasks = LoadBackupTasks();
-            logController = new LogController(logDirectory); // Initialiser LogController avec le chemin des logs
+            this.logController = logController;
         }
 
 

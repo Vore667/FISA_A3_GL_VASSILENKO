@@ -11,15 +11,21 @@ namespace Projet_Easy_Save_grp_4.Interfaces
 {
     interface ILang
     {
-        public  void SetLanguage(string langCode)
+
+        public void SetLanguage(string langCode)
         {
 
         }
 
-        public  string? GetText(string key)
+        public string? GetText(string key)
         {
 
             return null;
+        }
+
+        public void ChangeLanguage(string langCode)
+        {
+
         }
     }
 }
