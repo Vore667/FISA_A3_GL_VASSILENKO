@@ -126,18 +126,6 @@ namespace WpfApp
             }
         }
 
-        private void BtnLang_Click(object sender, RoutedEventArgs e)
-        {
-            if (Application.Current is App app)
-            {
-                // Alterner entre français et anglais
-                string newLang = (app.Resources.MergedDictionaries[0].Source.ToString().Contains("Lang_fr.xaml")) ? "en" : "fr";
-                LangController langController = new LangController();
-                langController.ChangeLanguage(newLang);
-            }
-        }
-
-
         private void StartProgressTracking()
         {
             progressTimer = new DispatcherTimer();

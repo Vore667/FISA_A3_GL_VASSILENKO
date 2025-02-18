@@ -8,7 +8,7 @@
     <system:String x:Key="LabelNom">Nom :</system:String>
     <system:String x:Key="LabelCheminSource">Chemin Source :</system:String>
     <system:String x:Key="LabelCheminDestination">Chemin Destination :</system:String>
-    <system:String x:Key="TextAucun">Aucun</system:String>
+    <system:String x:Key="TextAucun">Aucun</system:String>  
     <system:String x:Key="CheckboxCrypter">Crypter la sauvegarde</system:String>
     <system:String x:Key="LabelTypeSauvegarde">Type de sauvegarde :</system:String>
     <system:String x:Key="RadioIncrement">Incrémentielle</system:String>
@@ -20,4 +20,12 @@
     <system:String x:Key="Execute">Exécuter</system:String>
     <system:String x:Key="Delete">Supprimer</system:String>
     <system:String x:Key="Refresh">Rafraîchir</system:String>
+    <!-- MENU PARAMETRES -->
+    <system:String x:Key="Settings">Paramètres</system:String>
+    <system:String x:Key="Language">Langue :</system:String>
+    <system:String x:Key="TypeLog">Type de logs :</system:String>
+    <system:String x:Key="ExtensionCrypter">Extension à crypter :</system:String>
+    <system:String x:Key="AddExtension">Ajouter</system:String>
+    <system:String x:Key="DeleteExtension">Supprimer</system:String>
+    <system:String x:Key="ViewLogs">Voir les logs</system:String>
 </ResourceDictionary>

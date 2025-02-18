@@ -9,6 +9,8 @@ using System.Windows;
 using Projet_Easy_Save_grp_4;
 using Projet_Easy_Save_grp_4.Interfaces;
 using Projet_Easy_Save_grp_4.Resources;
+using interface_projet.Properties;
+
 
 
 
@@ -18,6 +20,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
     {
         private static CultureInfo _currentCulture = new CultureInfo("fr"); // Langue par défaut
 
+        // Pour les textes dans le CLI
         public static new void SetLanguage(string langCode)
         {
             _currentCulture = new CultureInfo(langCode);
@@ -33,8 +36,10 @@ namespace Projet_Easy_Save_grp_4.Controllers
             return _currentCulture.TwoLetterISOLanguageName; // Renvoie "fr" ou "en"
         }
 
+        // Pour les textes dans la vue
         public void ChangeLanguage(string langCode)
         {
+            // Charger le dictionnaire de ressources
             ResourceDictionary newResource = new ResourceDictionary();
             switch (langCode)
             {
@@ -47,9 +52,17 @@ namespace Projet_Easy_Save_grp_4.Controllers
                     break;
             }
 
-            //Ici on supprime les anciennes ressources et on charge les nouvelles
+            // Remplace le dictionnaire de ressources actuel
             Application.Current.Resources.MergedDictionaries.Clear();
             Application.Current.Resources.MergedDictionaries.Add(newResource);
+
+            // Met à JOUR LA LANGUE
+            _currentCulture = new CultureInfo(langCode);
+
+            // Sauvegarde la langue choisie dans les paramètres de l'application dossier Properties fichier Settings.settings
+            Settings.Default.Language = langCode;
+            Settings.Default.Save();
         }
+
     }
 }
