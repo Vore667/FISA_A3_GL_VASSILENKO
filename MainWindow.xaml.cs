@@ -131,7 +131,8 @@ namespace WpfApp
             {
                 // Alterner entre français et anglais
                 string newLang = (app.Resources.MergedDictionaries[0].Source.ToString().Contains("Lang_fr.xaml")) ? "en" : "fr";
-                app.ChangeLanguage(newLang);
+                LangController langController = new LangController();
+                langController.ChangeLanguage(newLang);
             }
         }
 

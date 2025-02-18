@@ -9,17 +9,22 @@ using static Projet_Easy_Save_grp_4.Controllers.LangController;
 
 namespace Projet_Easy_Save_grp_4.Interfaces
 {
-    internal interface ILang
+    interface ILang
     {
-        public static void SetLanguage(string langCode)
+        public void SetLanguage(string langCode)
         {
 
         }
 
-        public static string? GetText(string key)
+        public string? GetText(string key)
         {
 
             return null;
+        }
+
+        public void ChangeLanguage(string langCode)
+        {
+
         }
     }
 }
