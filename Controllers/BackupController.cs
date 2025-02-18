@@ -135,9 +135,6 @@ namespace Projet_Easy_Save_grp_4.Controllers
             return false;
         }
 
-
-
-
         public double GetProgressPourcentage()
         {
             return logController.GetProgressPourcentage();

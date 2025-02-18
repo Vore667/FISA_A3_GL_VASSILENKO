@@ -154,6 +154,8 @@ namespace WpfApp
             {
                 progressTimer.Stop();
                 MessageBox.Show("Sauvegarde terminée !");
+                progressBar.Value = 0;
+                lblProgress.Content = $"0%";
             }
         }
 

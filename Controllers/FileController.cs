@@ -7,12 +7,60 @@ using System.Threading.Tasks;
 using CryptoSoft;
 using Projet_Easy_Save_grp_4.Interfaces;
 using System.Diagnostics;
+using Newtonsoft.Json;
+using System.Security.Cryptography.Xml;
 
 
 namespace Projet_Easy_Save_grp_4.Controllers
 {
     internal class FileController : IFile
     {
+        private List<string> encryptType;
+
+        public FileController()
+        {
+            LoadEncryptTypes();
+        }
+
+        private void LoadEncryptTypes()
+        {
+            try
+            {
+                string projectRoot = GetProjectRoot();
+                string filePath = Path.Combine(projectRoot, "Resources", "settings.json");
+
+                if (File.Exists(filePath))
+                {
+                    string jsonContent = File.ReadAllText(filePath);
+                    var jsonData = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(jsonContent);
+
+                    if (jsonData != null && jsonData.ContainsKey("encrypt"))
+                    {
+                        encryptType = jsonData["encrypt"];
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+               
+            }
+        }
+
+        private string GetProjectRoot()
+        {
+            string currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            DirectoryInfo? directory = new DirectoryInfo(currentDirectory);
+
+            while (directory != null && !directory.GetFiles("*.csproj").Any()) 
+            {
+                directory = directory.Parent;
+            }
+
+            return directory?.FullName ?? currentDirectory; 
+        }
+
+
+
         // Retourne une liste pour chaque fichier copié
         public List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)> CopyDirectory(string sourceDirectory, string destinationDirectory, bool crypter)
         {
@@ -37,9 +85,11 @@ namespace Projet_Easy_Save_grp_4.Controllers
                     stopwatchCopy.Stop();
                     long transferTime = stopwatchCopy.ElapsedMilliseconds;
 
-                    // Mesure du temps de cryptage (si activé)
+                    // Vérification du type de fichier pour le cryptage
                     long encryptionTime = 0;
-                    if (crypter)
+                    string fileExtension = fi.Extension.ToLower(); 
+
+                    if (crypter && encryptType.Contains(fileExtension))
                     {
                         try
                         {
@@ -50,12 +100,13 @@ namespace Projet_Easy_Save_grp_4.Controllers
                         }
                         catch (Exception)
                         {
-                            encryptionTime = -1; // Code erreur comme dmd
+                            encryptionTime = -1; // Code erreur comme demandé
                         }
                     }
 
                     fileCopyMetrics.Add((file, transferTime, fi.Length, encryptionTime));
                 }
+
 
                 // Appel récursif pour les sous-répertoires
                 foreach (string subDirectory in Directory.GetDirectories(sourceDirectory))
@@ -103,7 +154,9 @@ namespace Projet_Easy_Save_grp_4.Controllers
                         long transferTime = stopwatchCopy.ElapsedMilliseconds;
 
                         long encryptionTime = 0;
-                        if (crypter)
+                        string fileExtension = fi.Extension.ToLower();
+
+                        if (crypter && encryptType.Contains(fileExtension))
                         {
                             try
                             {

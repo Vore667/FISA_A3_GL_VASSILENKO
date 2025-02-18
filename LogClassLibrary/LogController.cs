@@ -36,8 +36,16 @@ namespace LogClassLibrary
 
         public double GetProgressPourcentage()
         {
+            if (this.progressPourcentage == 100)
+            {
+                double temp = this.progressPourcentage; 
+                this.progressPourcentage = 0; 
+                return temp; 
+            }
+
             return this.progressPourcentage;
         }
+
 
 
         // Constructeur : on spécifie le dossier de log et on peut choisir le type (JSON par défaut)

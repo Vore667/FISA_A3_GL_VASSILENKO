@@ -1,0 +1,3 @@
+{
+    "encrypt": [ ".txt", ".csproj", ".gitignore" ]
+}
