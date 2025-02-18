@@ -26,6 +26,11 @@ namespace Projet_Easy_Save_grp_4.Controllers
         public static new string GetText(string key)
         {
             return LangResources.GetText(key, _currentCulture.Name);
+        } 
+        
+        public static string GetCurrentLanguage()
+        {
+            return _currentCulture.TwoLetterISOLanguageName; // Renvoie "fr" ou "en"
         }
 
         public void ChangeLanguage(string langCode)

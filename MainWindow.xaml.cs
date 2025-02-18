@@ -67,7 +67,8 @@ namespace WpfApp
 
         private void BtnParametres_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Ouvrir les paramètres !");
+            Settings fenetre = new Settings();
+            fenetre.ShowDialog();
         }
 
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
