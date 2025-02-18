@@ -32,7 +32,7 @@ namespace interface_projet
 
         public Settings()
         {
-            ILang langController = new LangController();
+            ILang langController = LangController.Instance;
             LogController logController = LogController.Instance;
             settingsController = new SettingsController(langController, logController);
 

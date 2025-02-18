@@ -18,6 +18,7 @@ namespace WpfApp
             InitializeComponent();
             string logDirectory = interface_projet.Properties.Settings.Default.LogsPath;
             string logType = interface_projet.Properties.Settings.Default.LogsType;
+            LangController langController = LangController.Instance;
             LogController logController = LogController.Instance; // On récupère l'instance du singleton
             backupController = new BackupController(logDirectory, logController); //TODO VOIR SI CA POSE PROBLEME D'INSTANCIER LE CONTROLLER ICI A LA PLACE DE L'INSTANCIER SEULEMENT DANS LE MAIN
             LoadBackupTasks();

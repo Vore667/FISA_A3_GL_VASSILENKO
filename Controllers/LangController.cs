@@ -10,14 +10,32 @@ using Projet_Easy_Save_grp_4;
 using Projet_Easy_Save_grp_4.Interfaces;
 using Projet_Easy_Save_grp_4.Resources;
 using interface_projet.Properties;
+using LogClassLibrary;
 
 
 
 
 namespace Projet_Easy_Save_grp_4.Controllers
 {
-    class LangController : ILang
+    public class LangController : ILang
     {
+        private static LangController instance;
+        public static LangController Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new LangController();
+                }
+                return instance;
+            }
+        }
+
+        private LangController() {
+            this.ChangeLanguage(Settings.Default.Language);
+        }
+
         private static CultureInfo _currentCulture = new CultureInfo("fr"); // Langue par défaut
 
         // Pour les textes dans le CLI
