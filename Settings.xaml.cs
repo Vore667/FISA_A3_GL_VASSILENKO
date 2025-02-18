@@ -43,7 +43,7 @@ namespace interface_projet
                 LangController.SetLanguage(savedLang);
             }
 
-            InitializeComponent();'
+            InitializeComponent();
             string logsPath = Properties.Settings.Default.LogsPath;
             tbLogsPath.Text = logsPath;
             
