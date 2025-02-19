@@ -67,7 +67,7 @@
         <!-- Section Extensions -->
         <GroupBox Grid.Row="3" Grid.ColumnSpan="3" Header="{DynamicResource ExtensionCrypter}">
             <StackPanel>
-                <DockPanel Margin="0 10">
+                <DockPanel Margin="0 10" LastChildFill="False">
                     <TextBox x:Name="tbExtension" 
                            Width="120"
                            Margin="0 0 10 0"/>
@@ -86,11 +86,11 @@
         </GroupBox>
 
         <!-- Section Logiciel Métier -->
-        <GroupBox Grid.Row="4" Grid.ColumnSpan="3" Header="Logiciel Métier">
-            <DockPanel Margin="10">
+        <GroupBox Grid.Row="4" Grid.ColumnSpan="3" Header="{DynamicResource WorkLogiciel}">
+            <DockPanel Margin="10" LastChildFill="False">
                 <TextBox x:Name="tbJobApp" 
                        Margin="0 0 10 0" TextChanged="tbJobApp_TextChanged" Width="197"/>
-                <Button Content="Modifier"
+                <Button Content="{DynamicResource Modify}"
                       Click="BtnModifyJobApp_Click" DockPanel.Dock="Left" Width="87"/>
             </DockPanel>
         </GroupBox>

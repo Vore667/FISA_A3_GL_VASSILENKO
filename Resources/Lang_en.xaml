@@ -42,4 +42,15 @@
     <system:String x:Key="DeleteExtension">Delete</system:String>
     <system:String x:Key="ViewLogs">View logs</system:String>
     <system:String x:Key="logPath">Logs path : </system:String>
+    <system:String x:Key="Modify">Modify</system:String>
+    <system:String x:Key="WorkLogiciel">business software</system:String>
+    <system:String x:Key="ExtensionToDelete">Please select an extension to delete.</system:String>
+    <system:String x:Key="DirectoryDoesntExist">The specified path does not exist.</system:String>
+    <system:String x:Key="PlzSpecifyDirectoryLog">Please specify a log path.</system:String>
+    <system:String x:Key="PlzSpecifySourceDirectory">Select a source folder</system:String>
+    <system:String x:Key="ErrorExtensionInvalid">Invalid extension. It must be in ‘.x’ format</system:String>
+    <system:String x:Key="PlzExtensionInvalid">Please enter a valid extension !</system:String>
+
+
+
 </ResourceDictionary>

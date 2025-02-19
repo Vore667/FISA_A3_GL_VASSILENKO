@@ -41,5 +41,15 @@
     <system:String x:Key="DeleteExtension">Supprimer</system:String>
     <system:String x:Key="ViewLogs">Voir les logs</system:String>
     <system:String x:Key="logPath">Chemin des logs : </system:String>
+    <system:String x:Key="Modify">Modifier</system:String>
+    <system:String x:Key="WorkLogiciel">Logiciel Métier</system:String>
+    <system:String x:Key="ExtensionToDelete">Veuillez sélectionner une extension à supprimer.</system:String>
+    <system:String x:Key="DirectoryDoesntExist">Le chemin spécifié n'existe pas.</system:String>
+    <system:String x:Key="PlzSpecifyDirectoryLog">Veuillez spécifier un chemin de logs.</system:String>
+    <system:String x:Key="PlzSpecifySourceDirectory">Sélectionnez un dossier source</system:String>
+    <system:String x:Key="ErrorExtensionInvalid">Extension invalide. Elle doit être au format '.x'</system:String>
+    <system:String x:Key="PlzExtensionInvalid">Veuillez entrer une extension valide !</system:String>
+
+
 
 </ResourceDictionary>

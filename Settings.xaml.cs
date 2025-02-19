@@ -108,7 +108,8 @@ namespace interface_projet
             }
             else
             {
-                System.Windows.MessageBox.Show("Veuillez sélectionner une extension à supprimer.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Warning);
+                System.Windows.MessageBox.Show((FindResource("ExtensionToDelete") as string), "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                
             }
         }
 
@@ -179,12 +180,13 @@ namespace interface_projet
                 }
                 else
                 {
-                    System.Windows.MessageBox.Show("Le chemin spécifié n'existe pas.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                    System.Windows.MessageBox.Show((FindResource("DirectoryDoesntExist") as string), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    
                 }
             }
             else
             {
-                System.Windows.MessageBox.Show("Veuillez spécifier un chemin de logs.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show((FindResource("PlzSpecifyDirectoryLog") as string), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -192,7 +194,8 @@ namespace interface_projet
         {
             using (var dialog = new FolderBrowserDialog())
             {
-                dialog.Description = "Sélectionnez un dossier source";
+                dialog.Description = FindResource("PlzSpecifySourceDirectory") as string;
+
                 dialog.ShowNewFolderButton = true;
 
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -212,7 +215,8 @@ namespace interface_projet
 
             if (!newExtension.StartsWith(".") || newExtension.Length < 2)
             {
-                System.Windows.MessageBox.Show("Extension invalide. Elle doit être au format '.x'", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                System.Windows.MessageBox.Show((FindResource("ErrorExtensionInvalid") as string), "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                
                 return;
             }
 
@@ -226,7 +230,7 @@ namespace interface_projet
             }
             else
             {
-                System.Windows.MessageBox.Show("Veuillez entrer une extension valide.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Warning);
+                System.Windows.MessageBox.Show((FindResource("PlzExtensionInvalid") as string), "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
