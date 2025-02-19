@@ -173,6 +173,7 @@ namespace WpfApp
                 }
 
                 MessageBox.Show(FindResource("BackupCompleted") as string);
+                return;
             }
             else
             {

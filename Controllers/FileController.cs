@@ -6,9 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using CryptoSoft;
 using Projet_Easy_Save_grp_4.Interfaces;
+using interface_projet.Properties;
 using System.Diagnostics;
 using Newtonsoft.Json;
+using System.Collections.Specialized;
 using System.Security.Cryptography.Xml;
+using static System.Net.Mime.MediaTypeNames;
+using interface_projet.Controllers;
 
 
 namespace Projet_Easy_Save_grp_4.Controllers
@@ -16,49 +20,47 @@ namespace Projet_Easy_Save_grp_4.Controllers
     internal class FileController : IFile
     {
         private List<string> encryptType;
+        private string jobAppName = "";
+        EncryptionManager encryptionManager = new EncryptionManager();
 
         public FileController()
         {
             LoadEncryptTypes();
+            LoadJobAppNames();
+            IsJobAppRunning();
         }
+
 
         private void LoadEncryptTypes()
         {
+            encryptType = encryptionManager.GetEncryptExtensions();
+        }
+
+
+        private void LoadJobAppNames()
+        {
+            jobAppName = encryptionManager.GetJobApp();
+        }
+
+        private bool IsJobAppRunning()
+        {
             try
             {
-                string projectRoot = GetProjectRoot();
-                string filePath = Path.Combine(projectRoot, "Resources", "settings.json");
+                // Vérifier si l'application métier est en cours d'exécution.
+                var jobAppProcesses = Process.GetProcessesByName(jobAppName);
 
-                if (File.Exists(filePath))
+                if (jobAppProcesses.Length > 0)
                 {
-                    string jsonContent = File.ReadAllText(filePath);
-                    var jsonData = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(jsonContent);
-
-                    if (jsonData != null && jsonData.ContainsKey("encrypt"))
-                    {
-                        encryptType = jsonData["encrypt"];
-                    }
+                    return true;
                 }
             }
             catch (Exception ex)
             {
-               
-            }
-        }
-
-        private string GetProjectRoot()
-        {
-            string currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            DirectoryInfo? directory = new DirectoryInfo(currentDirectory);
-
-            while (directory != null && !directory.GetFiles("*.csproj").Any()) 
-            {
-                directory = directory.Parent;
+                System.Windows.MessageBox.Show($"Erreur lors de la vérification de l'application : {ex.Message}");
             }
 
-            return directory?.FullName ?? currentDirectory; 
+            return false;
         }
-
 
 
         // Retourne une liste pour chaque fichier copié
@@ -73,21 +75,31 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 if (!Directory.Exists(destinationDirectory))
                     Directory.CreateDirectory(destinationDirectory);
 
+                LoadEncryptTypes();
+
                 foreach (string file in Directory.GetFiles(sourceDirectory))
                 {
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(destinationDirectory, fileName);
                     FileInfo fi = new FileInfo(file);
 
-                    // Mesure du temps de copie
+                    // Copie du fichier en cours
                     Stopwatch stopwatchCopy = Stopwatch.StartNew();
                     File.Copy(file, destFile, true);
                     stopwatchCopy.Stop();
                     long transferTime = stopwatchCopy.ElapsedMilliseconds;
 
-                    // Vérification du type de fichier pour le cryptage
+                    // Vérifier après chaque copie de fichier si l'application métier est ouverte
+                    if (IsJobAppRunning())
+                    {
+                        fileCopyMetrics.Add((file, transferTime, fi.Length, -100)); // -100 pour indiquer que l'arrêt a eu lieu après la copie
+                        System.Windows.MessageBox.Show("Arrêt après la copie du fichier en cours, application métier détectée. Veuillez attendre l'ecriture des logs");
+                        return fileCopyMetrics; // Sortir de la méthode immédiatement après la copie du fichier en cours
+                    }
+
+                    // Vérification du type de fichier pour cryptage
                     long encryptionTime = 0;
-                    string fileExtension = fi.Extension.ToLower(); 
+                    string fileExtension = fi.Extension.ToLower();
 
                     if (crypter && encryptType.Contains(fileExtension))
                     {
@@ -104,9 +116,9 @@ namespace Projet_Easy_Save_grp_4.Controllers
                         }
                     }
 
+                    // Ajouter le fichier copié dans la liste des métriques
                     fileCopyMetrics.Add((file, transferTime, fi.Length, encryptionTime));
                 }
-
 
                 // Appel récursif pour les sous-répertoires
                 foreach (string subDirectory in Directory.GetDirectories(sourceDirectory))
@@ -119,13 +131,11 @@ namespace Projet_Easy_Save_grp_4.Controllers
             }
             catch (Exception ex)
             {
-
+                // Optionnel : Log d'exception en cas de problème
+                System.Windows.MessageBox.Show($"Erreur : {ex.Message}");
             }
             return fileCopyMetrics;
         }
-
-
-
 
         // Retourne une liste pour chaque fichier copié
         public List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)> CopyModifiedFiles(string sourceDirectory, string destinationDirectory, bool crypter)
@@ -139,6 +149,8 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 if (!Directory.Exists(destinationDirectory))
                     Directory.CreateDirectory(destinationDirectory);
 
+                LoadEncryptTypes();
+
                 foreach (string file in Directory.GetFiles(sourceDirectory))
                 {
                     // Vérifie si le fichier a été modifié dans les dernières 24 heures
@@ -147,6 +159,12 @@ namespace Projet_Easy_Save_grp_4.Controllers
                         string filename = Path.GetFileName(file);
                         string destFile = Path.Combine(destinationDirectory, filename);
                         FileInfo fi = new FileInfo(file);
+
+                        if (IsJobAppRunning())
+                        {
+                            fileCopyMetrics.Add((file, -100, fi.Length, -100));
+                            return fileCopyMetrics;
+                        }
 
                         Stopwatch stopwatchCopy = Stopwatch.StartNew();
                         File.Copy(file, destFile, true);
@@ -189,8 +207,5 @@ namespace Projet_Easy_Save_grp_4.Controllers
             }
             return fileCopyMetrics;
         }
-
-
-
     }
 }

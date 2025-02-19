@@ -20,6 +20,7 @@ using System.Windows.Shapes;
 using interface_projet.Properties;
 using LogClassLibrary;
 using WpfApp;
+using Newtonsoft.Json;
 
 
 namespace interface_projet
@@ -58,15 +59,58 @@ namespace interface_projet
 
             SetDefaultLanguage();
             SetDefaultLogType();
+            LoadEncryptExtensions();
+            LoadJobApp();
         }
 
-
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void LoadEncryptExtensions()
         {
+            lbExtensions.Items.Clear();
 
+            List<string> extensions = settingsController.GetEncryptExtensions();
+
+            if (extensions != null && extensions.Count > 0)
+            {
+                foreach (var ext in extensions)
+                {
+                    lbExtensions.Items.Add(ext);
+                }
+            }
         }
 
 
+        private void BtnModifyJobApp_Click(object sender, RoutedEventArgs e)
+        {
+            string newJobApp = tbJobApp.Text;
+            settingsController.ModifyJobApp(newJobApp);
+            LoadJobApp();
+        }
+
+        private void LoadJobApp()
+        {
+            tbJobApp.Text = settingsController.GetJobApp();
+        }
+
+
+        private void ButtonDeleteExtention_Click(object sender, RoutedEventArgs e)
+        {
+            if (lbExtensions.SelectedItem != null)
+            {
+                string selectedExtension = lbExtensions.SelectedItem.ToString();
+
+                if (!string.IsNullOrEmpty(selectedExtension))
+                {
+                    settingsController.RemoveEncryptExtension(selectedExtension);
+                    lbExtensions.SelectedItem = null;
+                }
+
+                LoadEncryptExtensions(); 
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Veuillez sélectionner une extension à supprimer.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
 
         private void LanguageRadioButton_Checked(object sender, RoutedEventArgs e)
         {
@@ -80,8 +124,6 @@ namespace interface_projet
                 mainWindow.LoadBackupTasks(); // Use the instance of MainWindow to call LoadBackupTasks
             }
         }
-
-
 
         private void SetDefaultLanguage()
         {
@@ -164,15 +206,33 @@ namespace interface_projet
             }
         }
 
-
-        // Pas utilisé 
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        private void btnAddExtension_Click(object sender, RoutedEventArgs e)
         {
-            base.OnClosing(e);
-            // Sauvegarder le chemin des logs dans les settings
-            Properties.Settings.Default.LogsPath = tbLogsPath.Text;
-            Properties.Settings.Default.Save();
+            string newExtension = tbExtension.Text.Trim();
+
+            if (!newExtension.StartsWith(".") || newExtension.Length < 2)
+            {
+                System.Windows.MessageBox.Show("Extension invalide. Elle doit être au format '.x'", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(newExtension))
+            {
+                tbExtension.Clear();
+
+                settingsController.AddEncryptExtension(newExtension);
+
+                LoadEncryptExtensions(); 
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Veuillez entrer une extension valide.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
+        private void tbJobApp_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
 }

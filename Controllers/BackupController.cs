@@ -121,6 +121,14 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 // Parcours des métriques pour enregistrer les logs journaliers
                 foreach (var (filePath, transferTime, fileSize, encryptionTime) in fileCopyMetrics)
                 {
+                    //Verification du logiciel metier
+                    if (encryptionTime == -100)
+                    {
+                        logController.LogBackupExecution(task.Name, "Interrupted with job app", files, totalSize, task.Source, task.Destination, actual_files, totalSizeFilesRemaining);
+                        return true;
+                    }
+
+
                     totalSizeFilesRemaining -= fileSize;
                     logController.LogBackupExecution(task.Name, "InProgress", files, totalSize, task.Source, task.Destination, actual_files, totalSizeFilesRemaining);
 

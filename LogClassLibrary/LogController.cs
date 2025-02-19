@@ -72,7 +72,6 @@ namespace LogClassLibrary
 
             // Refresh les chemins à la construction
             RefreshPaths();
-
         }
 
         // Méthode pour recalculer les chemins de fichiers en fonction des settings actuels

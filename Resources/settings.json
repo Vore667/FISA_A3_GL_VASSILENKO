@@ -1,3 +1,9 @@
 {
-    "encrypt": [ ".txt", ".csproj", ".gitignore" ]
+  "Encrypt": [
+    ".txt",
+    ".csproj",
+    ".gitignore",
+    ".leo"
+  ],
+  "JobApp": "Calculator"
 }
