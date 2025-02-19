@@ -31,7 +31,7 @@
                       AutoGenerateColumns="False" 
                       CanUserAddRows="False" 
                       IsReadOnly="True" 
-                      SelectionMode="Single" 
+                      SelectionMode="Extended" 
                       SelectionUnit="FullRow">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="{DynamicResource BackupName}" Binding="{Binding Name}" Width="150"/>

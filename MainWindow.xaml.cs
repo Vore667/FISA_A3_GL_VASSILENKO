@@ -126,10 +126,14 @@ namespace WpfApp
 
         private void ButtonDelete_Click(object sender, RoutedEventArgs e)
         {
-            var selectedItem = dgBackupTasks.SelectedItem as BackupItem;
-            if (selectedItem != null)
+            var selectedItems = dgBackupTasks.SelectedItems.Cast<BackupItem>().ToList();
+
+            if (selectedItems.Any())
             {
-                backupController.DeleteBackup(selectedItem.Name);
+                foreach (var selectedItem in selectedItems)
+                {
+                    backupController.DeleteBackup(selectedItem.Name);
+                }
                 LoadBackupTasks();
             }
             else
@@ -143,27 +147,40 @@ namespace WpfApp
 
         private async void ButtonExecute_Click(object sender, RoutedEventArgs e)
         {
-            var selectedItem = dgBackupTasks.SelectedItem as BackupItem;
+            var selectedItems = dgBackupTasks.SelectedItems.Cast<BackupItem>().ToList();
 
-            if (selectedItem != null)
+            if (selectedItems.Any())
             {
-                // Démarrer le suivi de la progression
-                StartProgressTracking();
-
-                // Lancer la sauvegarde en tâche asynchrone pour ne pas bloquer l'UI
-                bool response = await Task.Run(() => backupController.ExecuteBackup(selectedItem.Name));
-
-                if (!response)
+                foreach (var item in selectedItems)
                 {
-                    MessageBox.Show(FindResource("BackupFailed") as string);
-                    progressTimer.Stop(); // Arrêter le suivi si la sauvegarde échoue
+                    progressBar.Value = 0;
+                    lblProgress.Content = "0%";
+
+                    StartProgressTracking();
+
+                    // Exécuter la sauvegarde asynchrone
+                    bool response = await Task.Run(() => backupController.ExecuteBackup(item.Name));
+
+                    progressTimer.Stop();
+                    progressBar.Value = 0;
+                    lblProgress.Content = "0%";
+
+                    if (!response)
+                    {
+                        MessageBox.Show(string.Format(FindResource("BackupFailed") as string, item.Name));
+                        break; // Arrêter l'exécution si une sauvegarde échoue
+                    }
                 }
+
+                MessageBox.Show(FindResource("BackupCompleted") as string);
             }
             else
             {
                 MessageBox.Show(FindResource("NoItemSelected") as string);
             }
         }
+
+
 
         private void StartProgressTracking()
         {
