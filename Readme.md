@@ -1,4 +1,4 @@
-﻿# EasySave
+﻿# EasySave v-3
 
 ## Description
 EasySave est un logiciel de sauvegarde développé en C# avec .NET 8.0. Il permet d'effectuer des sauvegardes sécurisées et automatisées des fichiers des utilisateurs. Ce projet s'intègre dans la suite logicielle ProSoft et respecte la politique tarifaire de l'éditeur.
