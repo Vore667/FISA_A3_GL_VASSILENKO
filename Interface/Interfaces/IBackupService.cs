@@ -29,11 +29,6 @@ namespace Projet_Easy_Save_grp_4.Interfaces
             // Supprimer une backup
         }
 
-        public void ExecuteOrDeleteMultipleBackups(string? input, bool isExecute)
-        {
-            // Executer ou supprimer plusieurs backups
-        }
-
         public BackupTask? FindBackup(string name)
         {
             // Trouver une backup

@@ -204,7 +204,6 @@ namespace WpfApp
             if (progress >= 100)
             {
                 progressTimer.Stop();
-                MessageBox.Show(FindResource("BackupCompleted") as string);
                 progressBar.Value = 0;
                 lblProgress.Content = $"0%";
             }

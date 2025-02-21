@@ -162,36 +162,6 @@ namespace Projet_Easy_Save_grp_4.Controllers
             }
         }
 
-        // Première fonction appelée qui appèle ensuite la fonction pr supprimer ou executer une backup plusieurs fois si dmd par l'user
-        public void ExecuteOrDeleteMultipleBackups(string? input, bool isExecute)
-        {
-            List<string> availableBackups = tasks.Select(t => t.Name).ToList();
-            List<string> backupsToExecuteOrDelete = BackupParser.ParseBackupSelection(input, availableBackups);
-
-            if (backupsToExecuteOrDelete.Count == 0)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"{LangController.GetText("Error_NoTaskFound")}");
-                Console.ResetColor();
-                return;
-            }
-
-            if (isExecute)
-            {
-                foreach (string backupName in backupsToExecuteOrDelete)
-                {
-                    ExecuteBackup(backupName);
-                }
-            }
-            else
-            {
-                foreach (string backupName in backupsToExecuteOrDelete)
-                {
-                    DeleteBackup(backupName);
-                }
-            }
-        }
-
         // Trouver une backup via son nom, utilisée pour les fonctions executer et supprimer
         public BackupTask? FindBackup(string name)
         {
