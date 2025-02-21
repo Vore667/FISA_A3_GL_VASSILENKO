@@ -1,0 +1,59 @@
+# ---- Build / Bin / Obj ----
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+*.cache
+*.ilk
+*.log
+*.suo
+*.user
+*.csproj.user
+*.tt
+*.vscode/
+
+# ---- Packages et dépendances ----
+# (Ne pas ignorer les DLLs internes dans `Libs/`)
+packages/
+!LogClassLibrary.dll   # On garde la DLL interne
+
+# ---- Configurations de l'IDE ----
+.vs/
+*.sln.docstates
+.idea/
+*.suo
+*.userosscache
+*.sln.metaproj
+*.vspscc
+*.vssscc
+*.ncb
+*.aps
+*.res
+
+# ---- Logs et cache ----
+*.log
+*.tlog
+*.lastbuildstate
+*.pfx
+*.snk
+Thumbs.db
+
+# ---- Fichiers de publication ----
+publish/
+wwwroot/
+app.publish/
+
+# ---- Fichiers temporaires ou spécifiques à l'IDE ----
+# IntelliJ, JetBrains Rider et autres IDE
+.idea/
+
+# Spécifique à macOS
+.DS_Store
+
+# Fichiers générés par Visual Studio pour des fichiers temporaires ou spécifiques à l'IDE
+.vs/
+
+# ---- WPF spécifique ----
+# Ne pas ignorer le fichier XAML (WPF)
+*.xaml~

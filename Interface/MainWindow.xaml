@@ -1,0 +1,62 @@
+﻿<Window x:Class="WpfApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Application WPF" 
+        Loaded="Window_Loaded" 
+        WindowStartupLocation="CenterScreen" 
+        Height="600" Width="800">
+    <DockPanel Margin="10">
+        <!-- Bouton Paramètres en haut à droite -->
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="{DynamicResource Settings}" Width="65" Height="30" Click="BtnParametres_Click"/>
+        </StackPanel>
+
+        <!-- TOUT sauf param -->
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Titre -->
+                <RowDefinition Height="*"/>
+                <!-- DataGrid -->
+                <RowDefinition Height="Auto"/>
+                <!-- Progression et boutons -->
+            </Grid.RowDefinitions>
+
+            <!-- Titre -->
+            <TextBlock Grid.Row="0" Text="{DynamicResource Title}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+
+
+            <!-- DataGrid pour afficher les tâches -->
+            <DataGrid x:Name="dgBackupTasks" Grid.Row="1" 
+                      AutoGenerateColumns="False" 
+                      CanUserAddRows="False" 
+                      IsReadOnly="True" 
+                      SelectionMode="Extended" 
+                      SelectionUnit="FullRow">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="{DynamicResource BackupName}" Binding="{Binding Name}" Width="150"/>
+                    <DataGridTextColumn Header="{DynamicResource BackupSource}" Binding="{Binding Source}" Width="*"/>
+                    <DataGridTextColumn Header="{DynamicResource BackupDestination}" Binding="{Binding Destination}" Width="*"/>
+                    <DataGridTextColumn Header="{DynamicResource BackupType}" Binding="{Binding Type}" Width="100"/>
+                    <DataGridCheckBoxColumn Header="{DynamicResource BackupEncryption}" Binding="{Binding Cryptage}" Width="80"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- Progression et boutons d'actions -->
+            <StackPanel Grid.Row="2" Orientation="Vertical" Margin="0,10,0,0">
+                <!-- Barre de progression -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
+                    <ProgressBar x:Name="progressBar" Width="300" Height="20" Minimum="0" Maximum="100" Margin="0,0,10,0"/>
+                    <Label x:Name="lblProgress" Content="0%" VerticalAlignment="Center"/>
+                </StackPanel>
+                <!-- Boutons d'actions -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Content="{DynamicResource Add}" Width="100" Margin="5" Click="BtnAjouter_Click"/>
+                    <Button Content="{DynamicResource Execute}" Width="100" Margin="5" Click="ButtonExecute_Click"/>
+                    <Button Content="{DynamicResource Delete}" Width="100" Margin="5" Click="ButtonDelete_Click"/>
+                    <Button Content="{DynamicResource Refresh}" Width="100" Margin="5" Click="BtnRefresh_Click"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </DockPanel>
+</Window>
