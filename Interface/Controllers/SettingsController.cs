@@ -117,7 +117,7 @@ namespace interface_projet.Controllers
                 }
 
                 // Mettre à jour uniquement la section "encrypt"
-                jsonData["encrypt"] = extensions;
+                jsonData["Encrypt"] = extensions;
 
                 // Sauvegarder l'intégralité du JSON mis à jour
                 string jsonContent = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
