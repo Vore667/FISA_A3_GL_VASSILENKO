@@ -15,8 +15,8 @@ obj/
 
 # ---- Packages et dépendances ----
 # (Ne pas ignorer les DLLs internes dans `Libs/`)
-packages/
-!LogClassLibrary.dll   # On garde la DLL interne
+!LogClassLibraryVue/bin/Debug/net8.0/LogClassLibraryVue.dll
+!CryptoSoft/bin/Debug/net8.0/win-x64/CryptoSoft.dll
 
 # ---- Configurations de l'IDE ----
 .vs/
