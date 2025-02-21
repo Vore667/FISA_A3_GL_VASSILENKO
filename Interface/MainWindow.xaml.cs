@@ -80,7 +80,6 @@ namespace WpfApp
         {
             List<BackupController.BackupTask> tasks = backupController.ListBackup();
 
-            // Transformation de vos tâches en BackupItem (votre classe modèle)
             var backupItems = tasks.Select(task => new BackupItem
             {
                 Name = task.Name,

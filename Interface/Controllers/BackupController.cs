@@ -246,11 +246,11 @@ namespace Projet_Easy_Save_grp_4.Controllers
             {
                 if (this.Type == "1") //Su save complete on copie tout le dossier
                 {
-                    return fileController.CopyDirectory(Source, Destination, Crypter);
+                    return fileController.CopyFiles(Source, Destination, Crypter, false);
                 }
                 else //Sinon on copie seulement les fichiers modifiés au cours des 24 dernières heures
                 {
-                    return fileController.CopyModifiedFiles(Source, Destination, Crypter);
+                    return fileController.CopyFiles(Source, Destination, Crypter, true);
                 }
             }
 

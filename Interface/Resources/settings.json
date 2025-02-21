@@ -1,4 +1,6 @@
 {
-  "Encrypt": [],
+  "Encrypt": [
+    ".txt"
+  ],
   "JobApp": "Calculator"
 }

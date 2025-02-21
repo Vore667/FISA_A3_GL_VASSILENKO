@@ -33,6 +33,7 @@
     <system:String x:Key="NoItemSelected">Aucun élément sélectionné.</system:String>
     <system:String x:Key="BackupFailed">L'exécution de la sauvegarde a échoué.</system:String>
     <system:String x:Key="BackupCompleted">Sauvegarde terminée avec succès !</system:String>
+
     <!-- MENU PARAMETRES -->
     <system:String x:Key="Language">Langue : </system:String>
     <system:String x:Key="TypeLog">Type de logs : </system:String>
@@ -51,5 +52,5 @@
     <system:String x:Key="PlzExtensionInvalid">Veuillez entrer une extension valide !</system:String>
 
 
-
+    
 </ResourceDictionary>
