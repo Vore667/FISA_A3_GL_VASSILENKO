@@ -55,6 +55,12 @@
                     <Button Content="{DynamicResource Execute}" Width="100" Margin="5" Click="ButtonExecute_Click"/>
                     <Button Content="{DynamicResource Delete}" Width="100" Margin="5" Click="ButtonDelete_Click"/>
                     <Button Content="{DynamicResource Refresh}" Width="100" Margin="5" Click="BtnRefresh_Click"/>
+                    <Button x:Name="btnStopBackup"
+                        Content="Stopper la backup"
+                        Width="100" 
+                        Visibility="Collapsed"
+                        Click="btnStopBackup_Click"
+                        Margin="5"/>
                 </StackPanel>
             </StackPanel>
         </Grid>

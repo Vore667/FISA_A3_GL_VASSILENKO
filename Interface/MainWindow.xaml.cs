@@ -14,6 +14,8 @@ namespace WpfApp
     public partial class MainWindow : Window
     {
         private BackupController backupController;
+        private CancellationTokenSource? _cancellationTokenSource;
+
 
         public MainWindow()
         {
@@ -153,28 +155,41 @@ namespace WpfApp
 
             if (selectedItems.Any())
             {
-                foreach (var item in selectedItems)
+                _cancellationTokenSource = new CancellationTokenSource();
+
+                btnStopBackup.Visibility = Visibility.Visible;
+
+
+                progressBar.Value = 0;
+                lblProgress.Content = "0%";
+
+                StartProgressTracking();
+
+                // Exécuter la/les sauvegarde synchrone
+                var backupTasks = selectedItems.Select(item =>
+                    Task.Run(() => backupController.ExecuteBackup(item.Name, _cancellationTokenSource.Token))
+                ).ToList();
+
+                // On attend la fin de tt les saves avec WhenAll
+                bool[] results = await Task.WhenAll(backupTasks);
+
+                btnStopBackup.Visibility = Visibility.Collapsed;
+
+                progressTimer.Stop();
+                progressBar.Value = 100;
+                lblProgress.Content = "100%";
+
+                if (results.Any(r => !r))
                 {
+                    MessageBox.Show(string.Format(FindResource("BackupFailed") as string));
                     progressBar.Value = 0;
                     lblProgress.Content = "0%";
-
-                    StartProgressTracking();
-
-                    // Exécuter la sauvegarde asynchrone
-                    bool response = await Task.Run(() => backupController.ExecuteBackup(item.Name));
-
-                    progressTimer.Stop();
-                    progressBar.Value = 0;
-                    lblProgress.Content = "0%";
-
-                    if (!response)
-                    {
-                        MessageBox.Show(string.Format(FindResource("BackupFailed") as string, item.Name));
-                        break; // Arrêter l'exécution si une sauvegarde échoue
-                    }
+                    return;
                 }
 
                 MessageBox.Show(FindResource("BackupCompleted") as string);
+                progressBar.Value = 0;
+                lblProgress.Content = "0%";
                 return;
             }
             else
@@ -182,6 +197,21 @@ namespace WpfApp
                 MessageBox.Show(FindResource("NoItemSelected") as string);
             }
         }
+
+        private void btnStopBackup_Click(object sender, RoutedEventArgs e)
+        {
+            if (_cancellationTokenSource != null)
+            {
+                _cancellationTokenSource.Cancel();
+                MessageBox.Show(FindResource("BackupStopExec") as string);
+                btnStopBackup.Visibility = Visibility.Collapsed; // Cacher immédiatement le bouton
+                progressTimer.Stop();
+                progressBar.Value = 0;
+                lblProgress.Content = "0%";
+            }
+        }
+
+
 
 
 

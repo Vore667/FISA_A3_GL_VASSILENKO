@@ -33,6 +33,7 @@
     <system:String x:Key="BackupFailed">Backup execution failed.</system:String>
     <system:String x:Key="BackupCompleted">Backup completed successfully!</system:String>
     <system:String x:Key="Title">Backup Task List</system:String>
+    <system:String x:Key="BackupStopExec">Backup stop request executed!</system:String>
 
     <!-- MENU PARAMETRES -->
     <system:String x:Key="Language">Language : </system:String>
@@ -50,6 +51,7 @@
     <system:String x:Key="PlzSpecifySourceDirectory">Select a source folder</system:String>
     <system:String x:Key="ErrorExtensionInvalid">Invalid extension. It must be in ‘.x’ format</system:String>
     <system:String x:Key="PlzExtensionInvalid">Please enter a valid extension !</system:String>
+
 
 
 

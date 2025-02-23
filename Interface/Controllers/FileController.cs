@@ -63,80 +63,142 @@ namespace Projet_Easy_Save_grp_4.Controllers
         }
 
 
-        // Retourne une liste pour chaque fichier copié
-public List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)> CopyFiles(string sourceDirectory, string destinationDirectory, bool crypter, bool copyOnlyModified)
-{
-    List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)> fileCopyMetrics = new List<(string, long, long, long)>();
-    try
-    {
-        if (!Directory.Exists(sourceDirectory))
-            return fileCopyMetrics;
-
-        if (!Directory.Exists(destinationDirectory))
-            Directory.CreateDirectory(destinationDirectory);
-
-        LoadEncryptTypes();
-
-        foreach (string file in Directory.GetFiles(sourceDirectory))
+        public async Task<List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)>> CopyFiles(
+            string sourceDirectory,
+            string destinationDirectory,
+            bool crypter,
+            bool copyOnlyModified,
+            CancellationToken cancellationToken)
         {
-            // Si on  copie que les fichiers modifiés, vérifier la date de dernière modification
-            if (copyOnlyModified && File.GetLastWriteTime(file) <= DateTime.Now.AddDays(-1))
-                continue;
+            List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)> fileCopyMetrics =
+                new List<(string, long, long, long)>();
 
-            string fileName = Path.GetFileName(file);
-            string destFile = Path.Combine(destinationDirectory, fileName);
-            FileInfo fi = new FileInfo(file);
-
-            // Vérifier si l'application métier est en cours d'exécution
-            if (IsJobAppRunning())
+            try
             {
-                fileCopyMetrics.Add((file, -100, fi.Length, -100));
-                System.Windows.MessageBox.Show("Arrêt après la copie du fichier en cours, application métier détectée. Veuillez attendre l'écriture des logs");
+                // On vérifie si l'annulation est demandée des le début au cas ou 
+                cancellationToken.ThrowIfCancellationRequested();
+
+                if (!Directory.Exists(sourceDirectory))
+                    return fileCopyMetrics;
+
+                if (!Directory.Exists(destinationDirectory))
+                    Directory.CreateDirectory(destinationDirectory);
+
+                LoadEncryptTypes();
+
+                // On parcours tous les fichiers du répertoire source
+                foreach (string file in Directory.GetFiles(sourceDirectory))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    if (copyOnlyModified && File.GetLastWriteTime(file) <= DateTime.Now.AddDays(-1))
+                        continue;
+
+                    string fileName = Path.GetFileName(file);
+                    string destFile = Path.Combine(destinationDirectory, fileName);
+                    FileInfo fi = new FileInfo(file);
+
+                    if (IsJobAppRunning())
+                    {
+                        fileCopyMetrics.Add((file, -100, fi.Length, -100));
+                        System.Windows.MessageBox.Show("Arrêt après la copie du fichier en cours, application métier détectée. Veuillez attendre l'écriture des logs");
+                        return fileCopyMetrics;
+                    }
+
+                    // Copie asynchrone avec contrôle du token
+                    Stopwatch stopwatchCopy = Stopwatch.StartNew();
+                    await CopyFile(file, destFile, cancellationToken);
+                    stopwatchCopy.Stop();
+                    long transferTime = stopwatchCopy.ElapsedMilliseconds;
+
+                    // Traitement du chiffrement si l'user a spécifié qu'il voulait crypter
+                    long encryptionTime = 0;
+                    string fileExtension = fi.Extension.ToLower();
+                    if (crypter && encryptType.Contains(fileExtension))
+                    {
+                        try
+                        {
+                            Stopwatch stopwatchEncryption = Stopwatch.StartNew();
+                            await Task.Run(() => CryptoService.Transformer(destFile, "CESI_EST_MA_CLE_DE_CHIFFREMENT"), cancellationToken);
+                            stopwatchEncryption.Stop();
+                            encryptionTime = stopwatchEncryption.ElapsedMilliseconds;
+                        }
+                        catch (Exception)
+                        {
+                            encryptionTime = -1;
+                        }
+                    }
+
+                    fileCopyMetrics.Add((file, transferTime, fi.Length, encryptionTime));
+                }
+
+                // Copie récursive sur les sous-dossiers
+                foreach (string subDirectory in Directory.GetDirectories(sourceDirectory))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    string subDirName = Path.GetFileName(subDirectory);
+                    string destSubDir = Path.Combine(destinationDirectory, subDirName);
+                    var subMetrics = await CopyFiles(subDirectory, destSubDir, crypter, copyOnlyModified, cancellationToken);
+                    fileCopyMetrics.AddRange(subMetrics);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                System.Windows.MessageBox.Show("Opération annulée par l'utilisateur.");
+                // Retourne les métriques additionnées jusqu'à l'annulation (ou une liste vide si aucune copie n'a été effectuée)
                 return fileCopyMetrics;
             }
-
-            // Copie du fichier et mesure du temps de transfert
-            Stopwatch stopwatchCopy = Stopwatch.StartNew();
-            File.Copy(file, destFile, true);
-            stopwatchCopy.Stop();
-            long transferTime = stopwatchCopy.ElapsedMilliseconds;
-
-            // Traitement de chiffrement si nécessaire
-            long encryptionTime = 0;
-            string fileExtension = fi.Extension.ToLower();
-            if (crypter && encryptType.Contains(fileExtension))
+            catch (Exception ex)
             {
-                try
-                {
-                    Stopwatch stopwatchEncryption = Stopwatch.StartNew();
-                    CryptoService.Transformer(destFile, "CESI_EST_MA_CLE_DE_CHIFFREMENT");
-                    stopwatchEncryption.Stop();
-                    encryptionTime = stopwatchEncryption.ElapsedMilliseconds;
-                }
-                catch (Exception)
-                {
-                    encryptionTime = -1;
-                }
+                System.Windows.MessageBox.Show($"Erreur lors de la copie : {ex.Message}");
+                throw;
             }
 
-            fileCopyMetrics.Add((file, transferTime, fi.Length, encryptionTime));
+            return fileCopyMetrics;
         }
 
-        // Appel récursif sur les sous-dossiers
-        foreach (string subDirectory in Directory.GetDirectories(sourceDirectory))
+
+
+
+        // Fonction de copie de fichier asynchrone avec contrôle du token, découpe en blocs de 80 Ko chaque fichiers
+        public async Task<long> CopyFile(string sourceFile, string destFile, CancellationToken cancellationToken)
         {
-            string subDirName = Path.GetFileName(subDirectory);
-            string destSubDir = Path.Combine(destinationDirectory, subDirName);
-            var subMetrics = CopyFiles(subDirectory, destSubDir, crypter, copyOnlyModified);
-            fileCopyMetrics.AddRange(subMetrics);
+            const int BufferSize = 81920; // 80 Ko
+            long totalBytesCopied = 0;
+
+            try
+            {
+                using var sourceStream = new FileStream(sourceFile, FileMode.Open, FileAccess.Read, FileShare.Read);
+                using var destStream = new FileStream(destFile, FileMode.Create, FileAccess.Write, FileShare.None);
+                byte[] buffer = new byte[BufferSize];
+                int bytesRead;
+                while ((bytesRead = await sourceStream.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken)) > 0)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await destStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
+                    totalBytesCopied += bytesRead;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Si la tâche est annulée, et qu'un fichier était en cours de copie, on le supprime de la dest
+                if (File.Exists(destFile))
+                {
+                    File.Delete(destFile);
+                }
+
+                return totalBytesCopied;
+            }
+            catch (Exception ex)
+            {
+                throw new IOException($"Erreur lors de la copie du fichier '{sourceFile}' vers '{destFile}'.", ex);
+            }
+
+            return totalBytesCopied;
         }
-    }
-    catch (Exception ex)
-    {
-        System.Windows.MessageBox.Show($"Erreur : {ex.Message}");
-    }
-    return fileCopyMetrics;
-}
+
+
 
     }
 }

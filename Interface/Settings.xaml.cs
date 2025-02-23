@@ -212,6 +212,8 @@ namespace interface_projet
                     string selectedPath = dialog.SelectedPath.Trim();
                     tbLogsPath.Text = selectedPath;
 
+                    Properties.Settings.Default.LogsPath = selectedPath;
+                    Properties.Settings.Default.Save();
 
                     settingsController.SetLogDirectory(selectedPath);
                 }

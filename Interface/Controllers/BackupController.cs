@@ -8,6 +8,7 @@ using Projet_Easy_Save_grp_4.Controllers;
 using Projet_Easy_Save_grp_4.Interfaces;
 using LogClassLibraryVue;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Projet_Easy_Save_grp_4.Controllers
 {
@@ -98,14 +99,17 @@ namespace Projet_Easy_Save_grp_4.Controllers
             return tasks;
         }
 
+        // Lock pour les logs
+        private static readonly object logLock = new object();
+
         // Executer une backup
-        public bool ExecuteBackup(string name)
+        public async Task<bool> ExecuteBackup(string name, CancellationToken cancellationToken)
         {
             BackupTask? task = FindBackup(name);
             if (task != null)
             {
                 // Exécute la backup et récupère les mesures de chaque copie
-                var fileCopyMetrics = task.Execute();
+                var fileCopyMetrics = await task.Execute(cancellationToken);
 
                 // Calculer la taille totale des fichiers
                 List<string> files = Directory.GetFiles(task.Source, "*.*", SearchOption.AllDirectories).ToList();
@@ -121,23 +125,39 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 // Parcours des métriques pour enregistrer les logs journaliers
                 foreach (var (filePath, transferTime, fileSize, encryptionTime) in fileCopyMetrics)
                 {
+                    // Si la tâche est annulée, arrêter la sauvegarde
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        logController.LogBackupExecution(task.Name, "Cancelled", files, totalSize, task.Source, task.Destination, actual_files, totalSizeFilesRemaining);
+                        return false;
+                    }
+
+
                     //Verification du logiciel metier
                     if (encryptionTime == -100)
                     {
-                        logController.LogBackupExecution(task.Name, "Interrupted with job app", files, totalSize, task.Source, task.Destination, actual_files, totalSizeFilesRemaining);
+                        lock (logLock)
+                        {
+                            logController.LogBackupExecution(task.Name, "Interrupted with job app", files, totalSize, task.Source, task.Destination, actual_files, totalSizeFilesRemaining);
+                        }
                         return true;
                     }
 
 
                     totalSizeFilesRemaining -= fileSize;
-                    logController.LogBackupExecution(task.Name, "InProgress", files, totalSize, task.Source, task.Destination, actual_files, totalSizeFilesRemaining);
-
-                    logController.LogBackupExecutionDay(task.Name, task.Source, task.Destination, fileSize, transferTime, encryptionTime);
+                    lock (logLock)
+                    {
+                        logController.LogBackupExecution(task.Name, "InProgress", files, totalSize, task.Source, task.Destination, actual_files, totalSizeFilesRemaining);
+                        logController.LogBackupExecutionDay(task.Name, task.Source, task.Destination, fileSize, transferTime, encryptionTime);
+                    }
                     actual_files++;
                 }
 
                 // Log final
-                logController.LogBackupExecution(task.Name, "Finished", files, totalSize, task.Source, task.Destination, actual_files, totalSizeFilesRemaining);
+                lock (logLock)
+                {
+                    logController.LogBackupExecution(task.Name, "Finished", files, totalSize, task.Source, task.Destination, actual_files, totalSizeFilesRemaining);
+                }
                 return true;
             }
             return false;
@@ -212,15 +232,15 @@ namespace Projet_Easy_Save_grp_4.Controllers
             }
 
             // Executer la backup, c'est appelé via la fonction BackupExecute. Appelle les fonctions qui vont copier les fichiers.
-            public List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)> Execute()
+            public async Task<List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)>> Execute(CancellationToken cancellationToken)
             {
                 if (this.Type == "1") //Su save complete on copie tout le dossier
                 {
-                    return fileController.CopyFiles(Source, Destination, Crypter, false);
+                    return await fileController.CopyFiles(Source, Destination, Crypter, false, cancellationToken);
                 }
                 else //Sinon on copie seulement les fichiers modifiés au cours des 24 dernières heures
                 {
-                    return fileController.CopyFiles(Source, Destination, Crypter, true);
+                    return await fileController.CopyFiles(Source, Destination, Crypter, true, cancellationToken);
                 }
             }
 

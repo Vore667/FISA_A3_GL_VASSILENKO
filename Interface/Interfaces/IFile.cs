@@ -8,6 +8,6 @@ namespace Projet_Easy_Save_grp_4.Interfaces
 {
     internal interface IFile
     {
-        public List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)> CopyFiles(string sourceDirectory, string destinationDirectory, bool crypter, bool copyOnlyModified);
+        Task<List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)>> CopyFiles(string sourceDirectory, string destinationDirectory, bool crypter, bool copyOnlyModified, CancellationToken cancellationToken);
     }
 }
