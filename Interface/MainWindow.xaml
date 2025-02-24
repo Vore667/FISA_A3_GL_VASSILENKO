@@ -61,6 +61,18 @@
                         Visibility="Collapsed"
                         Click="btnStopBackup_Click"
                         Margin="5"/>
+                    <Button x:Name="btnPauseBackup"
+    Content="Pauser la backup"
+    Width="100" 
+    Visibility="Collapsed"
+    Click="btnPauseBackup_Click"
+    Margin="5"/>
+                    <Button x:Name="btnPlayBackup"
+    Content="Play la backup"
+    Width="100" 
+    Visibility="Collapsed"
+    Click="btnPlayBackup_Click"
+    Margin="5"/>
                 </StackPanel>
             </StackPanel>
         </Grid>

@@ -153,68 +153,54 @@ namespace WpfApp
         {
             var selectedItems = dgBackupTasks.SelectedItems.Cast<BackupItem>().ToList();
 
-            if (!selectedItems.Any())
+            if (selectedItems.Any())
             {
-                MessageBox.Show(FindResource("NoItemSelected") as string);
-                return;
-            }
+                _cancellationTokenSource = new CancellationTokenSource();
 
-            _cancellationTokenSource = new CancellationTokenSource();
-            btnStopBackup.Visibility = Visibility.Visible;
+                btnStopBackup.Visibility = Visibility.Visible;
+                btnPauseBackup.Visibility = Visibility.Visible;
+                btnPlayBackup.Visibility = Visibility.Visible;
 
-            // Réinitialiser l'UI
-            progressBar.Value = 0;
-            lblProgress.Content = "0%";
 
-            // Calculer le nombre total de fichiers pour toutes les sauvegardes sélectionnées
-            int globalTotalFiles = 0;
-            foreach (var item in selectedItems)
-            {
-                // Supposons que BackupItem contient la propriété Source (répertoire source)
-                var files = Directory.GetFiles(item.Source, "*", SearchOption.AllDirectories);
-                globalTotalFiles += files.Length;
-            }
+                progressBar.Value = 0;
+                lblProgress.Content = "0%";
 
-            // Compteur global (utilisé de façon thread-safe)
-            int globalFilesCopied = 0;
+                StartProgressTracking();
 
-            // Définir le callback de mise à jour qui s'appuie sur ces compteurs
-            Action<double> updateProgress = (unused) =>
-            {
-                // Incrémenter de façon thread-safe
-                int filesCopied = Interlocked.Increment(ref globalFilesCopied);
-                double progress = (filesCopied / (double)globalTotalFiles) * 100;
-                Dispatcher.Invoke(() =>
+                // Exécuter la/les sauvegarde synchrone
+                var backupTasks = selectedItems.Select(item =>
+                    Task.Run(() => backupController.ExecuteBackup(item.Name, _cancellationTokenSource.Token))
+                ).ToList();
+
+                // On attend la fin de tt les saves avec WhenAll
+                bool[] results = await Task.WhenAll(backupTasks);
+
+                btnStopBackup.Visibility = Visibility.Collapsed;
+                btnPauseBackup.Visibility = Visibility.Collapsed;
+                btnPlayBackup.Visibility = Visibility.Collapsed;
+
+                progressTimer.Stop();
+                progressBar.Value = 100;
+                lblProgress.Content = "100%";
+
+                if (results.Any(r => !r))
                 {
-                    progressBar.Value = progress;
-                    lblProgress.Content = $"{Math.Round(progress, 2)}%";
-                });
-            };
+                    MessageBox.Show(string.Format(FindResource("BackupFailed") as string));
+                    progressBar.Value = 0;
+                    lblProgress.Content = "0%";
+                    return;
+                }
 
-            // Lancer chaque sauvegarde et transmettre le callback updateProgress
-            var backupTasks = selectedItems.Select(item =>
-                backupController.ExecuteBackup(item.Name, _cancellationTokenSource.Token, updateProgress)
-            ).ToList();
-
-            bool[] results = await Task.WhenAll(backupTasks);
-
-            btnStopBackup.Visibility = Visibility.Collapsed;
-            progressBar.Value = 100;
-            lblProgress.Content = "100%";
-
-            if (results.Any(r => !r))
-            {
-                MessageBox.Show(FindResource("BackupFailed") as string);
+                MessageBox.Show(FindResource("BackupCompleted") as string);
                 progressBar.Value = 0;
                 lblProgress.Content = "0%";
                 return;
             }
-
-            MessageBox.Show(FindResource("BackupCompleted") as string);
-            progressBar.Value = 0;
-            lblProgress.Content = "0%";
+            else
+            {
+                MessageBox.Show(FindResource("NoItemSelected") as string);
+            }
         }
-
 
         private void btnStopBackup_Click(object sender, RoutedEventArgs e)
         {
@@ -223,8 +209,45 @@ namespace WpfApp
                 _cancellationTokenSource.Cancel();
                 MessageBox.Show(FindResource("BackupStopExec") as string);
                 btnStopBackup.Visibility = Visibility.Collapsed; // Cacher immédiatement le bouton
+                progressTimer.Stop();
                 progressBar.Value = 0;
                 lblProgress.Content = "0%";
+            }
+        }
+
+        private void btnPauseBackup_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void btnPlayBackup_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+
+
+        private void StartProgressTracking()
+        {
+            progressTimer = new DispatcherTimer();
+            progressTimer.Interval = TimeSpan.FromSeconds(0.01);
+            progressTimer.Tick += ProgressTimer_Tick;
+            progressTimer.Start();
+        }
+
+        private void ProgressTimer_Tick(object sender, EventArgs e)
+        {
+            double progress = Math.Round(backupController.GetProgressPourcentage(), 2);
+
+            // Mettre à jour l'UI avec la progression arrondie
+            progressBar.Value = progress;
+            lblProgress.Content = $"{progress}%";
+
+            if (progress >= 100)
+            {
+                progressTimer.Stop();
+                progressBar.Value = 0;
+                lblProgress.Content = $"0%";
             }
         }
 

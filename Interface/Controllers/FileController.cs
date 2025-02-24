@@ -20,22 +20,27 @@ namespace Projet_Easy_Save_grp_4.Controllers
     internal class FileController : IFile
     {
         private List<string> encryptType;
+        private List<string> PriorityExtensions;
         private string jobAppName = "";
         EncryptionManager encryptionManager = new EncryptionManager();
 
         public FileController()
         {
             LoadEncryptTypes();
+            LoadPriorityExtensionss();
             LoadJobAppNames();
             IsJobAppRunning();
         }
-
 
         private void LoadEncryptTypes()
         {
             encryptType = encryptionManager.GetEncryptExtensions();
         }
 
+        private void LoadPriorityExtensionss()
+        {
+            PriorityExtensions = encryptionManager.GetPriorityExtensions();
+        }
 
         private void LoadJobAppNames()
         {
@@ -46,9 +51,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
         {
             try
             {
-                // Vérifier si l'application métier est en cours d'exécution.
                 var jobAppProcesses = Process.GetProcessesByName(jobAppName);
-
                 if (jobAppProcesses.Length > 0)
                 {
                     return true;
@@ -58,49 +61,61 @@ namespace Projet_Easy_Save_grp_4.Controllers
             {
                 System.Windows.MessageBox.Show($"Erreur lors de la vérification de l'application : {ex.Message}");
             }
-
             return false;
         }
-
 
         public async Task<List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)>> CopyFiles(
             string sourceDirectory,
             string destinationDirectory,
             bool crypter,
             bool copyOnlyModified,
-            CancellationToken cancellationToken,
-            Action<double> onProgressUpdate)
+            CancellationToken cancellationToken)
         {
-            var fileCopyMetrics = new List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)>();
+            List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)> fileCopyMetrics =
+                new List<(string, long, long, long)>();
 
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
 
-                // Récupérer tous les fichiers (y compris dans les sous-dossiers)
-                var allFiles = Directory.GetFiles(sourceDirectory, "*", SearchOption.AllDirectories).ToList();
+                if (!Directory.Exists(sourceDirectory))
+                    return fileCopyMetrics;
 
-                foreach (string file in allFiles)
+                if (!Directory.Exists(destinationDirectory))
+                    Directory.CreateDirectory(destinationDirectory);
+
+                LoadEncryptTypes();
+
+                var allFiles = Directory.GetFiles(sourceDirectory);
+
+                var priorityFiles = allFiles.Where(f => PriorityExtensions.Contains(Path.GetExtension(f).ToLower())).ToList();
+                var otherFiles = allFiles.Except(priorityFiles).ToList();
+
+                var orderedFiles = priorityFiles.Concat(otherFiles);
+
+                foreach (string file in orderedFiles)
                 {
-
                     cancellationToken.ThrowIfCancellationRequested();
 
                     if (copyOnlyModified && File.GetLastWriteTime(file) <= DateTime.Now.AddDays(-1))
                         continue;
 
-                    // Pour recréer l'arborescence dans le dossier destination
-                    string relativePath = Path.GetRelativePath(sourceDirectory, file);
-                    string destFile = Path.Combine(destinationDirectory, relativePath);
-                    Directory.CreateDirectory(Path.GetDirectoryName(destFile));
-
+                    string fileName = Path.GetFileName(file);
+                    string destFile = Path.Combine(destinationDirectory, fileName);
                     FileInfo fi = new FileInfo(file);
 
-                    // Copie du fichier
+                    if (IsJobAppRunning())
+                    {
+                        fileCopyMetrics.Add((file, -100, fi.Length, -100));
+                        System.Windows.MessageBox.Show("Arrêt après la copie du fichier en cours, application métier détectée. Veuillez attendre l'écriture des logs");
+                        return fileCopyMetrics;
+                    }
+
                     Stopwatch stopwatchCopy = Stopwatch.StartNew();
                     await CopyFile(file, destFile, cancellationToken);
                     stopwatchCopy.Stop();
                     long transferTime = stopwatchCopy.ElapsedMilliseconds;
 
-                    // Traitement éventuel du chiffrement
                     long encryptionTime = 0;
                     string fileExtension = fi.Extension.ToLower();
                     if (crypter && encryptType.Contains(fileExtension))
@@ -119,21 +134,31 @@ namespace Projet_Easy_Save_grp_4.Controllers
                     }
 
                     fileCopyMetrics.Add((file, transferTime, fi.Length, encryptionTime));
-
-                    // Notifier qu'un fichier a été copié (le paramètre passé est ignoré ici)
-                    onProgressUpdate?.Invoke(0);
                 }
+
+                foreach (string subDirectory in Directory.GetDirectories(sourceDirectory))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    string subDirName = Path.GetFileName(subDirectory);
+                    string destSubDir = Path.Combine(destinationDirectory, subDirName);
+                    var subMetrics = await CopyFiles(subDirectory, destSubDir, crypter, copyOnlyModified, cancellationToken);
+                    fileCopyMetrics.AddRange(subMetrics);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                System.Windows.MessageBox.Show("Opération annulée par l'utilisateur.");
+                return fileCopyMetrics;
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"Erreur lors de la copie des fichiers : {ex.Message}");
+                System.Windows.MessageBox.Show($"Erreur lors de la copie : {ex.Message}");
+                throw;
             }
 
             return fileCopyMetrics;
         }
-
-
-
 
 
         // Fonction de copie de fichier asynchrone avec contrôle du token, découpe en blocs de 80 Ko chaque fichiers
@@ -172,8 +197,9 @@ namespace Projet_Easy_Save_grp_4.Controllers
 
             return totalBytesCopied;
         }
-
-
-
     }
 }
+
+
+
+
