@@ -42,6 +42,7 @@ namespace interface_projet
             // Récupérer les paramètres depuis Properties.Settings et initialiser LogController
             string logsPath = Properties.Settings.Default.LogsPath;
             string logsType = Properties.Settings.Default.LogsType;
+            int MaxSize = Properties.Settings.Default.MaxSize; 
             logController.Initialize(logsPath, logsType);
 
             // Création du SettingsController en passant les instances nécessaires
@@ -65,6 +66,7 @@ namespace interface_projet
 
             // Afficher le chemin des logs dans le TextBox dédié
             tbLogsPath.Text = logsPath;
+            tbMaxSize.Text = MaxSize.ToString();
 
             SetDefaultLanguage();
             SetDefaultLogType();
@@ -219,6 +221,27 @@ namespace interface_projet
                     settingsController.SetLogDirectory(selectedPath);
                 }
             }
+        }
+
+        private void BtnModifyMaxSize_Click(object sender, RoutedEventArgs e)
+        {
+            string newMaxSize = tbMaxSize.Text.Trim();
+            if (string.IsNullOrEmpty(newMaxSize) || int.Parse(newMaxSize) < 10000)
+            {
+                System.Windows.MessageBox.Show((FindResource("ErrorMaxSize") as string), "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(newMaxSize))
+            {
+                Properties.Settings.Default.MaxSize = int.Parse(newMaxSize);
+            }
+        }
+
+        private void tbMaxSize_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
 
         private void btnAddExtension_Click(object sender, RoutedEventArgs e)

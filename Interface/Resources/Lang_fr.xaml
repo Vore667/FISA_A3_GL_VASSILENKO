@@ -52,6 +52,9 @@
     <system:String x:Key="PlzSpecifySourceDirectory">Sélectionnez un dossier source</system:String>
     <system:String x:Key="ErrorExtensionInvalid">Extension invalide. Elle doit être au format '.x'</system:String>
     <system:String x:Key="PlzExtensionInvalid">Veuillez entrer une extension valide !</system:String>
+    <system:String x:Key="MaxSize">Taille maximale des fichiers copiable en même temps :</system:String>
+    <system:String x:Key="ErrorMaxSize">Veuillez entrer une valeur au dessus de 10000 (10MO) :</system:String>
+
 
 
 

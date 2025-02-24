@@ -151,6 +151,7 @@ namespace WpfApp
 
         private async void ButtonExecute_Click(object sender, RoutedEventArgs e)
         {
+            int choosenSize = interface_projet.Properties.Settings.Default.MaxSize;
             var selectedItems = dgBackupTasks.SelectedItems.Cast<BackupItem>().ToList();
 
             if (selectedItems.Any())
@@ -193,7 +194,7 @@ namespace WpfApp
 
             // Lancer chaque sauvegarde et transmettre le callback updateProgress
                 var backupTasks = selectedItems.Select(item =>
-                backupController.ExecuteBackup(item.Name, _cancellationTokenSource.Token, updateProgress)
+                backupController.ExecuteBackup(item.Name, _cancellationTokenSource.Token, updateProgress, choosenSize)
                 ).ToList();
 
                 // On attend la fin de tt les saves avec WhenAll

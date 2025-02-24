@@ -123,6 +123,11 @@ namespace interface_projet.Controllers
             }
         }
 
+        public void ModifyMaxSize(int maxSize)
+        {
+
+        }
+
         private void SaveEncryptExtensions(List<string> extensions)
         {
             try

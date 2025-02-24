@@ -15,9 +15,10 @@ namespace Projet_Easy_Save_grp_4.Controllers
     internal class BackupController : IBackupService
     {
         private List<BackupTask> tasks;
-        private const int MaxTasks = 5;
         private const string SaveFilePath = "backup_tasks.json";
         private readonly LogController logController;
+        // Lock pour les logs
+        private static readonly object logLock = new object();
 
         // Constructeur avec un paramètre pour spécifier le répertoire des logs
         public BackupController(string logDirectory, LogController logController)
@@ -30,15 +31,6 @@ namespace Projet_Easy_Save_grp_4.Controllers
         // Ajouter une backup
         public void AddBackup(string? name, string? source, string? destination, string? type, bool crypter)
         {
-            if (tasks.Count >= MaxTasks)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"{LangController.GetText("Error_MaxBackup")}");
-                Console.ResetColor();
-                logController.LogAction($"Error when adding Backup task '{name}', already 5 BackupTask are existing.", LogLevel.Error);
-                return;
-            }
-
             if (!Directory.Exists(source))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -99,17 +91,14 @@ namespace Projet_Easy_Save_grp_4.Controllers
             return tasks;
         }
 
-        // Lock pour les logs
-        private static readonly object logLock = new object();
-
         // Executer une backup
-        public async Task<bool> ExecuteBackup(string name, CancellationToken cancellationToken, Action<double> onProgressUpdate)
+        public async Task<bool> ExecuteBackup(string name, CancellationToken cancellationToken, Action<double> onProgressUpdate, int choosenSize)
         {
             BackupTask? task = FindBackup(name);
             if (task != null)
             {
                 // Exécute la backup et récupère les mesures de chaque copie
-                var fileCopyMetrics = await task.Execute(cancellationToken, onProgressUpdate);
+                var fileCopyMetrics = await task.Execute(cancellationToken, onProgressUpdate, choosenSize);
 
                 // Calculer la taille totale des fichiers
                 List<string> files = Directory.GetFiles(task.Source, "*.*", SearchOption.AllDirectories).ToList();
@@ -227,15 +216,15 @@ namespace Projet_Easy_Save_grp_4.Controllers
             }
 
             // Executer la backup, c'est appelé via la fonction BackupExecute. Appelle les fonctions qui vont copier les fichiers.
-            public async Task<List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)>> Execute(CancellationToken cancellationToken, Action<double> onProgressUpdate)
+            public async Task<List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)>> Execute(CancellationToken cancellationToken, Action<double> onProgressUpdate, int choosenSize)
             {
                 if (this.Type == "1") //Su save complete on copie tout le dossier
                 {
-                    return await fileController.CopyFiles(Source, Destination, Crypter, false, cancellationToken, onProgressUpdate);
+                    return await fileController.CopyFiles(Source, Destination, Crypter, false, cancellationToken, onProgressUpdate, choosenSize);
                 }
                 else //Sinon on copie seulement les fichiers modifiés au cours des 24 dernières heures
                 {
-                    return await fileController.CopyFiles(Source, Destination, Crypter, true, cancellationToken, onProgressUpdate);
+                    return await fileController.CopyFiles(Source, Destination, Crypter, true, cancellationToken, onProgressUpdate, choosenSize);
                 }
             }
 

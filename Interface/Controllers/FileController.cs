@@ -23,6 +23,9 @@ namespace Projet_Easy_Save_grp_4.Controllers
         private List<string> PriorityExtensions;
         private string jobAppName = "";
         EncryptionManager encryptionManager = new EncryptionManager();
+        // Lock pour crypto
+        private static readonly SemaphoreSlim cryptoSemaphore = new SemaphoreSlim(1, 1);
+
 
         public FileController()
         {
@@ -64,13 +67,25 @@ namespace Projet_Easy_Save_grp_4.Controllers
             return false;
         }
 
+        private bool IsSizeToBig(FileInfo fileinfo, long sizeKO)
+        {
+            bool isSizeToBig = fileinfo.Length > (sizeKO * 1024);
+            if (isSizeToBig)
+            {
+                System.Windows.MessageBox.Show($"Fichier trop volumineux : {fileinfo.Name}");
+            }
+            return isSizeToBig;
+        }
+
+
         public async Task<List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)>> CopyFiles(
             string sourceDirectory,
             string destinationDirectory,
             bool crypter,
             bool copyOnlyModified,
             CancellationToken cancellationToken,
-            Action<double> onProgressUpdate)
+            Action<double> onProgressUpdate,
+            int choosenSize)
         {
             var fileCopyMetrics = new List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)>();
 
@@ -115,31 +130,43 @@ namespace Projet_Easy_Save_grp_4.Controllers
                         return fileCopyMetrics;
                     }
 
-                    Stopwatch stopwatchCopy = Stopwatch.StartNew();
-                    await CopyFile(file, destFile, cancellationToken);
-                    stopwatchCopy.Stop();
-                    long transferTime = stopwatchCopy.ElapsedMilliseconds;
-
-                    long encryptionTime = 0;
-                    string fileExtension = fi.Extension.ToLower();
-                    if (crypter && encryptType.Contains(fileExtension))
+                    if (!IsSizeToBig(fi, 2))
                     {
-                        try
-                        {
-                            Stopwatch stopwatchEncryption = Stopwatch.StartNew();
-                            await Task.Run(() => CryptoService.Transformer(destFile, "CESI_EST_MA_CLE_DE_CHIFFREMENT"), cancellationToken);
-                            stopwatchEncryption.Stop();
-                            encryptionTime = stopwatchEncryption.ElapsedMilliseconds;
-                        }
-                        catch (Exception)
-                        {
-                            encryptionTime = -1;
-                        }
-                    }
+                        Stopwatch stopwatchCopy = Stopwatch.StartNew();
+                        await CopyFile(file, destFile, cancellationToken);
+                        stopwatchCopy.Stop();
+                        long transferTime = stopwatchCopy.ElapsedMilliseconds;
 
-                    fileCopyMetrics.Add((file, transferTime, fi.Length, encryptionTime));
-                    // Notifier qu'un fichier a été copié (le paramètre passé est ignoré ici)
-                    onProgressUpdate?.Invoke(0);
+                        long encryptionTime = 0;
+                        string fileExtension = fi.Extension.ToLower();
+                        if (crypter && encryptType.Contains(fileExtension))
+                        {
+                            try
+                            {
+                                Stopwatch stopwatchEncryption = Stopwatch.StartNew();
+                                await cryptoSemaphore.WaitAsync(cancellationToken);
+                                try
+                                {
+                                    // Chiffrement du fichier
+                                    await Task.Run(() => CryptoService.Transformer(destFile, "CESI_EST_MA_CLE_DE_CHIFFREMENT"), cancellationToken);
+                                }
+                                finally
+                                {
+                                    cryptoSemaphore.Release();
+                                }
+                                stopwatchEncryption.Stop();
+                                encryptionTime = stopwatchEncryption.ElapsedMilliseconds;
+                            }
+                            catch (Exception)
+                            {
+                                encryptionTime = -1;
+                            }
+                        }
+
+                        fileCopyMetrics.Add((file, transferTime, fi.Length, encryptionTime));
+                        // Notifier qu'un fichier a été copié (le paramètre passé est ignoré ici)
+                        onProgressUpdate?.Invoke(0);
+                    }
                 }
             }
             catch (OperationCanceledException)

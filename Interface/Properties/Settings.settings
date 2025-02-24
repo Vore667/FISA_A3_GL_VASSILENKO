@@ -11,5 +11,8 @@
     <Setting Name="LogsType" Type="System.String" Scope="User">
       <Value Profile="(Default)">JSON</Value>
     </Setting>
+    <Setting Name="MaxSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">100000</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
