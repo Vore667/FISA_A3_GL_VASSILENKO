@@ -69,6 +69,7 @@ namespace interface_projet
             SetDefaultLanguage();
             SetDefaultLogType();
             LoadEncryptExtensions();
+            LoadPriorityExtensions();
             LoadJobApp();
         }
 
@@ -248,6 +249,67 @@ namespace interface_projet
         private void tbJobApp_TextChanged(object sender, TextChangedEventArgs e)
         {
 
+        }
+
+        private void btnPriorityExtension_Click(object sender, RoutedEventArgs e)
+        {
+            string newExtension = tbPriorityExtension.Text.Trim();
+
+            if (!newExtension.StartsWith(".") || newExtension.Length < 2)
+            {
+                System.Windows.MessageBox.Show((FindResource("ErrorExtensionInvalid") as string), "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(newExtension))
+            {
+                tbPriorityExtension.Clear();
+
+                settingsController.AddPriorityExtension(newExtension);
+
+                LoadPriorityExtensions();
+            }
+            else
+            {
+                System.Windows.MessageBox.Show((FindResource("PlzExtensionInvalid") as string), "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void ButtonPriorityExtensionDelete_Click(object sender, RoutedEventArgs e)
+        {
+            if (lbPriorityExtensions.SelectedItem != null)
+            {
+                string selectedExtension = lbPriorityExtensions.SelectedItem.ToString();
+
+                if (!string.IsNullOrEmpty(selectedExtension))
+                {
+                    settingsController.RemovePriorityExtension(selectedExtension);
+                    lbPriorityExtensions.SelectedItem = null;
+                }
+
+                LoadPriorityExtensions();
+            }
+            else
+            {
+                System.Windows.MessageBox.Show((FindResource("ExtensionToDelete") as string), "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+            }
+        }
+
+        private void LoadPriorityExtensions()
+        {
+            lbPriorityExtensions.Items.Clear();
+
+            List<string> extensions = settingsController.GetPriorityExtensions();
+
+            if (extensions != null && extensions.Count > 0)
+            {
+                foreach (var ext in extensions)
+                {
+                    lbPriorityExtensions.Items.Add(ext);
+                }
+            }
         }
     }
 }

@@ -153,18 +153,18 @@ namespace WpfApp
         {
             var selectedItems = dgBackupTasks.SelectedItems.Cast<BackupItem>().ToList();
 
-            if (!selectedItems.Any())
+            if (selectedItems.Any())
             {
-                MessageBox.Show(FindResource("NoItemSelected") as string);
-                return;
-            }
+                _cancellationTokenSource = new CancellationTokenSource();
 
-            _cancellationTokenSource = new CancellationTokenSource();
-            btnStopBackup.Visibility = Visibility.Visible;
+                btnStopBackup.Visibility = Visibility.Visible;
+                btnPauseBackup.Visibility = Visibility.Visible;
+                btnPlayBackup.Visibility = Visibility.Visible;
+
 
             // Réinitialiser l'UI
-            progressBar.Value = 0;
-            lblProgress.Content = "0%";
+                progressBar.Value = 0;
+                lblProgress.Content = "0%";
 
             // Calculer le nombre total de fichiers pour toutes les sauvegardes sélectionnées
             int globalTotalFiles = 0;
@@ -192,29 +192,38 @@ namespace WpfApp
             };
 
             // Lancer chaque sauvegarde et transmettre le callback updateProgress
-            var backupTasks = selectedItems.Select(item =>
+                var backupTasks = selectedItems.Select(item =>
                 backupController.ExecuteBackup(item.Name, _cancellationTokenSource.Token, updateProgress)
-            ).ToList();
+                ).ToList();
 
-            bool[] results = await Task.WhenAll(backupTasks);
+                // On attend la fin de tt les saves avec WhenAll
+                bool[] results = await Task.WhenAll(backupTasks);
 
-            btnStopBackup.Visibility = Visibility.Collapsed;
-            progressBar.Value = 100;
-            lblProgress.Content = "100%";
+                btnStopBackup.Visibility = Visibility.Collapsed;
+                btnPauseBackup.Visibility = Visibility.Collapsed;
+                btnPlayBackup.Visibility = Visibility.Collapsed;
 
-            if (results.Any(r => !r))
-            {
-                MessageBox.Show(FindResource("BackupFailed") as string);
+                progressBar.Value = 100;
+                lblProgress.Content = "100%";
+
+                if (results.Any(r => !r))
+                {
+                    MessageBox.Show(string.Format(FindResource("BackupFailed") as string));
+                    progressBar.Value = 0;
+                    lblProgress.Content = "0%";
+                    return;
+                }
+
+                MessageBox.Show(FindResource("BackupCompleted") as string);
                 progressBar.Value = 0;
                 lblProgress.Content = "0%";
                 return;
             }
-
-            MessageBox.Show(FindResource("BackupCompleted") as string);
-            progressBar.Value = 0;
-            lblProgress.Content = "0%";
+            else
+            {
+                MessageBox.Show(FindResource("NoItemSelected") as string);
+            }
         }
-
 
         private void btnStopBackup_Click(object sender, RoutedEventArgs e)
         {
@@ -225,6 +234,42 @@ namespace WpfApp
                 btnStopBackup.Visibility = Visibility.Collapsed; // Cacher immédiatement le bouton
                 progressBar.Value = 0;
                 lblProgress.Content = "0%";
+            }
+        }
+
+        private void btnPauseBackup_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void btnPlayBackup_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+
+
+        private void StartProgressTracking()
+        {
+            progressTimer = new DispatcherTimer();
+            progressTimer.Interval = TimeSpan.FromSeconds(0.01);
+            progressTimer.Tick += ProgressTimer_Tick;
+            progressTimer.Start();
+        }
+
+        private void ProgressTimer_Tick(object sender, EventArgs e)
+        {
+            double progress = Math.Round(backupController.GetProgressPourcentage(), 2);
+
+            // Mettre à jour l'UI avec la progression arrondie
+            progressBar.Value = progress;
+            lblProgress.Content = $"{progress}%";
+
+            if (progress >= 100)
+            {
+                progressTimer.Stop();
+                progressBar.Value = 0;
+                lblProgress.Content = $"0%";
             }
         }
 

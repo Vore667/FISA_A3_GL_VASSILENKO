@@ -2,5 +2,8 @@
   "Encrypt": [
     ".txt"
   ],
-  "JobApp": "calc"
+  "PriorityExtensions": [
+    ".txt"
+  ],
+  "JobApp": "Calculator"
 }
