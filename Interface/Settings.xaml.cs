@@ -226,7 +226,7 @@ namespace interface_projet
         private void BtnModifyMaxSize_Click(object sender, RoutedEventArgs e)
         {
             string newMaxSize = tbMaxSize.Text.Trim();
-            if (string.IsNullOrEmpty(newMaxSize) || int.Parse(newMaxSize) < 10000)
+            if (string.IsNullOrEmpty(newMaxSize) || int.Parse(newMaxSize) < 10)
             {
                 System.Windows.MessageBox.Show((FindResource("ErrorMaxSize") as string), "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
 

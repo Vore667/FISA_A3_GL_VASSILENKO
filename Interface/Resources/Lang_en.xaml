@@ -52,8 +52,8 @@
     <system:String x:Key="PlzSpecifySourceDirectory">Select a source folder</system:String>
     <system:String x:Key="ErrorExtensionInvalid">Invalid extension. It must be in ‘.x’ format</system:String>
     <system:String x:Key="PlzExtensionInvalid">Please enter a valid extension !</system:String>
-    <system:String x:Key="MaxSize">Maximum file size that can be copied at once :</system:String>
-    <system:String x:Key="ErrorMaxSize">Please enter a value above 10000 (10MB) :</system:String>
+    <system:String x:Key="MaxSize">Maximum file size that can be copied at once in Mo:</system:String>
+    <system:String x:Key="ErrorMaxSize">Please enter a value above 10 :</system:String>
 
 
 

@@ -61,7 +61,7 @@ namespace interface_projet.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100000")]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
         public int MaxSize {
             get {
                 return ((int)(this["MaxSize"]));

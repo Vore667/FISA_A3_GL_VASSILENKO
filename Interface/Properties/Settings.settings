@@ -12,7 +12,7 @@
       <Value Profile="(Default)">JSON</Value>
     </Setting>
     <Setting Name="MaxSize" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">100000</Value>
+      <Value Profile="(Default)">10</Value>
     </Setting>
   </Settings>
 </SettingsFile>
