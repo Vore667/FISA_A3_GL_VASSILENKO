@@ -96,7 +96,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
             bool isSizeToBig = fileinfo.Length > (sizeKO * 1024);
             if (isSizeToBig)
             {
-                System.Windows.MessageBox.Show($"Fichier trop volumineux ils sont mis de côté : {fileinfo.Name}");
+                System.Windows.MessageBox.Show($"Fichier '{fileinfo.Name}' trop volumineux il sera mis de côté et exécuté à la fin.");
             }
             return isSizeToBig;
         }
