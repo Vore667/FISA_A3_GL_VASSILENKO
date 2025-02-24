@@ -247,32 +247,6 @@ namespace WpfApp
             
         }
 
-
-
-        private void StartProgressTracking()
-        {
-            progressTimer = new DispatcherTimer();
-            progressTimer.Interval = TimeSpan.FromSeconds(0.01);
-            progressTimer.Tick += ProgressTimer_Tick;
-            progressTimer.Start();
-        }
-
-        private void ProgressTimer_Tick(object sender, EventArgs e)
-        {
-            double progress = Math.Round(backupController.GetProgressPourcentage(), 2);
-
-            // Mettre à jour l'UI avec la progression arrondie
-            progressBar.Value = progress;
-            lblProgress.Content = $"{progress}%";
-
-            if (progress >= 100)
-            {
-                progressTimer.Stop();
-                progressBar.Value = 0;
-                lblProgress.Content = $"0%";
-            }
-        }
-
     }
 
     public class BackupItem

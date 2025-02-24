@@ -106,8 +106,6 @@ namespace Projet_Easy_Save_grp_4.Controllers
                     string destFile = Path.Combine(destinationDirectory, relativePath);
                     Directory.CreateDirectory(Path.GetDirectoryName(destFile));
 
-                    string fileName = Path.GetFileName(file);
-                    string destFile = Path.Combine(destinationDirectory, fileName);
                     FileInfo fi = new FileInfo(file);
 
                     if (IsJobAppRunning())

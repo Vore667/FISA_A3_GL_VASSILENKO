@@ -39,6 +39,8 @@
     <system:String x:Key="Language">Language : </system:String>
     <system:String x:Key="TypeLog">Type of logs : </system:String>
     <system:String x:Key="ExtensionCrypter">Extension to encrypt : </system:String>
+    <system:String x:Key="ExtensionOrder">Extension to prioritize :</system:String>
+
     <system:String x:Key="AddExtension">Add</system:String>
     <system:String x:Key="DeleteExtension">Delete</system:String>
     <system:String x:Key="ViewLogs">View logs</system:String>
