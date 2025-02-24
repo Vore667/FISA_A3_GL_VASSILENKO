@@ -1,9 +1,7 @@
 {
-  "Encrypt": [
-    ".txt"
-  ],
+  "Encrypt": [],
   "PriorityExtensions": [
-    ".txt"
+    ".iso"
   ],
   "JobApp": "Calculator"
 }

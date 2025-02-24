@@ -23,6 +23,8 @@ namespace Projet_Easy_Save_grp_4.Controllers
         private List<string> PriorityExtensions;
         private string jobAppName = "";
         EncryptionManager encryptionManager = new EncryptionManager();
+        //Semaphore pour les fichiers volumineux
+        private SemaphoreSlim largeFileSemaphore = new SemaphoreSlim(1, 1);
         // Lock pour crypto
         private static readonly SemaphoreSlim cryptoSemaphore = new SemaphoreSlim(1, 1);
         private bool isPaused = false;
@@ -94,7 +96,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
             bool isSizeToBig = fileinfo.Length > (sizeKO * 1024);
             if (isSizeToBig)
             {
-                System.Windows.MessageBox.Show($"Fichier trop volumineux : {fileinfo.Name}");
+                System.Windows.MessageBox.Show($"Fichier trop volumineux ils sont mis de côté : {fileinfo.Name}");
             }
             return isSizeToBig;
         }
@@ -136,7 +138,6 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 {
                     await WaitForResume(cancellationToken);
                     await WaitForResumeWhileJobAppRunning(cancellationToken);
-
                     cancellationToken.ThrowIfCancellationRequested();
 
                     if (copyOnlyModified && File.GetLastWriteTime(file) <= DateTime.Now.AddDays(-1))
@@ -155,7 +156,15 @@ namespace Projet_Easy_Save_grp_4.Controllers
                         return fileCopyMetrics;
                     }
 
-                    if (!IsSizeToBig(fi, 2))
+                    bool isLarge = IsSizeToBig(fi, choosenSize);
+
+                    // On attend le sémaphore du fichier volumineux 
+                    if (isLarge)
+                    {
+                        await largeFileSemaphore.WaitAsync(cancellationToken);
+                    }
+
+                    try
                     {
                         Stopwatch stopwatchCopy = Stopwatch.StartNew();
                         await CopyFile(file, destFile, cancellationToken);
@@ -189,8 +198,15 @@ namespace Projet_Easy_Save_grp_4.Controllers
                         }
 
                         fileCopyMetrics.Add((file, transferTime, fi.Length, encryptionTime));
-                        // Notifier qu'un fichier a été copié (le paramètre passé est ignoré ici)
                         onProgressUpdate?.Invoke(0);
+                    }
+                    finally
+                    {
+                        // On libère le sémaphore du fichier volumineux
+                        if (isLarge)
+                        {
+                            largeFileSemaphore.Release();
+                        }
                     }
                 }
             }

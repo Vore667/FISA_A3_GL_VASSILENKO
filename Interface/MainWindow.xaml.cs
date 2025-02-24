@@ -139,9 +139,12 @@ namespace WpfApp
             };
 
             // Lancer chaque sauvegarde et transmettre le callback updateProgress
-                var backupTasks = selectedItems.Select(item =>
+            var backupTasks = selectedItems.Select(item =>
                 backupController.ExecuteBackup(item.Name, _cancellationTokenSource.Token, updateProgress, choosenSize)
-                ).ToList();
+            ).ToList();
+
+            // On attend la fin de tt les saves avec WhenAll
+            bool[] results = await Task.WhenAll(backupTasks);
 
             btnStopBackup.Visibility = Visibility.Collapsed;
             btnPauseBackup.Visibility = Visibility.Collapsed;
