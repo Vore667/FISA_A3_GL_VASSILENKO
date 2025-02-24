@@ -69,10 +69,11 @@ namespace Projet_Easy_Save_grp_4.Controllers
             string destinationDirectory,
             bool crypter,
             bool copyOnlyModified,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            Action<double> onProgressUpdate)
         {
-            List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)> fileCopyMetrics =
-                new List<(string, long, long, long)>();
+            var fileCopyMetrics = new List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)>();
+
 
             try
             {
@@ -86,7 +87,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
 
                 LoadEncryptTypes();
 
-                var allFiles = Directory.GetFiles(sourceDirectory);
+                var allFiles = Directory.GetFiles(sourceDirectory, "*", SearchOption.AllDirectories).ToList();
 
                 var priorityFiles = allFiles.Where(f => PriorityExtensions.Contains(Path.GetExtension(f).ToLower())).ToList();
                 var otherFiles = allFiles.Except(priorityFiles).ToList();
@@ -99,6 +100,11 @@ namespace Projet_Easy_Save_grp_4.Controllers
 
                     if (copyOnlyModified && File.GetLastWriteTime(file) <= DateTime.Now.AddDays(-1))
                         continue;
+
+                    // Pour recréer l'arborescence dans le dossier destination
+                    string relativePath = Path.GetRelativePath(sourceDirectory, file);
+                    string destFile = Path.Combine(destinationDirectory, relativePath);
+                    Directory.CreateDirectory(Path.GetDirectoryName(destFile));
 
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(destinationDirectory, fileName);
@@ -134,16 +140,8 @@ namespace Projet_Easy_Save_grp_4.Controllers
                     }
 
                     fileCopyMetrics.Add((file, transferTime, fi.Length, encryptionTime));
-                }
-
-                foreach (string subDirectory in Directory.GetDirectories(sourceDirectory))
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    string subDirName = Path.GetFileName(subDirectory);
-                    string destSubDir = Path.Combine(destinationDirectory, subDirName);
-                    var subMetrics = await CopyFiles(subDirectory, destSubDir, crypter, copyOnlyModified, cancellationToken);
-                    fileCopyMetrics.AddRange(subMetrics);
+                    // Notifier qu'un fichier a été copié (le paramètre passé est ignoré ici)
+                    onProgressUpdate?.Invoke(0);
                 }
             }
             catch (OperationCanceledException)

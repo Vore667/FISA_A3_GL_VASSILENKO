@@ -103,13 +103,13 @@ namespace Projet_Easy_Save_grp_4.Controllers
         private static readonly object logLock = new object();
 
         // Executer une backup
-        public async Task<bool> ExecuteBackup(string name, CancellationToken cancellationToken)
+        public async Task<bool> ExecuteBackup(string name, CancellationToken cancellationToken, Action<double> onProgressUpdate)
         {
             BackupTask? task = FindBackup(name);
             if (task != null)
             {
                 // Exécute la backup et récupère les mesures de chaque copie
-                var fileCopyMetrics = await task.Execute(cancellationToken);
+                var fileCopyMetrics = await task.Execute(cancellationToken, onProgressUpdate);
 
                 // Calculer la taille totale des fichiers
                 List<string> files = Directory.GetFiles(task.Source, "*.*", SearchOption.AllDirectories).ToList();
@@ -161,11 +161,6 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 return true;
             }
             return false;
-        }
-
-        public double GetProgressPourcentage()
-        {
-            return logController.GetProgressPourcentage();
         }
 
         // Supprimer une backup
@@ -232,15 +227,15 @@ namespace Projet_Easy_Save_grp_4.Controllers
             }
 
             // Executer la backup, c'est appelé via la fonction BackupExecute. Appelle les fonctions qui vont copier les fichiers.
-            public async Task<List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)>> Execute(CancellationToken cancellationToken)
+            public async Task<List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)>> Execute(CancellationToken cancellationToken, Action<double> onProgressUpdate)
             {
                 if (this.Type == "1") //Su save complete on copie tout le dossier
                 {
-                    return await fileController.CopyFiles(Source, Destination, Crypter, false, cancellationToken);
+                    return await fileController.CopyFiles(Source, Destination, Crypter, false, cancellationToken, onProgressUpdate);
                 }
                 else //Sinon on copie seulement les fichiers modifiés au cours des 24 dernières heures
                 {
-                    return await fileController.CopyFiles(Source, Destination, Crypter, true, cancellationToken);
+                    return await fileController.CopyFiles(Source, Destination, Crypter, true, cancellationToken, onProgressUpdate);
                 }
             }
 

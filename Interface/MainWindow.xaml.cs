@@ -162,14 +162,38 @@ namespace WpfApp
                 btnPlayBackup.Visibility = Visibility.Visible;
 
 
+            // Réinitialiser l'UI
                 progressBar.Value = 0;
                 lblProgress.Content = "0%";
 
-                StartProgressTracking();
+            // Calculer le nombre total de fichiers pour toutes les sauvegardes sélectionnées
+            int globalTotalFiles = 0;
+            foreach (var item in selectedItems)
+            {
+                // Supposons que BackupItem contient la propriété Source (répertoire source)
+                var files = Directory.GetFiles(item.Source, "*", SearchOption.AllDirectories);
+                globalTotalFiles += files.Length;
+            }
 
-                // Exécuter la/les sauvegarde synchrone
+            // Compteur global (utilisé de façon thread-safe)
+            int globalFilesCopied = 0;
+
+            // Définir le callback de mise à jour qui s'appuie sur ces compteurs
+            Action<double> updateProgress = (unused) =>
+            {
+                // Incrémenter de façon thread-safe
+                int filesCopied = Interlocked.Increment(ref globalFilesCopied);
+                double progress = (filesCopied / (double)globalTotalFiles) * 100;
+                Dispatcher.Invoke(() =>
+                {
+                    progressBar.Value = progress;
+                    lblProgress.Content = $"{Math.Round(progress, 2)}%";
+                });
+            };
+
+            // Lancer chaque sauvegarde et transmettre le callback updateProgress
                 var backupTasks = selectedItems.Select(item =>
-                    Task.Run(() => backupController.ExecuteBackup(item.Name, _cancellationTokenSource.Token))
+                backupController.ExecuteBackup(item.Name, _cancellationTokenSource.Token, updateProgress)
                 ).ToList();
 
                 // On attend la fin de tt les saves avec WhenAll
@@ -179,7 +203,6 @@ namespace WpfApp
                 btnPauseBackup.Visibility = Visibility.Collapsed;
                 btnPlayBackup.Visibility = Visibility.Collapsed;
 
-                progressTimer.Stop();
                 progressBar.Value = 100;
                 lblProgress.Content = "100%";
 
@@ -209,7 +232,6 @@ namespace WpfApp
                 _cancellationTokenSource.Cancel();
                 MessageBox.Show(FindResource("BackupStopExec") as string);
                 btnStopBackup.Visibility = Visibility.Collapsed; // Cacher immédiatement le bouton
-                progressTimer.Stop();
                 progressBar.Value = 0;
                 lblProgress.Content = "0%";
             }
