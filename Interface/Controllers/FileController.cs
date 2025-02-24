@@ -25,6 +25,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
         EncryptionManager encryptionManager = new EncryptionManager();
         // Lock pour crypto
         private static readonly SemaphoreSlim cryptoSemaphore = new SemaphoreSlim(1, 1);
+        private bool isPaused = false;
 
 
         public FileController()
@@ -32,7 +33,6 @@ namespace Projet_Easy_Save_grp_4.Controllers
             LoadEncryptTypes();
             LoadPriorityExtensionss();
             LoadJobAppNames();
-            IsJobAppRunning();
         }
 
         private void LoadEncryptTypes()
@@ -50,21 +50,43 @@ namespace Projet_Easy_Save_grp_4.Controllers
             jobAppName = encryptionManager.GetJobApp();
         }
 
+        public void PauseExecution()
+        {
+            isPaused = !isPaused;
+        }
+
         private bool IsJobAppRunning()
         {
             try
             {
                 var jobAppProcesses = Process.GetProcessesByName(jobAppName);
-                if (jobAppProcesses.Length > 0)
-                {
-                    return true;
-                }
+                return jobAppProcesses.Length > 0;
             }
             catch (Exception ex)
             {
                 System.Windows.MessageBox.Show($"Erreur lors de la vérification de l'application : {ex.Message}");
             }
             return false;
+        }
+
+        private async Task WaitForResume(CancellationToken cancellationToken)
+        {
+            while (isPaused)
+            {
+                await Task.Delay(100, cancellationToken);
+            }
+        }
+
+        private async Task WaitForResumeWhileJobAppRunning(CancellationToken cancellationToken)
+        {
+            if (IsJobAppRunning())
+            {
+                System.Windows.MessageBox.Show("Pause en cours : application métier détectée. Veuillez attendre.");
+                while (IsJobAppRunning())
+                {
+                    await Task.Delay(1000, cancellationToken);
+                }
+            }
         }
 
         private bool IsSizeToBig(FileInfo fileinfo, long sizeKO)
@@ -89,6 +111,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
         {
             var fileCopyMetrics = new List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)>();
 
+            isPaused = false;
 
             try
             {
@@ -111,12 +134,14 @@ namespace Projet_Easy_Save_grp_4.Controllers
 
                 foreach (string file in orderedFiles)
                 {
+                    await WaitForResume(cancellationToken);
+                    await WaitForResumeWhileJobAppRunning(cancellationToken);
+
                     cancellationToken.ThrowIfCancellationRequested();
 
                     if (copyOnlyModified && File.GetLastWriteTime(file) <= DateTime.Now.AddDays(-1))
                         continue;
 
-                    // Pour recréer l'arborescence dans le dossier destination
                     string relativePath = Path.GetRelativePath(sourceDirectory, file);
                     string destFile = Path.Combine(destinationDirectory, relativePath);
                     Directory.CreateDirectory(Path.GetDirectoryName(destFile));
@@ -183,11 +208,9 @@ namespace Projet_Easy_Save_grp_4.Controllers
             return fileCopyMetrics;
         }
 
-
-        // Fonction de copie de fichier asynchrone avec contrôle du token, découpe en blocs de 80 Ko chaque fichiers
         public async Task<long> CopyFile(string sourceFile, string destFile, CancellationToken cancellationToken)
         {
-            const int BufferSize = 81920; // 80 Ko
+            const int BufferSize = 81920;
             long totalBytesCopied = 0;
 
             try
@@ -205,7 +228,6 @@ namespace Projet_Easy_Save_grp_4.Controllers
             }
             catch (OperationCanceledException)
             {
-                // Si la tâche est annulée, et qu'un fichier était en cours de copie, on le supprime de la dest
                 if (File.Exists(destFile))
                 {
                     File.Delete(destFile);
@@ -222,7 +244,3 @@ namespace Projet_Easy_Save_grp_4.Controllers
         }
     }
 }
-
-
-
-

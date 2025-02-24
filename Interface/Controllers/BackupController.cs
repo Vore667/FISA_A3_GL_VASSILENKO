@@ -91,6 +91,16 @@ namespace Projet_Easy_Save_grp_4.Controllers
             return tasks;
         }
 
+        public void PauseExecution(string name)
+        {
+            BackupTask? task = FindBackup(name);
+            if (task != null)
+            {
+                task.PauseExecution();
+            }
+        }
+
+
         // Executer une backup
         public async Task<bool> ExecuteBackup(string name, CancellationToken cancellationToken, Action<double> onProgressUpdate, int choosenSize)
         {
@@ -198,13 +208,13 @@ namespace Projet_Easy_Save_grp_4.Controllers
         // Tout ce qui caractérise une tâche de backup
         internal class BackupTask
         {
-            private readonly FileController fileController = new FileController();
-
             public string Name { get; set; }
             public string Source { get; set; }
             public string Destination { get; set; }
             public string Type { get; set; }
             public bool Crypter {  get; set; }
+
+            private readonly FileController fileController = new FileController();
 
             public BackupTask(string name, string source, string destination, string type, bool crypter)
             {
@@ -213,6 +223,11 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 Destination = destination;
                 Type = type;
                 Crypter = crypter;
+            }
+
+            public void PauseExecution()
+            {
+                fileController.PauseExecution();
             }
 
             // Executer la backup, c'est appelé via la fonction BackupExecute. Appelle les fonctions qui vont copier les fichiers.
