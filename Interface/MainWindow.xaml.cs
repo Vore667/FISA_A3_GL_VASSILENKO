@@ -35,14 +35,12 @@ namespace WpfApp
 
             _isServerMode = isServerMode;
             _commFacade = new CommunicationFacade();
-            // Configure la façade selon le mode (pour le serveur, démarre sur ws://localhost:5000/ws/ ; pour le client, le même URI pour se connecter)
             _commFacade.Configure(_isServerMode, "http://localhost:5000/ws/");
             _commFacade.OnMessageReceived += (msg) =>
             {
-                // Mettre à jour la vue (ici avec MessageBox, à adapter selon vos besoins)
                 Dispatcher.Invoke(() =>
                 {
-                    MessageBox.Show($"Message reçu : {msg}{Environment.NewLine}");
+                    LoadBackupTasks();
                 });
             };
 
@@ -60,7 +58,7 @@ namespace WpfApp
                 txtStatus.Text = "Mode : Serveur";
                 txtStatus.Text = "Démarrage du serveur...";
                 // Démarrer le serveur dans la façade
-                await _commFacade.StartAsync(CancellationToken.None);
+                _commFacade.StartAsync(CancellationToken.None);
                 txtStatus.Text = "Serveur démarré sur ws://localhost:5000/ws/";
             }
             else
@@ -137,10 +135,12 @@ namespace WpfApp
             LoadBackupTasks();
         }
 
-        public void AjouterTache(string nom, string source, string destination, string typeSauvegarde, bool crypter)
+        public async void AjouterTache(string nom, string source, string destination, string typeSauvegarde, bool crypter)
         {
             backupController.AddBackup(nom, source, destination, typeSauvegarde, crypter);
             LoadBackupTasks();
+            _commFacade.SendAsync($"New Backup {nom}{source}{destination}{typeSauvegarde}{crypter}");
+
         }
 
         private void ButtonDelete_Click(object sender, RoutedEventArgs e)
@@ -151,8 +151,9 @@ namespace WpfApp
             {
                 foreach (var selectedItem in selectedItems)
                     backupController.DeleteBackup(selectedItem.Name);
-
                 LoadBackupTasks();
+                _commFacade.SendAsync($"Delete backup");
+
             }
             else
             {
@@ -171,7 +172,7 @@ namespace WpfApp
                 MessageBox.Show(FindResource("NoItemSelected") as string);
                 return;
             }
-
+            _commFacade.SendAsync($"Execute backup");
             _cancellationTokenSource = new CancellationTokenSource();
 
             btnStopBackup.Visibility = Visibility.Visible;
