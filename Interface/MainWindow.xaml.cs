@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.WebSockets;
+
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,6 +23,8 @@ namespace WpfApp
         private bool _isServerMode;
         private CommunicationFacade _commFacade;
         private ClientWebSocket _clientWebSocket; // Pour le mode client
+        private CancellationTokenSource? _cancellationTokenSource;
+        private List<string> ExecutionList = new List<string>();
 
         public MainWindow(bool isServerMode)
         {
@@ -44,7 +47,7 @@ namespace WpfApp
             };
 
             LangController langController = LangController.Instance;
-            LogController logController = LogController.Instance; // On récupère l'instance du singleton
+            LogController logController = LogController.Instance;
             backupController = new BackupController(logDirectory, logController);
             LangController.LanguageChanged += RefreshDataGridHeaders;
             LoadBackupTasks();
@@ -73,46 +76,15 @@ namespace WpfApp
         {
             dgBackupTasks.Columns.Clear();
 
-            dgBackupTasks.Columns.Add(new DataGridTextColumn
-            {
-                Header = FindResource("BackupName"),
-                Binding = new Binding("Name"),
-                Width = new DataGridLength(150)
-            });
-
-            dgBackupTasks.Columns.Add(new DataGridTextColumn
-            {
-                Header = FindResource("BackupSource"),
-                Binding = new Binding("Source"),
-                Width = new DataGridLength(1, DataGridLengthUnitType.Star)
-            });
-
-            dgBackupTasks.Columns.Add(new DataGridTextColumn
-            {
-                Header = FindResource("BackupDestination"),
-                Binding = new Binding("Destination"),
-                Width = new DataGridLength(1, DataGridLengthUnitType.Star)
-            });
-
-            dgBackupTasks.Columns.Add(new DataGridTextColumn
-            {
-                Header = FindResource("BackupType"),
-                Binding = new Binding("Type"),
-                Width = new DataGridLength(100)
-            });
-
-            dgBackupTasks.Columns.Add(new DataGridCheckBoxColumn
-            {
-                Header = FindResource("BackupEncryption"),
-                Binding = new Binding("Cryptage"),
-                Width = new DataGridLength(80)
-            });
+            dgBackupTasks.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupName"), Binding = new Binding("Name"), Width = new DataGridLength(150) });
+            dgBackupTasks.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupSource"), Binding = new Binding("Source"), Width = new DataGridLength(1, DataGridLengthUnitType.Star) });
+            dgBackupTasks.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupDestination"), Binding = new Binding("Destination"), Width = new DataGridLength(1, DataGridLengthUnitType.Star) });
+            dgBackupTasks.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupType"), Binding = new Binding("Type"), Width = new DataGridLength(100) });
+            dgBackupTasks.Columns.Add(new DataGridCheckBoxColumn { Header = FindResource("BackupEncryption"), Binding = new Binding("Cryptage"), Width = new DataGridLength(80) });
         }
 
-        private void BtnRefresh_Click(object sender, RoutedEventArgs e)
-        {
-            LoadBackupTasks();
-        }
+
+        private void BtnRefresh_Click(object sender, RoutedEventArgs e) => LoadBackupTasks();
 
         public void LoadBackupTasks()
         {
@@ -127,7 +99,6 @@ namespace WpfApp
                 Cryptage = task.Crypter,
             }).ToList();
 
-            // Affecter la liste au DataGrid
             dgBackupTasks.ItemsSource = backupItems;
         }
 
@@ -144,16 +115,13 @@ namespace WpfApp
             await Window_LoadedAsync(sender, e);
         }
 
-        private void BtnParametres_Click(object sender, RoutedEventArgs e)
-        {
-            Settings fenetre = new Settings();
-            fenetre.ShowDialog();
-        }
+        private void BtnParametres_Click(object sender, RoutedEventArgs e) => new Settings().ShowDialog();
 
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
             AjouterFenetre fenetre = new AjouterFenetre(this);
             fenetre.ShowDialog();
+
             LoadBackupTasks();
         }
 
@@ -170,9 +138,8 @@ namespace WpfApp
             if (selectedItems.Any())
             {
                 foreach (var selectedItem in selectedItems)
-                {
                     backupController.DeleteBackup(selectedItem.Name);
-                }
+
                 LoadBackupTasks();
             }
             else
@@ -185,62 +152,91 @@ namespace WpfApp
 
         private async void ButtonExecute_Click(object sender, RoutedEventArgs e)
         {
+            int choosenSize = interface_projet.Properties.Settings.Default.MaxSize;
             var selectedItems = dgBackupTasks.SelectedItems.Cast<BackupItem>().ToList();
-
-            if (selectedItems.Any())
-            {
-                foreach (var item in selectedItems)
-                {
-                    progressBar.Value = 0;
-                    lblProgress.Content = "0%";
-
-                    StartProgressTracking();
-
-                    // Exécuter la sauvegarde asynchrone
-                    bool response = await Task.Run(() => backupController.ExecuteBackup(item.Name));
-
-                    progressTimer.Stop();
-                    progressBar.Value = 0;
-                    lblProgress.Content = "0%";
-
-                    if (!response)
-                    {
-                        MessageBox.Show(string.Format(FindResource("BackupFailed") as string, item.Name));
-                        break; // Arrêter l'exécution si une sauvegarde échoue
-                    }
-                }
-
-                MessageBox.Show(FindResource("BackupCompleted") as string);
-                return;
-            }
-            else
+            if (!selectedItems.Any())
             {
                 MessageBox.Show(FindResource("NoItemSelected") as string);
+                return;
             }
-        }
 
-        private void StartProgressTracking()
-        {
-            progressTimer = new DispatcherTimer();
-            progressTimer.Interval = TimeSpan.FromSeconds(0.01);
-            progressTimer.Tick += ProgressTimer_Tick;
-            progressTimer.Start();
-        }
+            _cancellationTokenSource = new CancellationTokenSource();
 
-        private void ProgressTimer_Tick(object sender, EventArgs e)
-        {
-            double progress = Math.Round(backupController.GetProgressPourcentage(), 2);
+            btnStopBackup.Visibility = Visibility.Visible;
+            btnPauseBackup.Visibility = Visibility.Visible;
 
-            // Mettre à jour l'UI avec la progression arrondie
-            progressBar.Value = progress;
-            lblProgress.Content = $"{progress}%";
+            progressBar.Value = 0;
+            lblProgress.Content = "0%";
 
-            if (progress >= 100)
+            int globalTotalFiles = selectedItems.Sum(item => Directory.GetFiles(item.Source, "*", SearchOption.AllDirectories).Length);
+            ExecutionList = selectedItems.Select(item => item.Name).ToList();
+
+            int globalFilesCopied = 0;
+            Action<double> updateProgress = _ =>
             {
-                progressTimer.Stop();
+                int filesCopied = Interlocked.Increment(ref globalFilesCopied);
+                double progress = (filesCopied / (double)globalTotalFiles) * 100;
+                Dispatcher.Invoke(() =>
+                {
+                    progressBar.Value = progress;
+                    lblProgress.Content = $"{Math.Round(progress, 2)}%";
+                });
+            };
+
+            // Lancer chaque sauvegarde et transmettre le callback updateProgress
+            var backupTasks = selectedItems.Select(item =>
+                backupController.ExecuteBackup(item.Name, _cancellationTokenSource.Token, updateProgress, choosenSize)
+            ).ToList();
+
+            // On attend la fin de tt les saves avec WhenAll
+            bool[] results = await Task.WhenAll(backupTasks);
+
+            btnStopBackup.Visibility = Visibility.Collapsed;
+            btnPauseBackup.Visibility = Visibility.Collapsed;
+            btnPlayBackup.Visibility = Visibility.Collapsed;
+
+            progressBar.Value = 100;
+            lblProgress.Content = "100%";
+            ExecutionList.Clear();
+
+            if (results.Any(r => !r) && !_cancellationTokenSource.IsCancellationRequested)
+            {
+                MessageBox.Show(FindResource("BackupFailed") as string);
                 progressBar.Value = 0;
                 lblProgress.Content = "0%";
             }
+            else if(!results.Any(r => !r) && !_cancellationTokenSource.IsCancellationRequested)
+            {
+                MessageBox.Show(FindResource("BackupCompleted") as string);
+                progressBar.Value = 0;
+                lblProgress.Content = "0%";
+            }
+        }
+
+
+
+        private void btnStopBackup_Click(object sender, RoutedEventArgs e)
+        {
+            _cancellationTokenSource?.Cancel();
+            MessageBox.Show(FindResource("BackupStopExec") as string);
+            btnStopBackup.Visibility = Visibility.Collapsed;
+            btnPauseBackup.Visibility = Visibility.Collapsed;
+            btnPlayBackup.Visibility = Visibility.Collapsed;
+            progressBar.Value = 0;
+            lblProgress.Content = "0%";
+        }
+
+        private void btnPauseBackup_Click(object sender, RoutedEventArgs e) => TogglePauseExecution(true);
+
+        private void btnPlayBackup_Click(object sender, RoutedEventArgs e) => TogglePauseExecution(false);
+
+        private void TogglePauseExecution(bool pause)
+        {
+            btnPlayBackup.Visibility = pause ? Visibility.Visible : Visibility.Collapsed;
+            btnPauseBackup.Visibility = pause ? Visibility.Collapsed : Visibility.Visible;
+
+            foreach (string item in ExecutionList)
+                backupController.PauseExecution(item);
         }
     }
 

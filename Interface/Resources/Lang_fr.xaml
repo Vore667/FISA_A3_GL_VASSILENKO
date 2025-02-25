@@ -33,11 +33,13 @@
     <system:String x:Key="NoItemSelected">Aucun élément sélectionné.</system:String>
     <system:String x:Key="BackupFailed">L'exécution de la sauvegarde a échoué.</system:String>
     <system:String x:Key="BackupCompleted">Sauvegarde terminée avec succès !</system:String>
+    <system:String x:Key="BackupStopExec">Demande d'arrêt exécutée !</system:String>
 
     <!-- MENU PARAMETRES -->
     <system:String x:Key="Language">Langue : </system:String>
     <system:String x:Key="TypeLog">Type de logs : </system:String>
     <system:String x:Key="ExtensionCrypter">Extension à crypter : </system:String>
+    <system:String x:Key="ExtensionOrder">Extension à prioriser :</system:String>
     <system:String x:Key="AddExtension">Ajouter</system:String>
     <system:String x:Key="DeleteExtension">Supprimer</system:String>
     <system:String x:Key="ViewLogs">Voir les logs</system:String>
@@ -50,7 +52,10 @@
     <system:String x:Key="PlzSpecifySourceDirectory">Sélectionnez un dossier source</system:String>
     <system:String x:Key="ErrorExtensionInvalid">Extension invalide. Elle doit être au format '.x'</system:String>
     <system:String x:Key="PlzExtensionInvalid">Veuillez entrer une extension valide !</system:String>
+    <system:String x:Key="MaxSize">Taille maximale des fichiers copiable en même temps en Mo :</system:String>
+    <system:String x:Key="ErrorMaxSize">Veuillez entrer une valeur au dessus de 10 :</system:String>
 
 
-    
+
+
 </ResourceDictionary>

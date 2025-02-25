@@ -53,6 +53,11 @@ namespace interface_projet.Controllers
             return encryptionManager.GetEncryptExtensions();
         }
 
+        public List<string> GetPriorityExtensions()
+        {
+            return encryptionManager.GetPriorityExtensions();
+        }
+
         public string GetJobApp()
         {
             return encryptionManager.GetJobApp();
@@ -77,9 +82,28 @@ namespace interface_projet.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erreur lors de l'ajout de l'extension : {ex.Message}");
+                System.Windows.MessageBox.Show($"Erreur lors de l'ajout de l'extension : {ex.Message}");
             }
         }
+
+        public void AddPriorityExtension(string extension)
+        {
+            try
+            {
+                List<string> extensions = GetPriorityExtensions();
+
+                if (!extensions.Contains(extension))
+                {
+                    extensions.Add(extension);
+                    SavePriorityExtensions(extensions);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Erreur lors de l'ajout de l'extension : {ex.Message}");
+            }
+        }
+
 
         public void RemoveEncryptExtension(string extension)
         {
@@ -95,8 +119,13 @@ namespace interface_projet.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erreur lors de la suppression de l'extension : {ex.Message}");
+                System.Windows.MessageBox.Show($"Erreur lors de la suppression de l'extension : {ex.Message}");
             }
+        }
+
+        public void ModifyMaxSize(int maxSize)
+        {
+
         }
 
         private void SaveEncryptExtensions(List<string> extensions)
@@ -128,11 +157,60 @@ namespace interface_projet.Controllers
                 System.Windows.MessageBox.Show($"Erreur lors de l'enregistrement des extensions : {ex.Message}");
             }
         }
+
+        private void SavePriorityExtensions(List<string> extensions)
+        {
+            try
+            {
+                Dictionary<string, object> jsonData;
+
+                // Lire le contenu actuel du fichier JSON
+                if (File.Exists(encryptExtensionsLocation))
+                {
+                    string existingContent = File.ReadAllText(encryptExtensionsLocation);
+                    jsonData = JsonConvert.DeserializeObject<Dictionary<string, object>>(existingContent) ?? new Dictionary<string, object>();
+                }
+                else
+                {
+                    jsonData = new Dictionary<string, object>();
+                }
+
+                // Mettre à jour uniquement la section "PriorityExtensions"
+                jsonData["PriorityExtensions"] = extensions;
+
+                // Sauvegarder l'intégralité du JSON mis à jour
+                string jsonContent = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
+                File.WriteAllText(encryptExtensionsLocation, jsonContent);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Erreur lors de l'enregistrement des extensions : {ex.Message}");
+            }
+        }
+
+        public void RemovePriorityExtension(string extension)
+        {
+            try
+            {
+                List<string> extensions = GetPriorityExtensions();
+
+                if (extensions.Contains(extension))
+                {
+                    extensions.Remove(extension);
+                    SavePriorityExtensions(extensions);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Erreur lors de la suppression de l'extension : {ex.Message}");
+            }
+        }
     }
 
     public class ConfigData
     {
         public List<string> Encrypt { get; set; } = new List<string>();
         public string JobApp { get; set; } = string.Empty;
+        public List<string> PriorityExtensions { get; set; } = new List<string>();
     }
 }

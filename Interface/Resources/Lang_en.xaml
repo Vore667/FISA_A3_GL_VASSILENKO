@@ -33,11 +33,13 @@
     <system:String x:Key="BackupFailed">Backup execution failed.</system:String>
     <system:String x:Key="BackupCompleted">Backup completed successfully!</system:String>
     <system:String x:Key="Title">Backup Task List</system:String>
+    <system:String x:Key="BackupStopExec">Backup stop request executed!</system:String>
 
     <!-- MENU PARAMETRES -->
     <system:String x:Key="Language">Language : </system:String>
     <system:String x:Key="TypeLog">Type of logs : </system:String>
     <system:String x:Key="ExtensionCrypter">Extension to encrypt : </system:String>
+    <system:String x:Key="ExtensionOrder">Extension to prioritize :</system:String>
     <system:String x:Key="AddExtension">Add</system:String>
     <system:String x:Key="DeleteExtension">Delete</system:String>
     <system:String x:Key="ViewLogs">View logs</system:String>
@@ -50,6 +52,11 @@
     <system:String x:Key="PlzSpecifySourceDirectory">Select a source folder</system:String>
     <system:String x:Key="ErrorExtensionInvalid">Invalid extension. It must be in ‘.x’ format</system:String>
     <system:String x:Key="PlzExtensionInvalid">Please enter a valid extension !</system:String>
+    <system:String x:Key="MaxSize">Maximum file size that can be copied at once in Mo:</system:String>
+    <system:String x:Key="ErrorMaxSize">Please enter a value above 10 :</system:String>
+
+
+
 
 
 

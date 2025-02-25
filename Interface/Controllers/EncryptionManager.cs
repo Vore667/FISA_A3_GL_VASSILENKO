@@ -50,6 +50,26 @@ namespace interface_projet.Controllers
             return new List<string>();
         }
 
+        public List<string> GetPriorityExtensions()
+        {
+            try
+            {
+                if (File.Exists(jsonFilePath))
+                {
+                    string jsonContent = File.ReadAllText(jsonFilePath);
+                    var jsonData = JsonConvert.DeserializeObject<ConfigData>(jsonContent);
+
+                    return jsonData.PriorityExtensions ?? new List<string>();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Erreur lors de la lecture du fichier JSON : {ex.Message}");
+            }
+
+            return new List<string>();
+        }
+
 
 
         // Récupère l'application à surveiller
