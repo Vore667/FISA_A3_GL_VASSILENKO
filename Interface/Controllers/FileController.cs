@@ -225,7 +225,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
 
         public async Task<long> CopyFile(string sourceFile, string destFile, CancellationToken cancellationToken)
         {
-            const int BufferSize = 81920;
+            const int BufferSize = 1000000; //10Mo
             long totalBytesCopied = 0;
 
             try
