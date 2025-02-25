@@ -1,7 +1,7 @@
 {
   "Encrypt": [],
+  "JobApp": "chrome",
   "PriorityExtensions": [
     ".iso"
-  ],
-  "JobApp": "Calculator"
+  ]
 }

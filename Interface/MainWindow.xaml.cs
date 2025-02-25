@@ -39,11 +39,8 @@ namespace WpfApp
             _commFacade.Configure(_isServerMode, "http://localhost:5000/ws/");
             _commFacade.OnMessageReceived += (msg) =>
             {
-                // Mettre à jour la vue (ici avec MessageBox, à adapter selon vos besoins)
-                Dispatcher.Invoke(() =>
-                {
-                    MessageBox.Show($"Message reçu : {msg}{Environment.NewLine}");
-                });
+                // Mettre à jour la vue
+                Dispatcher.Invoke(() => { });
             };
 
             LangController langController = LangController.Instance;
@@ -117,16 +114,9 @@ namespace WpfApp
 
         private void BtnParametres_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                Settings settings = new Settings(this);
-                settings.ShowDialog();
-            }
-            catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show($"Erreur : {ex.Message}\nInnerException : {ex.InnerException?.Message}",
-                    "Erreur WebSocket", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+
+            Settings settings = new Settings(this);
+            settings.ShowDialog();
         }
 
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
