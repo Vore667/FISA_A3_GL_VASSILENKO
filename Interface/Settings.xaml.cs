@@ -231,11 +231,10 @@ namespace interface_projet
                 System.Windows.MessageBox.Show((FindResource("ErrorMaxSize") as string), "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
 
                 return;
-            }
-
-            if (!string.IsNullOrEmpty(newMaxSize))
+            } else
             {
                 Properties.Settings.Default.MaxSize = int.Parse(newMaxSize);
+                Properties.Settings.Default.Save();
             }
         }
 
