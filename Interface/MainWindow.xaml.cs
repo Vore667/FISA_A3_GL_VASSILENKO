@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.WebSockets;
+
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -9,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Threading;
 using interface_projet;
+using interface_projet.Controllers;
 using LogClassLibraryVue;
 using Projet_Easy_Save_grp_4.Controllers;
 
@@ -17,21 +20,56 @@ namespace WpfApp
     public partial class MainWindow : Window
     {
         private BackupController backupController;
+        private bool _isServerMode;
+        private CommunicationFacade _commFacade;
+        private ClientWebSocket _clientWebSocket; // Pour le mode client
         private CancellationTokenSource? _cancellationTokenSource;
         private List<string> ExecutionList = new List<string>();
 
-        public MainWindow()
+        public MainWindow(bool isServerMode)
         {
             InitializeComponent();
             string logDirectory = interface_projet.Properties.Settings.Default.LogsPath;
             string logType = interface_projet.Properties.Settings.Default.LogsType;
             LogController.Instance.Initialize(logDirectory, logType);
 
+            _isServerMode = isServerMode;
+            _commFacade = new CommunicationFacade();
+            // Configure la façade selon le mode (pour le serveur, démarre sur ws://localhost:5000/ws/ ; pour le client, le même URI pour se connecter)
+            _commFacade.Configure(_isServerMode, "http://localhost:5000/ws/");
+            _commFacade.OnMessageReceived += (msg) =>
+            {
+                // Mettre à jour la vue (ici avec MessageBox, à adapter selon vos besoins)
+                Dispatcher.Invoke(() =>
+                {
+                    MessageBox.Show($"Message reçu : {msg}{Environment.NewLine}");
+                });
+            };
+
             LangController langController = LangController.Instance;
             LogController logController = LogController.Instance;
             backupController = new BackupController(logDirectory, logController);
             LangController.LanguageChanged += RefreshDataGridHeaders;
             LoadBackupTasks();
+        }
+
+        private async Task Window_LoadedAsync(object sender, RoutedEventArgs e)
+        {
+            if (_isServerMode)
+            {
+                txtStatus.Text = "Mode : Serveur";
+                txtStatus.Text = "Démarrage du serveur...";
+                // Démarrer le serveur dans la façade
+                await _commFacade.StartAsync(CancellationToken.None);
+                txtStatus.Text = "Serveur démarré sur ws://localhost:5000/ws/";
+            }
+            else
+            {
+                txtStatus.Text = "Mode : Client";
+                await _commFacade.StartAsync(CancellationToken.None);
+                await _commFacade.ConnectAsync(new Uri("ws://localhost:5000/ws/"), CancellationToken.None);
+                txtStatus.Text = "Connecté au serveur.";
+            }
         }
 
         private void RefreshDataGridHeaders()
@@ -44,6 +82,7 @@ namespace WpfApp
             dgBackupTasks.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupType"), Binding = new Binding("Type"), Width = new DataGridLength(100) });
             dgBackupTasks.Columns.Add(new DataGridCheckBoxColumn { Header = FindResource("BackupEncryption"), Binding = new Binding("Cryptage"), Width = new DataGridLength(80) });
         }
+
 
         private void BtnRefresh_Click(object sender, RoutedEventArgs e) => LoadBackupTasks();
 
@@ -63,7 +102,7 @@ namespace WpfApp
             dgBackupTasks.ItemsSource = backupItems;
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             double screenWidth = SystemParameters.PrimaryScreenWidth;
             double screenHeight = SystemParameters.PrimaryScreenHeight;
@@ -72,13 +111,17 @@ namespace WpfApp
             this.Height = screenHeight * (2.0 / 3.0);
             this.Left = (screenWidth - this.Width) / 2;
             this.Top = (screenHeight - this.Height) / 2;
+
+            await Window_LoadedAsync(sender, e);
         }
 
         private void BtnParametres_Click(object sender, RoutedEventArgs e) => new Settings().ShowDialog();
 
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
-            new AjouterFenetre(this).ShowDialog();
+            AjouterFenetre fenetre = new AjouterFenetre(this);
+            fenetre.ShowDialog();
+
             LoadBackupTasks();
         }
 
@@ -104,6 +147,8 @@ namespace WpfApp
                 MessageBox.Show(FindResource("NoItemSelected") as string);
             }
         }
+
+        private DispatcherTimer progressTimer;
 
         private async void ButtonExecute_Click(object sender, RoutedEventArgs e)
         {
@@ -167,6 +212,8 @@ namespace WpfApp
                 lblProgress.Content = "0%";
             }
         }
+
+
 
         private void btnStopBackup_Click(object sender, RoutedEventArgs e)
         {
