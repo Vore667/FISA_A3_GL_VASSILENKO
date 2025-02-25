@@ -115,7 +115,19 @@ namespace WpfApp
             await Window_LoadedAsync(sender, e);
         }
 
-        private void BtnParametres_Click(object sender, RoutedEventArgs e) => new Settings().ShowDialog();
+        private void BtnParametres_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Settings settings = new Settings(this);
+                settings.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Erreur : {ex.Message}\nInnerException : {ex.InnerException?.Message}",
+                    "Erreur WebSocket", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {

@@ -30,33 +30,33 @@ namespace interface_projet
     /// </summary>
     public partial class Settings : Window
     {
+        private MainWindow mainWindow;
         private SettingsController settingsController;
-        private MainWindow mainWindow; // Add a reference to MainWindow
 
-        public Settings()
+        public Settings(MainWindow mainWindow)
         {
+            InitializeComponent();
+            this.mainWindow = mainWindow; // On récupère la référence passée
+
             // Récupération des instances de contrôleurs
             ILang langController = LangController.Instance;
             LogController logController = LogController.Instance;
 
-            // Récupérer les paramètres depuis Properties.Settings et initialiser LogController
+            // Initialisation des paramètres
             string logsPath = Properties.Settings.Default.LogsPath;
             string logsType = Properties.Settings.Default.LogsType;
-            int MaxSize = Properties.Settings.Default.MaxSize; 
+            int maxSize = Properties.Settings.Default.MaxSize;
             logController.Initialize(logsPath, logsType);
 
-            // Création du SettingsController en passant les instances nécessaires
             settingsController = new SettingsController(langController, logController);
-            mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
 
-            // Appliquer la langue sauvegardée
+            // Application de la langue sauvegardée
             string savedLang = Properties.Settings.Default.Language;
             if (!string.IsNullOrEmpty(savedLang))
             {
                 LangController.SetLanguage(savedLang);
             }
 
-            // Bien que le logsType ait été utilisé pour l'initialisation, on peut le réaffirmer ici si nécessaire
             if (!string.IsNullOrEmpty(logsType))
             {
                 logController.SetLogType(logsType);
@@ -64,9 +64,9 @@ namespace interface_projet
 
             InitializeComponent();
 
-            // Afficher le chemin des logs dans le TextBox dédié
+            // Initialisation de l'interface
             tbLogsPath.Text = logsPath;
-            tbMaxSize.Text = MaxSize.ToString();
+            tbMaxSize.Text = maxSize.ToString();
 
             SetDefaultLanguage();
             SetDefaultLogType();
