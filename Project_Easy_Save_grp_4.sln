@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "Console\Console.csproj", "{9B51D2A0-C675-4291-B631-8A307DCF30D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptoSoft", "CryptoSoft\CryptoSoft.csproj", "{AF89DDBC-32DB-470D-B17B-740816097FEF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "interface_projet", "Interface\interface_projet.csproj", "{7329B5D7-D3AE-4451-8956-1421D5C1437D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogClassLibraryVue", "LogClassLibraryVue\LogClassLibraryVue.csproj", "{FEEF431B-100C-4E9E-B560-4AA2654F9BB7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9B51D2A0-C675-4291-B631-8A307DCF30D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B51D2A0-C675-4291-B631-8A307DCF30D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B51D2A0-C675-4291-B631-8A307DCF30D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B51D2A0-C675-4291-B631-8A307DCF30D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF89DDBC-32DB-470D-B17B-740816097FEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF89DDBC-32DB-470D-B17B-740816097FEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF89DDBC-32DB-470D-B17B-740816097FEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF89DDBC-32DB-470D-B17B-740816097FEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7329B5D7-D3AE-4451-8956-1421D5C1437D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7329B5D7-D3AE-4451-8956-1421D5C1437D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7329B5D7-D3AE-4451-8956-1421D5C1437D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7329B5D7-D3AE-4451-8956-1421D5C1437D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEEF431B-100C-4E9E-B560-4AA2654F9BB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEEF431B-100C-4E9E-B560-4AA2654F9BB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEEF431B-100C-4E9E-B560-4AA2654F9BB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEEF431B-100C-4E9E-B560-4AA2654F9BB7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,63 @@
+﻿<!-- Ressources EN -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <!-- MENU AJOUTER -->
+    <system:String x:Key="WindowTitle">Add an item</system:String>
+    <system:String x:Key="TitleTask">Add a backup task</system:String>
+    <system:String x:Key="LabelNom">Name :</system:String>
+    <system:String x:Key="LabelCheminSource">Source Path :</system:String>
+    <system:String x:Key="LabelCheminDestination">Destination Path :</system:String>
+    <system:String x:Key="TextAucun">None</system:String>
+    <system:String x:Key="CheckboxCrypter">Encrypt backup</system:String>
+    <system:String x:Key="LabelTypeSauvegarde">Backup type :</system:String>
+    <system:String x:Key="RadioIncrement">Incremental</system:String>
+    <system:String x:Key="RadioComplete">Full</system:String>
+    <system:String x:Key="BtnAnnuler">Cancel</system:String>
+    <system:String x:Key="BtnValider">Submit</system:String>
+    <!-- MENU PRINCIPAL -->
+    <system:String x:Key="Add">Add</system:String>
+    <system:String x:Key="Execute">Execute</system:String>
+    <system:String x:Key="Delete">Delete</system:String>
+    <system:String x:Key="Refresh">Refresh</system:String>
+    <system:String x:Key="Settings">Settings</system:String>
+    <system:String x:Key="ProgressLabel">Progress:</system:String>
+    <system:String x:Key="BackupName">Name</system:String>
+    <system:String x:Key="BackupSource">Source</system:String>
+    <system:String x:Key="BackupDestination">Destination</system:String>
+    <system:String x:Key="BackupType">Type</system:String>
+    <system:String x:Key="BackupEncryption">Encryption</system:String>
+    <system:String x:Key="BackupComplete">Full</system:String>
+    <system:String x:Key="BackupIncremental">Incremental</system:String>
+    <system:String x:Key="NoItemSelected">No item selected.</system:String>
+    <system:String x:Key="BackupFailed">Backup execution failed.</system:String>
+    <system:String x:Key="BackupCompleted">Backup completed successfully!</system:String>
+    <system:String x:Key="Title">Backup Task List</system:String>
+    <system:String x:Key="BackupStopExec">Backup stop request executed!</system:String>
+
+    <!-- MENU PARAMETRES -->
+    <system:String x:Key="Language">Language : </system:String>
+    <system:String x:Key="TypeLog">Type of logs : </system:String>
+    <system:String x:Key="ExtensionCrypter">Extension to encrypt : </system:String>
+    <system:String x:Key="ExtensionOrder">Extension to prioritize :</system:String>
+    <system:String x:Key="AddExtension">Add</system:String>
+    <system:String x:Key="DeleteExtension">Delete</system:String>
+    <system:String x:Key="ViewLogs">View logs</system:String>
+    <system:String x:Key="logPath">Logs path : </system:String>
+    <system:String x:Key="Modify">Modify</system:String>
+    <system:String x:Key="WorkLogiciel">business software</system:String>
+    <system:String x:Key="ExtensionToDelete">Please select an extension to delete.</system:String>
+    <system:String x:Key="DirectoryDoesntExist">The specified path does not exist.</system:String>
+    <system:String x:Key="PlzSpecifyDirectoryLog">Please specify a log path.</system:String>
+    <system:String x:Key="PlzSpecifySourceDirectory">Select a source folder</system:String>
+    <system:String x:Key="ErrorExtensionInvalid">Invalid extension. It must be in ‘.x’ format</system:String>
+    <system:String x:Key="PlzExtensionInvalid">Please enter a valid extension !</system:String>
+    <system:String x:Key="MaxSize">Maximum file size that can be copied at once in Mo:</system:String>
+    <system:String x:Key="ErrorMaxSize">Please enter a value above 10 :</system:String>
+
+
+
+
+
+
+</ResourceDictionary>

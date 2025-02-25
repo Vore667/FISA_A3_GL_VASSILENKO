@@ -1,0 +1,61 @@
+﻿<!-- Ressources FR -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <!-- MENU AJOUTER -->
+    <system:String x:Key="WindowTitle">Ajouter un élément</system:String>
+    <system:String x:Key="TitleTask">Ajouter une tâche de sauvegarde</system:String>
+    <system:String x:Key="LabelNom">Nom :</system:String>
+    <system:String x:Key="LabelCheminSource">Chemin Source :</system:String>
+    <system:String x:Key="LabelCheminDestination">Chemin Destination :</system:String>
+    <system:String x:Key="TextAucun">Aucun</system:String>  
+    <system:String x:Key="CheckboxCrypter">Crypter la sauvegarde</system:String>
+    <system:String x:Key="LabelTypeSauvegarde">Type de sauvegarde :</system:String>
+    <system:String x:Key="RadioIncrement">Incrémentielle</system:String>
+    <system:String x:Key="RadioComplete">Complète</system:String>
+    <system:String x:Key="BtnAnnuler">Annuler</system:String>
+    <system:String x:Key="BtnValider">Valider</system:String>
+    <!-- MENU PRINCIPAL -->
+    <system:String x:Key="Add">Ajouter</system:String>
+    <system:String x:Key="Execute">Exécuter</system:String>
+    <system:String x:Key="Delete">Supprimer</system:String>
+    <system:String x:Key="Refresh">Rafraîchir</system:String>
+    <system:String x:Key="Title">Liste des Tâches de Sauvegarde</system:String>
+    <system:String x:Key="Settings">Paramètres</system:String>
+    <system:String x:Key="ProgressLabel">Progression :</system:String>
+    <system:String x:Key="BackupName">Nom</system:String>
+    <system:String x:Key="BackupSource">Source</system:String>
+    <system:String x:Key="BackupDestination">Destination</system:String>
+    <system:String x:Key="BackupType">Type</system:String>
+    <system:String x:Key="BackupEncryption">Cryptage</system:String>
+    <system:String x:Key="BackupComplete">Complète</system:String>
+    <system:String x:Key="BackupIncremental">Incrémentielle</system:String>
+    <system:String x:Key="NoItemSelected">Aucun élément sélectionné.</system:String>
+    <system:String x:Key="BackupFailed">L'exécution de la sauvegarde a échoué.</system:String>
+    <system:String x:Key="BackupCompleted">Sauvegarde terminée avec succès !</system:String>
+    <system:String x:Key="BackupStopExec">Demande d'arrêt exécutée !</system:String>
+
+    <!-- MENU PARAMETRES -->
+    <system:String x:Key="Language">Langue : </system:String>
+    <system:String x:Key="TypeLog">Type de logs : </system:String>
+    <system:String x:Key="ExtensionCrypter">Extension à crypter : </system:String>
+    <system:String x:Key="ExtensionOrder">Extension à prioriser :</system:String>
+    <system:String x:Key="AddExtension">Ajouter</system:String>
+    <system:String x:Key="DeleteExtension">Supprimer</system:String>
+    <system:String x:Key="ViewLogs">Voir les logs</system:String>
+    <system:String x:Key="logPath">Chemin des logs : </system:String>
+    <system:String x:Key="Modify">Modifier</system:String>
+    <system:String x:Key="WorkLogiciel">Logiciel Métier</system:String>
+    <system:String x:Key="ExtensionToDelete">Veuillez sélectionner une extension à supprimer.</system:String>
+    <system:String x:Key="DirectoryDoesntExist">Le chemin spécifié n'existe pas.</system:String>
+    <system:String x:Key="PlzSpecifyDirectoryLog">Veuillez spécifier un chemin de logs.</system:String>
+    <system:String x:Key="PlzSpecifySourceDirectory">Sélectionnez un dossier source</system:String>
+    <system:String x:Key="ErrorExtensionInvalid">Extension invalide. Elle doit être au format '.x'</system:String>
+    <system:String x:Key="PlzExtensionInvalid">Veuillez entrer une extension valide !</system:String>
+    <system:String x:Key="MaxSize">Taille maximale des fichiers copiable en même temps en Mo :</system:String>
+    <system:String x:Key="ErrorMaxSize">Veuillez entrer une valeur au dessus de 10 :</system:String>
+
+
+
+
+</ResourceDictionary>

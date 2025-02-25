@@ -1,0 +1,270 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Application_Exit" xml:space="preserve">
+    <value>Fermeture de l'application</value>
+  </data>
+  <data name="Error_MaxBackup" xml:space="preserve">
+    <value>Erreur : Vous ne pouvez pas ajouter plus de 5 tâches de sauvegarde.</value>
+  </data>
+  <data name="Error_SourceDirectoryDoesntExist" xml:space="preserve">
+    <value>Erreur : Le répertoire source n'existe pas.</value>
+  </data>
+  <data name="Invalid_Choice" xml:space="preserve">
+    <value>Choix invalide, veuillez réessayer !</value>
+  </data>
+  <data name="Menu_Option1" xml:space="preserve">
+    <value>Lister les tâches</value>
+  </data>
+  <data name="Menu_Option2" xml:space="preserve">
+    <value>Créer une tâche</value>
+  </data>
+  <data name="Menu_Option4" xml:space="preserve">
+    <value>Supprimer une tâche</value>
+  </data>
+  <data name="Menu_Option5" xml:space="preserve">
+    <value>Changer de langue</value>
+  </data>
+  <data name="Menu_Option6" xml:space="preserve">
+    <value>Paramètres</value>
+  </data>
+  <data name="Menu_YourChoice" xml:space="preserve">
+    <value>Votre choix : </value>
+  </data>
+  <data name="Menu_Title" xml:space="preserve">
+    <value>Menu Principal</value>
+  </data>
+  <data name="Overall_SubMenu_Option1" xml:space="preserve">
+    <value>Si vous souhaitez revenir au menu appuyez sur Echap sinon appuyez sur Entrée</value>
+  </data>
+  <data name="Select_Language" xml:space="preserve">
+    <value>Sélection de la langue : </value>
+  </data>
+  <data name="SubMenu_ListOfExistingTasks" xml:space="preserve">
+    <value>Liste des tâches de sauvegarde existantes :</value>
+  </data>
+  <data name="SubMenu_TaskDeleted" xml:space="preserve">
+    <value>Tâche supprimée !</value>
+  </data>
+  <data name="SubMenu_CreatingTask" xml:space="preserve">
+    <value>Création d'une tâche de sauvegarde</value>
+  </data>
+  <data name="SubMenu_NameTask" xml:space="preserve">
+    <value>Nom de la tâche : </value>
+  </data>
+  <data name="SubMenu_SourceDirectory" xml:space="preserve">
+    <value>Répertoire source : </value>
+  </data>
+  <data name="SubMenu_DestDirectory" xml:space="preserve">
+    <value>Répertoire cible : </value>
+  </data>
+  <data name="SubMenu_TaskType" xml:space="preserve">
+    <value>Type de tâche (1 pour complète, 2 pour différentielle) : </value>
+  </data>
+  <data name="Notif_TaskCreated" xml:space="preserve">
+    <value>Tâche de sauvegarde ajoutée avec succès !</value>
+  </data>
+  <data name="SubMenu_DeletingTask" xml:space="preserve">
+    <value>Suppression d'une tâche de sauvegarde</value>
+  </data>
+  <data name="SubMenu_EnterTaskNameToDelete" xml:space="preserve">
+    <value>Entrez le nom de la tâche à supprimer : </value>
+  </data>
+  <data name="Update_Language" xml:space="preserve">
+    <value>Langue mise à jour !</value>
+  </data>
+  <data name="Error_NoTaskCreated" xml:space="preserve">
+    <value>Aucune tâche de sauvegarde disponible.</value>
+  </data>
+  <data name="TaskName" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="TaskType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="TaskSource" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="TaskDestination" xml:space="preserve">
+    <value>Destination</value>
+  </data>
+  <data name="Error_NoTaskFound" xml:space="preserve">
+    <value>Erreur : Tâche de sauvegarde introuvable.</value>
+  </data>
+  <data name="Notify_BackupExecution" xml:space="preserve">
+    <value>Exécution de la sauvegarde</value>
+  </data>
+  <data name="BackupType_Complete" xml:space="preserve">
+    <value>Complete</value>
+  </data>
+  <data name="BackupType_Differential" xml:space="preserve">
+    <value>Différientielle</value>
+  </data>
+  <data name="SubMenu_EnterTaskNameToExecute" xml:space="preserve">
+    <value>Entrez le nom de la tâche à exécuter : </value>
+  </data>
+  <data name="Notify_TaskDeleted" xml:space="preserve">
+    <value>Tâche supprimée avec succès !</value>
+  </data>
+  <data name="SubMenu_ExecutingTask" xml:space="preserve">
+    <value>Exécution d'une tâche.</value>
+  </data>
+  <data name="Menu_Option3" xml:space="preserve">
+    <value>Exécuter une tâche</value>
+  </data>
+  <data name="Overall_SubMenu_Option2" xml:space="preserve">
+    <value>Si vous souhaitez revenir au menu appuyez sur Echap.</value>
+  </data>
+  <data name="Notify_Copied" xml:space="preserve">
+    <value>Fichier copié</value>
+  </data>
+  <data name="Notify_AllFilesCopied" xml:space="preserve">
+    <value>Tous les fichiers ont été copiés !</value>
+  </data>
+  <data name="Error_WhenFileCopy" xml:space="preserve">
+    <value>Erreur dans la copie du dossier</value>
+  </data>
+  <data name="Notify_AllModifiedFilesCopied" xml:space="preserve">
+    <value>Tous les fichiers modifiés ont été copiés !</value>
+  </data>
+  <data name="Error_NoTaskName" xml:space="preserve">
+    <value>Erreur : pas de nom de tâche renseignée !</value>
+  </data>
+  <data name="Error_NoTaskSource" xml:space="preserve">
+    <value>Erreur : pas de source spécifiée</value>
+  </data>
+  <data name="Error_NoTaskDestination" xml:space="preserve">
+    <value>Erreur, pas de répertoire de destination spécifié</value>
+  </data>
+  <data name="Error_NoTaskType" xml:space="preserve">
+    <value>Erreur, pas de type renseigné !</value>
+  </data>
+  <data name="Menu_Option7" xml:space="preserve">
+    <value>Quitter</value>
+  </data>
+  <data name="Select_TypeOfLog" xml:space="preserve">
+    <value>Choisissez le type de logs souhaités parmi : </value>
+  </data>
+  <data name="Update_LogType" xml:space="preserve">
+    <value>Mise à jour du type de logs</value>
+  </data>
+  <data name="SubMenu_CrypteType" xml:space="preserve">
+    <value>Souhaitez vous crypter ? 0 pour non 1 pour oui</value>
+  </data>
+</root>
