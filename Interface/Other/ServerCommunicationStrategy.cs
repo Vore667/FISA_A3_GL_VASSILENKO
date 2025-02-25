@@ -11,7 +11,7 @@ namespace interface_projet.Other
 {
     public class ServerCommunicationStrategy : ICommunicationStrategy
     {
-        public event Action<string> MessageReceived;
+        public event Action<string>? MessageReceived;
         private readonly string _uriPrefix;
         private HttpListener _listener;
         private readonly List<WebSocket> _clients = new List<WebSocket>();
@@ -19,6 +19,7 @@ namespace interface_projet.Other
         public ServerCommunicationStrategy(string uriPrefix)
         {
             _uriPrefix = uriPrefix;
+            _listener = new HttpListener();
         }
 
         public async Task StartAsync(CancellationToken token)

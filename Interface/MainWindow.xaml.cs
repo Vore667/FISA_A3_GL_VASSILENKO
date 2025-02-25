@@ -22,7 +22,6 @@ namespace WpfApp
         private BackupController backupController;
         private bool _isServerMode;
         private CommunicationFacade _commFacade;
-        private ClientWebSocket _clientWebSocket; // Pour le mode client
         private CancellationTokenSource? _cancellationTokenSource;
         private List<string> ExecutionList = new List<string>();
 
@@ -58,7 +57,7 @@ namespace WpfApp
                 txtStatus.Text = "Mode : Serveur";
                 txtStatus.Text = "Démarrage du serveur...";
                 // Démarrer le serveur dans la façade
-                _commFacade.StartAsync(CancellationToken.None);
+                await _commFacade.StartAsync(CancellationToken.None);
                 txtStatus.Text = "Serveur démarré sur ws://localhost:5000/ws/";
             }
             else
@@ -139,29 +138,32 @@ namespace WpfApp
         {
             backupController.AddBackup(nom, source, destination, typeSauvegarde, crypter);
             LoadBackupTasks();
-            _commFacade.SendAsync($"New Backup {nom}{source}{destination}{typeSauvegarde}{crypter}");
+            await _commFacade.SendAsync($"New Backup {nom}{source}{destination}{typeSauvegarde}{crypter}");
 
         }
 
-        private void ButtonDelete_Click(object sender, RoutedEventArgs e)
+        private async void ButtonDelete_Click(object sender, RoutedEventArgs e)
         {
             var selectedItems = dgBackupTasks.SelectedItems.Cast<BackupItem>().ToList();
 
             if (selectedItems.Any())
             {
                 foreach (var selectedItem in selectedItems)
-                    backupController.DeleteBackup(selectedItem.Name);
+                {
+                    if (!string.IsNullOrEmpty(selectedItem.Name)) 
+                    {
+                        backupController.DeleteBackup(selectedItem.Name);
+                    }
+                }
                 LoadBackupTasks();
-                _commFacade.SendAsync($"Delete backup");
-
+                await _commFacade.SendAsync("Delete backup");
             }
+
             else
             {
                 MessageBox.Show(FindResource("NoItemSelected") as string);
             }
         }
-
-        private DispatcherTimer progressTimer;
 
         private async void ButtonExecute_Click(object sender, RoutedEventArgs e)
         {
@@ -172,7 +174,7 @@ namespace WpfApp
                 MessageBox.Show(FindResource("NoItemSelected") as string);
                 return;
             }
-            _commFacade.SendAsync($"Execute backup");
+            await _commFacade.SendAsync($"Execute backup");
             _cancellationTokenSource = new CancellationTokenSource();
 
             btnStopBackup.Visibility = Visibility.Visible;
@@ -181,8 +183,11 @@ namespace WpfApp
             progressBar.Value = 0;
             lblProgress.Content = "0%";
 
-            int globalTotalFiles = selectedItems.Sum(item => Directory.GetFiles(item.Source, "*", SearchOption.AllDirectories).Length);
-            ExecutionList = selectedItems.Select(item => item.Name).ToList();
+            int globalTotalFiles = selectedItems
+                .Where(item => !string.IsNullOrEmpty(item.Source)) // Filtrer les valeurs null ou vides
+                .Sum(item => Directory.GetFiles(item.Source!, "*", SearchOption.AllDirectories).Length);
+
+            List<string?> ExecutionList = selectedItems.Select(item => item.Name).ToList();
 
             int globalFilesCopied = 0;
             Action<double> updateProgress = _ =>
@@ -197,9 +202,11 @@ namespace WpfApp
             };
 
             // Lancer chaque sauvegarde et transmettre le callback updateProgress
-            var backupTasks = selectedItems.Select(item =>
-                backupController.ExecuteBackup(item.Name, _cancellationTokenSource.Token, updateProgress, choosenSize)
-            ).ToList();
+            var backupTasks = selectedItems
+                .Where(item => !string.IsNullOrEmpty(item.Name)) 
+                .Select(item => backupController.ExecuteBackup(item.Name!, _cancellationTokenSource.Token, updateProgress, choosenSize))
+                .ToList();
+
 
             // On attend la fin de tt les saves avec WhenAll
             bool[] results = await Task.WhenAll(backupTasks);
@@ -255,10 +262,10 @@ namespace WpfApp
 
     public class BackupItem
     {
-        public string Name { get; set; }
-        public string Source { get; set; }
-        public string Destination { get; set; }
-        public string Type { get; set; }
+        public string? Name { get; set; }
+        public string? Source { get; set; }
+        public string? Destination { get; set; }
+        public string? Type { get; set; }
         public bool Cryptage { get; set; }
     }
 }

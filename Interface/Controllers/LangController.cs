@@ -19,9 +19,9 @@ namespace Projet_Easy_Save_grp_4.Controllers
 {
     public class LangController : ILang
     {
-        private static LangController instance;
+        private static LangController? instance;
 
-        public static event Action LanguageChanged;
+        public static event Action? LanguageChanged;
 
         public static LangController Instance
         {
@@ -42,12 +42,12 @@ namespace Projet_Easy_Save_grp_4.Controllers
         private static CultureInfo _currentCulture = new CultureInfo("fr"); // Langue par défaut
 
         // Pour les textes dans le CLI
-        public static new void SetLanguage(string langCode)
+        public static void SetLanguage(string langCode)
         {
             _currentCulture = new CultureInfo(langCode);
         }
 
-        public static new string GetText(string key)
+        public static string GetText(string key)
         {
             return LangResources.GetText(key, _currentCulture.Name);
         } 

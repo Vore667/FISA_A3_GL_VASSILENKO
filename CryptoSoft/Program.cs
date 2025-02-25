@@ -18,7 +18,8 @@ namespace CryptoSoft
             do
             {
                 Console.Write("Entrez le chemin du fichier à chiffrer : ");
-                cheminFichier = Console.ReadLine();
+                cheminFichier = Console.ReadLine() ?? "";
+
 
                 if (string.IsNullOrWhiteSpace(cheminFichier) || !File.Exists(cheminFichier))
                 {
@@ -32,7 +33,7 @@ namespace CryptoSoft
             do
             {
                 Console.Write("Entrez la clé de chiffrement : ");
-                cle = Console.ReadLine();
+                cle = Console.ReadLine() ?? "";
 
                 if (string.IsNullOrWhiteSpace(cle))
                 {

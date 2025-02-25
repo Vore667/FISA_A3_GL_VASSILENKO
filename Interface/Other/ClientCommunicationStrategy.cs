@@ -10,15 +10,15 @@ namespace interface_projet.Other
 {
     public class ClientCommunicationStrategy : ICommunicationStrategy
     {
-        public event Action<string> MessageReceived;
+        public event Action<string>? MessageReceived;
         private ClientWebSocket? _clientWebSocket;
 
-        public async Task StartAsync(CancellationToken token)
+        public Task StartAsync(CancellationToken token)
         {
             _clientWebSocket = new ClientWebSocket();
-            // Pour cet exemple, on ne démarre pas la connexion ici
-            // La connexion sera initiée par SendAsync ou via une méthode dédiée
+            return Task.CompletedTask;
         }
+
 
         public async Task ConnectAsync(Uri serverUri, CancellationToken token)
         {
@@ -29,6 +29,9 @@ namespace interface_projet.Other
 
         private async Task ReceiveMessagesAsync(CancellationToken token)
         {
+            if (_clientWebSocket == null)
+                return; 
+
             byte[] buffer = new byte[1024];
             while (_clientWebSocket.State == WebSocketState.Open && !token.IsCancellationRequested)
             {
@@ -44,6 +47,7 @@ namespace interface_projet.Other
                 }
             }
         }
+
 
         public async Task SendAsync(string message)
         {

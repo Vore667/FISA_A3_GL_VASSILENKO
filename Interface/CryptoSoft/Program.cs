@@ -26,8 +26,9 @@ public class CryptoService
             var gestionnaireFichier = new GestionnaireFichier(cheminFichier, cle);
             int tempsEcoule = gestionnaireFichier.TransformerFichier();
         }
-        catch (Exception e)
+        catch (Exception)
         {
+
         }
     }
 }
