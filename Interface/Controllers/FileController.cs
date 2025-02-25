@@ -66,7 +66,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"Erreur lors de la vérification de l'application : {ex.Message}");
+                System.Windows.MessageBox.Show($"Error when checking the application : {ex.Message}");
             }
             return false;
         }
@@ -83,7 +83,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
         {
             if (IsJobAppRunning())
             {
-                System.Windows.MessageBox.Show("Pause en cours : application métier détectée. Veuillez attendre.");
+                System.Windows.MessageBox.Show("Pause in progress: business application detected. Please wait.");
                 while (IsJobAppRunning())
                 {
                     await Task.Delay(1000, cancellationToken);
@@ -96,7 +96,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
             bool isSizeToBig = fileinfo.Length > (sizeMO * 1024 * 1024);
             if (isSizeToBig)
             {
-                System.Windows.MessageBox.Show($"Fichier '{fileinfo.Name}' trop volumineux il sera mis de côté et exécuté à la fin.");
+                System.Windows.MessageBox.Show($"File '{fileinfo.Name}' too voluminous it will be put aside and executed at the end.");
             }
             return isSizeToBig;
         }
@@ -152,7 +152,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
                     if (IsJobAppRunning())
                     {
                         fileCopyMetrics.Add((file, -100, fi.Length, -100));
-                        System.Windows.MessageBox.Show("Arrêt après la copie du fichier en cours, application métier détectée. Veuillez attendre l'écriture des logs");
+                        System.Windows.MessageBox.Show("Stop after copying the current file, business application detected. Please wait for logs to be written");
                         return fileCopyMetrics;
                     }
 
@@ -212,12 +212,11 @@ namespace Projet_Easy_Save_grp_4.Controllers
             }
             catch (OperationCanceledException)
             {
-                System.Windows.MessageBox.Show("Opération annulée par l'utilisateur.");
                 return fileCopyMetrics;
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"Erreur lors de la copie : {ex.Message}");
+                System.Windows.MessageBox.Show($"Error when copying : {ex.Message}");
                 throw;
             }
 
@@ -253,7 +252,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
             }
             catch (Exception ex)
             {
-                throw new IOException($"Erreur lors de la copie du fichier '{sourceFile}' vers '{destFile}'.", ex);
+                throw new IOException($"Error copying file from '{sourceFile}' to '{destFile}'.", ex);
             }
 
             return totalBytesCopied;

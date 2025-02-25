@@ -25,7 +25,6 @@
             <!-- Titre -->
             <TextBlock Grid.Row="0" Text="{DynamicResource Title}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,10"/>
 
-
             <!-- DataGrid pour afficher les tâches -->
             <DataGrid x:Name="dgBackupTasks" Grid.Row="1" 
                       AutoGenerateColumns="False" 
@@ -49,12 +48,15 @@
                     <ProgressBar x:Name="progressBar" Width="300" Height="20" Minimum="0" Maximum="100" Margin="0,0,10,0"/>
                     <Label x:Name="lblProgress" Content="0%" VerticalAlignment="Center"/>
                 </StackPanel>
-                <!-- Boutons d'actions -->
+                <!-- Boutons d'actions principaux -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Content="{DynamicResource Add}" Width="100" Margin="5" Click="BtnAjouter_Click"/>
                     <Button Content="{DynamicResource Execute}" Width="100" Margin="5" Click="ButtonExecute_Click"/>
                     <Button Content="{DynamicResource Delete}" Width="100" Margin="5" Click="ButtonDelete_Click"/>
                     <Button Content="{DynamicResource Refresh}" Width="100" Margin="5" Click="BtnRefresh_Click"/>
+                </StackPanel>
+                <!-- Boutons de contrôle de la backup -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
                     <Button x:Name="btnStopBackup"
                         Content="Stopper la backup"
                         Width="100" 
@@ -62,17 +64,17 @@
                         Click="btnStopBackup_Click"
                         Margin="5"/>
                     <Button x:Name="btnPauseBackup"
-    Content="Pauser la backup"
-    Width="100" 
-    Visibility="Collapsed"
-    Click="btnPauseBackup_Click"
-    Margin="5"/>
+                        Content="Pauser la backup"
+                        Width="100" 
+                        Visibility="Collapsed"
+                        Click="btnPauseBackup_Click"
+                        Margin="5"/>
                     <Button x:Name="btnPlayBackup"
-    Content="Play la backup"
-    Width="100" 
-    Visibility="Collapsed"
-    Click="btnPlayBackup_Click"
-    Margin="5"/>
+                        Content="Play la backup"
+                        Width="100" 
+                        Visibility="Collapsed"
+                        Click="btnPlayBackup_Click"
+                        Margin="5"/>
                 </StackPanel>
             </StackPanel>
         </Grid>

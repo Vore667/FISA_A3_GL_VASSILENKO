@@ -154,13 +154,13 @@ namespace WpfApp
             lblProgress.Content = "100%";
             ExecutionList.Clear();
 
-            if (results.Any(r => !r))
+            if (results.Any(r => !r) && !_cancellationTokenSource.IsCancellationRequested)
             {
                 MessageBox.Show(FindResource("BackupFailed") as string);
                 progressBar.Value = 0;
                 lblProgress.Content = "0%";
             }
-            else
+            else if(!results.Any(r => !r) && !_cancellationTokenSource.IsCancellationRequested)
             {
                 MessageBox.Show(FindResource("BackupCompleted") as string);
                 progressBar.Value = 0;

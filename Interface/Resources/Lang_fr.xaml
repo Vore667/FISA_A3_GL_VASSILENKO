@@ -33,7 +33,7 @@
     <system:String x:Key="NoItemSelected">Aucun élément sélectionné.</system:String>
     <system:String x:Key="BackupFailed">L'exécution de la sauvegarde a échoué.</system:String>
     <system:String x:Key="BackupCompleted">Sauvegarde terminée avec succès !</system:String>
-    <system:String x:Key="BackupStopExec">Demande d'arrêt des backup exécutée !</system:String>
+    <system:String x:Key="BackupStopExec">Demande d'arrêt exécutée !</system:String>
 
     <!-- MENU PARAMETRES -->
     <system:String x:Key="Language">Langue : </system:String>
