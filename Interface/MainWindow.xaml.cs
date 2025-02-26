@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.IO;
-using System.Linq;
-using System.Net.WebSockets;
-
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Threading;
 using interface_projet;
 using interface_projet.Controllers;
+using interface_projet.Models;
 using LogClassLibraryVue;
 using Projet_Easy_Save_grp_4.Controllers;
 
@@ -21,7 +16,7 @@ namespace WpfApp
     {
         private BackupController backupController;
         private bool _isServerMode;
-        private CommunicationFacade _commFacade;
+        private CommunicationController _commFacade;
         private CancellationTokenSource? _cancellationTokenSource;
         private List<string> ExecutionList = new List<string>();
 
@@ -33,13 +28,13 @@ namespace WpfApp
             LogController.Instance.Initialize(logDirectory, logType);
 
             _isServerMode = isServerMode;
-            _commFacade = new CommunicationFacade();
+            _commFacade = new CommunicationController();
             _commFacade.Configure(_isServerMode, "http://localhost:5000/ws/");
             _commFacade.OnMessageReceived += (msg) =>
             {
                 Dispatcher.Invoke(() =>
                 {
-                    LoadBackupTasks();
+                    LoadBackupModels();
                 });
             };
 
@@ -47,7 +42,7 @@ namespace WpfApp
             LogController logController = LogController.Instance;
             backupController = new BackupController(logDirectory, logController);
             LangController.LanguageChanged += RefreshDataGridHeaders;
-            LoadBackupTasks();
+            LoadBackupModels();
         }
 
         private async Task Window_LoadedAsync(object sender, RoutedEventArgs e)
@@ -71,21 +66,21 @@ namespace WpfApp
 
         private void RefreshDataGridHeaders()
         {
-            dgBackupTasks.Columns.Clear();
+            dgBackupModels.Columns.Clear();
 
-            dgBackupTasks.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupName"), Binding = new Binding("Name"), Width = new DataGridLength(150) });
-            dgBackupTasks.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupSource"), Binding = new Binding("Source"), Width = new DataGridLength(1, DataGridLengthUnitType.Star) });
-            dgBackupTasks.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupDestination"), Binding = new Binding("Destination"), Width = new DataGridLength(1, DataGridLengthUnitType.Star) });
-            dgBackupTasks.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupType"), Binding = new Binding("Type"), Width = new DataGridLength(100) });
-            dgBackupTasks.Columns.Add(new DataGridCheckBoxColumn { Header = FindResource("BackupEncryption"), Binding = new Binding("Cryptage"), Width = new DataGridLength(80) });
+            dgBackupModels.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupName"), Binding = new Binding("Name"), Width = new DataGridLength(150) });
+            dgBackupModels.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupSource"), Binding = new Binding("Source"), Width = new DataGridLength(1, DataGridLengthUnitType.Star) });
+            dgBackupModels.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupDestination"), Binding = new Binding("Destination"), Width = new DataGridLength(1, DataGridLengthUnitType.Star) });
+            dgBackupModels.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupType"), Binding = new Binding("Type"), Width = new DataGridLength(100) });
+            dgBackupModels.Columns.Add(new DataGridCheckBoxColumn { Header = FindResource("BackupEncryption"), Binding = new Binding("Cryptage"), Width = new DataGridLength(80) });
         }
 
 
-        private void BtnRefresh_Click(object sender, RoutedEventArgs e) => LoadBackupTasks();
+        private void BtnRefresh_Click(object sender, RoutedEventArgs e) => LoadBackupModels();
 
-        public void LoadBackupTasks()
+        public void LoadBackupModels()
         {
-            List<BackupController.BackupTask> tasks = backupController.ListBackup();
+            List<BackupModel> tasks = backupController.ListBackup();
 
             var backupItems = tasks.Select(task => new BackupItem
             {
@@ -96,7 +91,7 @@ namespace WpfApp
                 Cryptage = task.Crypter,
             }).ToList();
 
-            dgBackupTasks.ItemsSource = backupItems;
+            dgBackupModels.ItemsSource = backupItems;
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
@@ -131,20 +126,20 @@ namespace WpfApp
             AjouterFenetre fenetre = new AjouterFenetre(this);
             fenetre.ShowDialog();
 
-            LoadBackupTasks();
+            LoadBackupModels();
         }
 
         public async void AjouterTache(string nom, string source, string destination, string typeSauvegarde, bool crypter)
         {
             backupController.AddBackup(nom, source, destination, typeSauvegarde, crypter);
-            LoadBackupTasks();
+            LoadBackupModels();
             await _commFacade.SendAsync($"New Backup {nom}{source}{destination}{typeSauvegarde}{crypter}");
 
         }
 
         private async void ButtonDelete_Click(object sender, RoutedEventArgs e)
         {
-            var selectedItems = dgBackupTasks.SelectedItems.Cast<BackupItem>().ToList();
+            var selectedItems = dgBackupModels.SelectedItems.Cast<BackupItem>().ToList();
 
             if (selectedItems.Any())
             {
@@ -155,7 +150,7 @@ namespace WpfApp
                         backupController.DeleteBackup(selectedItem.Name);
                     }
                 }
-                LoadBackupTasks();
+                LoadBackupModels();
                 await _commFacade.SendAsync("Delete backup");
             }
 
@@ -168,7 +163,7 @@ namespace WpfApp
         private async void ButtonExecute_Click(object sender, RoutedEventArgs e)
         {
             int choosenSize = interface_projet.Properties.Settings.Default.MaxSize;
-            var selectedItems = dgBackupTasks.SelectedItems.Cast<BackupItem>().ToList();
+            var selectedItems = dgBackupModels.SelectedItems.Cast<BackupItem>().ToList();
             if (!selectedItems.Any())
             {
                 MessageBox.Show(FindResource("NoItemSelected") as string);
@@ -184,10 +179,10 @@ namespace WpfApp
             lblProgress.Content = "0%";
 
             int globalTotalFiles = selectedItems
-                .Where(item => !string.IsNullOrEmpty(item.Source)) // Filtrer les valeurs null ou vides
+                .Where(item => !string.IsNullOrEmpty(item.Source)) 
                 .Sum(item => Directory.GetFiles(item.Source!, "*", SearchOption.AllDirectories).Length);
 
-            List<string?> ExecutionList = selectedItems.Select(item => item.Name).ToList();
+            ExecutionList = selectedItems.Select(item => item.Name).ToList();
 
             int globalFilesCopied = 0;
             Action<double> updateProgress = _ =>
@@ -202,14 +197,14 @@ namespace WpfApp
             };
 
             // Lancer chaque sauvegarde et transmettre le callback updateProgress
-            var backupTasks = selectedItems
+            var BackupModels = selectedItems
                 .Where(item => !string.IsNullOrEmpty(item.Name)) 
                 .Select(item => backupController.ExecuteBackup(item.Name!, _cancellationTokenSource.Token, updateProgress, choosenSize))
                 .ToList();
 
 
             // On attend la fin de tt les saves avec WhenAll
-            bool[] results = await Task.WhenAll(backupTasks);
+            bool[] results = await Task.WhenAll(BackupModels);
 
             btnStopBackup.Visibility = Visibility.Collapsed;
             btnPauseBackup.Visibility = Visibility.Collapsed;

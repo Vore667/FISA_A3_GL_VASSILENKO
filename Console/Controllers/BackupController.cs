@@ -13,7 +13,7 @@ namespace Console.Controllers
 {
     internal class BackupController : IBackupService
     {
-        private readonly List<BackupTask> tasks;
+        private readonly List<BackupModel> tasks;
         private const int MaxTasks = 5;
         private const string SaveFilePath = "backup_tasks.json";
         private readonly LogController logController;
@@ -21,7 +21,7 @@ namespace Console.Controllers
         // Constructeur avec un paramètre pour spécifier le répertoire des logs
         public BackupController(string logDirectory, LogController logController)
         {
-            tasks = LoadBackupTasks();
+            tasks = LoadBackupModels();
             this.logController = logController; // On initialise LogController avec le chemin des logs
         }
 
@@ -34,7 +34,7 @@ namespace Console.Controllers
                 System.Console.ForegroundColor = ConsoleColor.Red;
                 System.Console.WriteLine($"{LangController.GetText("Error_MaxBackup")}");
                 System.Console.ResetColor();
-                logController.LogAction($"Error when adding Backup task '{name}', already 5 BackupTask are existing.", LogLevel.Error);
+                logController.LogAction($"Error when adding Backup task '{name}', already 5 BackupModel are existing.", LogLevel.Error);
                 return;
             }
 
@@ -83,8 +83,8 @@ namespace Console.Controllers
                 return;
             }
 
-            tasks.Add(new BackupTask(name, source, destination, type));
-            SaveBackupTasks();
+            tasks.Add(new BackupModel(name, source, destination, type));
+            SaveBackupModels();
 
             // Log de l'ajout de la tâche de backup
             logController.LogAction($"Backup task '{name}' added.", LogLevel.Info);
@@ -116,7 +116,7 @@ namespace Console.Controllers
         // Executer une backup
         public void ExecuteBackup(string name)
         {
-            BackupTask? task = FindBackup(name);
+            BackupModel? task = FindBackup(name);
             if (task != null)
             {
                 task.Execute();
@@ -162,11 +162,11 @@ namespace Console.Controllers
         // Supprimer une backup
         public void DeleteBackup(string name)
         {
-            BackupTask? task = FindBackup(name);
+            BackupModel? task = FindBackup(name);
             if (task != null)
             {
                 tasks.Remove(task);
-                SaveBackupTasks();
+                SaveBackupModels();
 
                 // Log the deletion action
                 logController.LogAction($"Backup task '{name}' deleted.", LogLevel.Info);
@@ -208,9 +208,9 @@ namespace Console.Controllers
         }
 
         // Trouver une backup via son nom, utilisée pour les fonctions executer et supprimer
-        public BackupTask? FindBackup(string name)
+        public BackupModel? FindBackup(string name)
         {
-            BackupTask? task = tasks.Find(t => t.Name == name);
+            BackupModel? task = tasks.Find(t => t.Name == name);
             if (task == null)
             {
                 System.Console.ForegroundColor = ConsoleColor.Red;
@@ -222,25 +222,25 @@ namespace Console.Controllers
         }
         
         // Ajouter une backup dans le fichier json pour une persistance.
-        private void SaveBackupTasks()
+        private void SaveBackupModels()
         {
             string json = JsonConvert.SerializeObject(tasks, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(SaveFilePath, json);
         }
 
         // Afficher toutes les backups sauvegardées
-        private static List<BackupTask>? LoadBackupTasks()
+        private static List<BackupModel>? LoadBackupModels()
         {
             if (!File.Exists(SaveFilePath))
-                return new List<BackupTask>();
+                return new List<BackupModel>();
 
             string json = File.ReadAllText(SaveFilePath);
-            return JsonConvert.DeserializeObject<List<BackupTask>>(json) ?? new List<BackupTask>();
+            return JsonConvert.DeserializeObject<List<BackupModel>>(json) ?? new List<BackupModel>();
         }
 
 
         // Tout ce qui caractérise une tâche de backup
-        internal class BackupTask
+        internal class BackupModel
         {
             private readonly FileController fileController = new FileController();
 
@@ -249,7 +249,7 @@ namespace Console.Controllers
             public string Destination { get; set; }
             public string Type { get; set; }
 
-            public BackupTask(string name, string source, string destination, string type)
+            public BackupModel(string name, string source, string destination, string type)
             {
                 Name = name;
                 Source = source;

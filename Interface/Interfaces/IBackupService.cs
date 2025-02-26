@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Projet_Easy_Save_grp_4.Controllers.BackupController;
+﻿using interface_projet.Models;
 
 namespace Projet_Easy_Save_grp_4.Interfaces
 {
@@ -29,18 +24,18 @@ namespace Projet_Easy_Save_grp_4.Interfaces
             // Supprimer une backup
         }
 
-        public BackupTask? FindBackup(string name)
+        public BackupModel? FindBackup(string name)
         {
             // Trouver une backup
             return null; // retour par défaut
         }
 
-        public void SaveBackupTasks()
+        public void SaveBackupModels()
         {
             // Sauvegarder les backups
         }
 
-        public List<BackupTask>? LoadBackupTasks()
+        public List<BackupModel>? LoadBackupModels()
         {
             // Charger les backups
             return null; // retour par défaut

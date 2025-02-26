@@ -1,79 +1,56 @@
-﻿using System;
-using System.IO;
+﻿using Projet_Easy_Save_grp_4.Models;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CryptoSoft;
-using Projet_Easy_Save_grp_4.Interfaces;
-using interface_projet.Properties;
 using System.Diagnostics;
-using Newtonsoft.Json;
-using System.Collections.Specialized;
-using System.Security.Cryptography.Xml;
-using static System.Net.Mime.MediaTypeNames;
-using interface_projet.Controllers;
-
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Projet_Easy_Save_grp_4.Controllers
 {
-    internal class FileController : IFile
+    internal class FileController
     {
-        private List<string> encryptType;
-        private List<string> PriorityExtensions;
-        private string jobAppName = "";
-        EncryptionManager encryptionManager = new EncryptionManager();
-        //Semaphore pour les fichiers volumineux
-        private SemaphoreSlim largeFileSemaphore = new SemaphoreSlim(1, 1);
-        // Lock pour crypto
-        private static readonly SemaphoreSlim cryptoSemaphore = new SemaphoreSlim(1, 1);
-        private bool isPaused = false;
-
+        private readonly FileModel _fileModel;
+        private readonly ConfigurationController _configController;
+        private List<string> _encryptTypes;
+        private List<string> _priorityExtensions;
+        private string _jobAppName = "";
+        private bool _isPaused = false;
 
         public FileController()
         {
-            LoadEncryptTypes();
-            LoadPriorityExtensionss();
-            LoadJobAppNames();
+            _fileModel = new FileModel();
+            _configController = new ConfigurationController();
+            LoadConfiguration();
         }
 
-        private void LoadEncryptTypes()
+        private void LoadConfiguration()
         {
-            encryptType = encryptionManager.GetEncryptExtensions();
+            _encryptTypes = _configController.GetEncryptExtensions();
+            _priorityExtensions = _configController.GetPriorityExtensions();
+            _jobAppName = _configController.GetJobApp();
         }
 
-        private void LoadPriorityExtensionss()
-        {
-            PriorityExtensions = encryptionManager.GetPriorityExtensions();
-        }
-
-        private void LoadJobAppNames()
-        {
-            jobAppName = encryptionManager.GetJobApp();
-        }
-
-        public void PauseExecution()
-        {
-            isPaused = !isPaused;
-        }
+        public void PauseExecution() => _isPaused = !_isPaused;
 
         private bool IsJobAppRunning()
         {
             try
             {
-                var jobAppProcesses = Process.GetProcessesByName(jobAppName);
+                var jobAppProcesses = Process.GetProcessesByName(_jobAppName);
                 return jobAppProcesses.Length > 0;
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"Error when checking the application : {ex.Message}");
+                System.Windows.MessageBox.Show($"Erreur lors de la vérification de l'application métier : {ex.Message}");
+                return false;
             }
-            return false;
         }
 
         private async Task WaitForResume(CancellationToken cancellationToken)
         {
-            while (isPaused)
+            while (_isPaused)
             {
                 await Task.Delay(100, cancellationToken);
             }
@@ -83,7 +60,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
         {
             if (IsJobAppRunning())
             {
-                System.Windows.MessageBox.Show("Pause in progress: business application detected. Please wait.");
+                System.Windows.MessageBox.Show("Pause en cours : application métier détectée. Veuillez patienter.");
                 while (IsJobAppRunning())
                 {
                     await Task.Delay(1000, cancellationToken);
@@ -91,29 +68,23 @@ namespace Projet_Easy_Save_grp_4.Controllers
             }
         }
 
-        private bool IsSizeToBig(FileInfo fileinfo, long sizeMO)
+        private bool IsSizeTooBig(FileInfo fileinfo, long maxSizeMb)
         {
-            bool isSizeToBig = fileinfo.Length > (sizeMO * 1024 * 1024);
-            if (isSizeToBig)
-            {
-                System.Windows.MessageBox.Show($"File '{fileinfo.Name}' too voluminous it will be put aside and executed at the end.");
-            }
-            return isSizeToBig;
+            return fileinfo.Length > (maxSizeMb * 1024 * 1024);
         }
-
 
         public async Task<List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)>> CopyFiles(
             string sourceDirectory,
             string destinationDirectory,
-            bool crypter,
+            bool encrypt,
             bool copyOnlyModified,
             CancellationToken cancellationToken,
             Action<double> onProgressUpdate,
-            int choosenSize)
+            int maxSizeMb)
         {
             var fileCopyMetrics = new List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)>();
 
-            isPaused = false;
+            _isPaused = false;
 
             try
             {
@@ -125,13 +96,11 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 if (!Directory.Exists(destinationDirectory))
                     Directory.CreateDirectory(destinationDirectory);
 
-                LoadEncryptTypes();
+                LoadConfiguration();
 
                 var allFiles = Directory.GetFiles(sourceDirectory, "*", SearchOption.AllDirectories).ToList();
-
-                var priorityFiles = allFiles.Where(f => PriorityExtensions.Contains(Path.GetExtension(f).ToLower())).ToList();
+                var priorityFiles = allFiles.Where(f => _priorityExtensions.Contains(Path.GetExtension(f).ToLower())).ToList();
                 var otherFiles = allFiles.Except(priorityFiles).ToList();
-
                 var orderedFiles = priorityFiles.Concat(otherFiles);
 
                 foreach (string file in orderedFiles)
@@ -152,42 +121,31 @@ namespace Projet_Easy_Save_grp_4.Controllers
                     if (IsJobAppRunning())
                     {
                         fileCopyMetrics.Add((file, -100, fi.Length, -100));
-                        System.Windows.MessageBox.Show("Stop after copying the current file, business application detected. Please wait for logs to be written");
+                        System.Windows.MessageBox.Show("Arrêt après la copie du fichier en cours, application métier détectée.");
                         return fileCopyMetrics;
                     }
 
-                    bool isLarge = IsSizeToBig(fi, choosenSize);
-
-                    // On attend le sémaphore du fichier volumineux 
+                    bool isLarge = IsSizeTooBig(fi, maxSizeMb);
                     if (isLarge)
                     {
-                        await largeFileSemaphore.WaitAsync(cancellationToken);
+                        System.Windows.MessageBox.Show($"Le fichier '{fi.Name}' est trop volumineux. Il sera copié en dernier.");
                     }
 
                     try
                     {
                         Stopwatch stopwatchCopy = Stopwatch.StartNew();
-                        await CopyFile(file, destFile, cancellationToken);
+                        await _fileModel.CopyFile(file, destFile, cancellationToken);
                         stopwatchCopy.Stop();
                         long transferTime = stopwatchCopy.ElapsedMilliseconds;
 
                         long encryptionTime = 0;
                         string fileExtension = fi.Extension.ToLower();
-                        if (crypter && encryptType.Contains(fileExtension))
+                        if (encrypt && _encryptTypes.Contains(fileExtension))
                         {
                             try
                             {
                                 Stopwatch stopwatchEncryption = Stopwatch.StartNew();
-                                await cryptoSemaphore.WaitAsync(cancellationToken);
-                                try
-                                {
-                                    // Chiffrement du fichier
-                                    await Task.Run(() => CryptoService.Transformer(destFile, "CESI_EST_MA_CLE_DE_CHIFFREMENT"), cancellationToken);
-                                }
-                                finally
-                                {
-                                    cryptoSemaphore.Release();
-                                }
+                                await _fileModel.EncryptFile(destFile, cancellationToken);
                                 stopwatchEncryption.Stop();
                                 encryptionTime = stopwatchEncryption.ElapsedMilliseconds;
                             }
@@ -202,10 +160,9 @@ namespace Projet_Easy_Save_grp_4.Controllers
                     }
                     finally
                     {
-                        // On libère le sémaphore du fichier volumineux
                         if (isLarge)
                         {
-                            largeFileSemaphore.Release();
+                            System.Windows.MessageBox.Show($"Le fichier '{fi.Name}' a été copié en dernier.");
                         }
                     }
                 }
@@ -216,46 +173,11 @@ namespace Projet_Easy_Save_grp_4.Controllers
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"Error when copying : {ex.Message}");
+                System.Windows.MessageBox.Show($"Erreur lors de la copie : {ex.Message}");
                 throw;
             }
 
             return fileCopyMetrics;
-        }
-
-        public async Task<long> CopyFile(string sourceFile, string destFile, CancellationToken cancellationToken)
-        {
-            const int BufferSize = 1000000; //10Mo
-            long totalBytesCopied = 0;
-
-            try
-            {
-                using var sourceStream = new FileStream(sourceFile, FileMode.Open, FileAccess.Read, FileShare.Read);
-                using var destStream = new FileStream(destFile, FileMode.Create, FileAccess.Write, FileShare.None);
-                byte[] buffer = new byte[BufferSize];
-                int bytesRead;
-                while ((bytesRead = await sourceStream.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken)) > 0)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    await destStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
-                    totalBytesCopied += bytesRead;
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                if (File.Exists(destFile))
-                {
-                    File.Delete(destFile);
-                }
-
-                return totalBytesCopied;
-            }
-            catch (Exception ex)
-            {
-                throw new IOException($"Error copying file from '{sourceFile}' to '{destFile}'.", ex);
-            }
-
-            return totalBytesCopied;
         }
     }
 }

@@ -134,7 +134,7 @@ namespace interface_projet
 
                 // Appel la fonction dans LangController pour changer la langue
                 settingsController.ChangeLanguage(langCode);
-                mainWindow.LoadBackupTasks(); // Use the instance of MainWindow to call LoadBackupTasks
+                mainWindow.LoadBackupModels(); // Use the instance of MainWindow to call LoadBackupModels
             }
         }
 

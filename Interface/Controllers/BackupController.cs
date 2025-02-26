@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Xml.Linq;
+﻿using System.IO;
 using Newtonsoft.Json;
-using Projet_Easy_Save_grp_4.Controllers;
 using Projet_Easy_Save_grp_4.Interfaces;
+using interface_projet.Models;
 using LogClassLibraryVue;
-using System.Diagnostics;
-using System.Threading;
+using System.Windows;
 
 namespace Projet_Easy_Save_grp_4.Controllers
 {
     internal class BackupController : IBackupService
     {
-        private List<BackupTask> tasks;
+        private List<BackupModel> tasks;
         private const string SaveFilePath = "backup_tasks.json";
         private readonly LogController logController;
         // Lock pour les logs
@@ -23,7 +18,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
         // Constructeur avec un paramètre pour spécifier le répertoire des logs
         public BackupController(string logDirectory, LogController logController)
         {
-            tasks = LoadBackupTasks();
+            tasks = LoadBackupModels();
             this.logController = logController;
         }
 
@@ -76,8 +71,8 @@ namespace Projet_Easy_Save_grp_4.Controllers
                 return;
             }
 
-            tasks.Add(new BackupTask(name, source, destination, type, crypter));
-            SaveBackupTasks();
+            tasks.Add(new BackupModel(name, source, destination, type, crypter));
+            SaveBackupModels();
 
             // Log de l'ajout de la tâche de backup
             logController.LogAction($"Backup task '{name}' added.", LogLevel.Info);
@@ -85,15 +80,15 @@ namespace Projet_Easy_Save_grp_4.Controllers
 
         
         // Lister les backups existantes
-        public List<BackupTask> ListBackup()
+        public List<BackupModel> ListBackup()
         {
-            tasks = LoadBackupTasks();
+            tasks = LoadBackupModels();
             return tasks;
         }
 
         public void PauseExecution(string name)
         {
-            BackupTask? task = FindBackup(name);
+            BackupModel? task = FindBackup(name);
             if (task != null)
             {
                 task.PauseExecution();
@@ -104,7 +99,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
         // Executer une backup
         public async Task<bool> ExecuteBackup(string name, CancellationToken cancellationToken, Action<double> onProgressUpdate, int choosenSize)
         {
-            BackupTask? task = FindBackup(name);
+            BackupModel? task = FindBackup(name);
             if (task != null)
             {
                 // Exécute la backup et récupère les mesures de chaque copie
@@ -165,11 +160,11 @@ namespace Projet_Easy_Save_grp_4.Controllers
         // Supprimer une backup
         public void DeleteBackup(string name)
         {
-            BackupTask? task = FindBackup(name);
+            BackupModel? task = FindBackup(name);
             if (task != null)
             {
                 tasks.Remove(task);
-                SaveBackupTasks();
+                SaveBackupModels();
 
                 // Log the deletion action
                 logController.LogAction($"Backup task '{name}' deleted.", LogLevel.Info);
@@ -177,9 +172,9 @@ namespace Projet_Easy_Save_grp_4.Controllers
         }
 
         // Trouver une backup via son nom, utilisée pour les fonctions executer et supprimer
-        public BackupTask? FindBackup(string name)
+        public BackupModel? FindBackup(string name)
         {
-            BackupTask? task = tasks.Find(t => t.Name == name);
+            BackupModel? task = tasks.Find(t => t.Name == name);
             if (task == null)
             {
                 return null;
@@ -188,63 +183,20 @@ namespace Projet_Easy_Save_grp_4.Controllers
         }
         
         // Ajouter une backup dans le fichier json pour une persistance.
-        private void SaveBackupTasks()
+        private void SaveBackupModels()
         {
             string json = JsonConvert.SerializeObject(tasks, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(SaveFilePath, json);
         }
 
         // Afficher toutes les backups sauvegardées
-        private static List<BackupTask>? LoadBackupTasks()
+        private static List<BackupModel>? LoadBackupModels()
         {
             if (!File.Exists(SaveFilePath))
-                return new List<BackupTask>();
+                return new List<BackupModel>();
 
             string json = File.ReadAllText(SaveFilePath);
-            return JsonConvert.DeserializeObject<List<BackupTask>>(json) ?? new List<BackupTask>();
+            return JsonConvert.DeserializeObject<List<BackupModel>>(json) ?? new List<BackupModel>();
         }
-
-
-        // Tout ce qui caractérise une tâche de backup
-        internal class BackupTask
-        {
-            public string Name { get; set; }
-            public string Source { get; set; }
-            public string Destination { get; set; }
-            public string Type { get; set; }
-            public bool Crypter {  get; set; }
-
-            private readonly FileController fileController = new FileController();
-
-            public BackupTask(string name, string source, string destination, string type, bool crypter)
-            {
-                Name = name;
-                Source = source;
-                Destination = destination;
-                Type = type;
-                Crypter = crypter;
-            }
-
-            public void PauseExecution()
-            {
-                fileController.PauseExecution();
-            }
-
-            // Executer la backup, c'est appelé via la fonction BackupExecute. Appelle les fonctions qui vont copier les fichiers.
-            public async Task<List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)>> Execute(CancellationToken cancellationToken, Action<double> onProgressUpdate, int choosenSize)
-            {
-                if (this.Type == "1") //Su save complete on copie tout le dossier
-                {
-                    return await fileController.CopyFiles(Source, Destination, Crypter, false, cancellationToken, onProgressUpdate, choosenSize);
-                }
-                else //Sinon on copie seulement les fichiers modifiés au cours des 24 dernières heures
-                {
-                    return await fileController.CopyFiles(Source, Destination, Crypter, true, cancellationToken, onProgressUpdate, choosenSize);
-                }
-            }
-
-
-        }
-
     }
 }
