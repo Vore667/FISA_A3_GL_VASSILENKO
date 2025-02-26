@@ -34,18 +34,18 @@ namespace Console.Interfaces
             // Executer ou supprimer plusieurs backups
         }
 
-        public BackupTask? FindBackup(string name)
+        public BackupModel? FindBackup(string name)
         {
             // Trouver une backup
             return null; // retour par défaut
         }
 
-        public void SaveBackupTasks()
+        public void SaveBackupModels()
         {
             // Sauvegarder les backups
         }
 
-        public List<BackupTask>? LoadBackupTasks()
+        public List<BackupModel>? LoadBackupModels()
         {
             // Charger les backups
             return null; // retour par défaut
