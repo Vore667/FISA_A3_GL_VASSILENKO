@@ -115,7 +115,7 @@ namespace WpfApp
         {
             try
             {
-                Settings settings = new Settings(this);
+                Settings settings = new Settings(this,_commFacade);
                 settings.ShowDialog();
             }
             catch (Exception ex)
@@ -156,7 +156,7 @@ namespace WpfApp
 
             _commandController.ExecuteCommands();
             LoadBackupModels();
-            await _commFacade.SendAsync("Delete backup");
+            await _commFacade.SendAsync("Message:DeleteBackup");
 
         }
 
