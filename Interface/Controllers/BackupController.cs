@@ -94,6 +94,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
             if (task != null)
             {
                 task.PauseExecution();
+                Debug.WriteLine($"[BackupController] {name} mis en pause.");
             }
         }
 

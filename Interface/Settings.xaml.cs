@@ -31,6 +31,7 @@ namespace interface_projet
     public partial class Settings : Window
     {
         private MainWindow mainWindow;
+        private readonly CommunicationController _commFacade;
         private SettingsController settingsController;
 
         public Settings(MainWindow mainWindow, CommunicationController commFacade)

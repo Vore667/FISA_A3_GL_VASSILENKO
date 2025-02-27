@@ -6,6 +6,8 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
+using WpfApp;
 
 namespace interface_projet.Controllers
 {
@@ -13,9 +15,12 @@ namespace interface_projet.Controllers
     {
         private readonly CommunicationModel _communicationModel;
         private readonly BackupController _backupController;
+        private readonly MainWindow _mainWindow;
         private bool _isServerMode;
         private ICommunicationStrategy? _communicationStrategy;
         private readonly Dictionary<string, Func<string, Task>> _messageHandlers;
+        public event Action<string,double>? BackupProgressUpdated;
+        private string bckName;
 
 
         public event Action<string>? OnMessageReceived
@@ -32,21 +37,25 @@ namespace interface_projet.Controllers
             }
         }
 
-        public CommunicationController(BackupController backupController)
+        public CommunicationController(BackupController backupController, MainWindow mainWindow)
         {
             _communicationModel = new CommunicationModel();
             _backupController = backupController;
+            _mainWindow = mainWindow;
 
             // Initialisation du dictionnaire de gestionnaires de messages
             _messageHandlers = new Dictionary<string, Func<string, Task>>
             {
                 { "ExecuteBackup", HandleExecuteBackupAsync },
-                { "SomeOtherCommand", HandleSomeOtherCommandAsync },
-                { "AddBackup", HandleAddBackupAsync }
-
+                { "BackupProgress", HandleBackupProgressAsync },
+                { "PauseBackup", HandlePauseBackupAsync },
+                { "ResumeBackup", HandleResumeBackupAsync },
+                { "AddBackup", HandleAddBackupAsync },
+                { "StopBackup",HandleStopBackupAsync }
             };
         }
 
+        
         public void Configure(bool isServerMode, string uri)
         {
             _isServerMode = isServerMode;
@@ -119,48 +128,74 @@ namespace interface_projet.Controllers
 
         private async void HandleReceivedMessage(string message)
         {
+            Debug.WriteLine($"[Communication] Message reçu : {message}");
+
             string[] parts = message.Split(':', 2);
-            if (parts.Length < 2) return; // Vérification de format correct
+            if (parts.Length < 2) return;
 
             string command = parts[0];
             string data = parts[1];
 
             if (_messageHandlers.TryGetValue(command, out var handler))
             {
-                await handler(data); // Appel de la méthode associée
+                await handler(data);
 
                 if (_isServerMode && _communicationStrategy != null)
                 {
                     await _communicationStrategy.SendAsync($"ServerExecuted:{message}");
                 }
             }
-            else
+            // Mettre à jour l'UI dans MainWindow
+            App.Current.Dispatcher.Invoke(() =>
             {
-                Debug.WriteLine($"[Serveur] Commande inconnue reçue : {command}");
-            }
+                if (command == "PauseBackup")
+                {
+                    _mainWindow.TogglePauseExecution(true);
+                }
+                else if (command == "ResumeBackup")
+                {
+                    _mainWindow.TogglePauseExecution(false);
+                }
+            });
         }
 
-        private async Task HandleExecuteBackupAsync(string backupName)
+        private async Task HandleExecuteBackupAsync(string backupNames)
         {
-            Debug.WriteLine($"[Serveur] Exécution de la sauvegarde : {backupName}");
+            Debug.WriteLine($"[Serveur] Exécution demandée pour : {backupNames}");
+
+            if (!_isServerMode)
+            {
+                Debug.WriteLine("[Client] Reçu une demande d'exécution, mais je suis client. Ignoré.");
+                return; // Un client ne doit pas exécuter les sauvegardes !
+            }
+
             int choosenSize = interface_projet.Properties.Settings.Default.MaxSize;
+            var backups = backupNames.Split(';');
 
             using var cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = cancellationTokenSource.Token;
 
-            IProgress<double> progressReporter = new Progress<double>(progress =>
+            foreach (var backupName in backups)
             {
-                Debug.WriteLine($"Progression de {backupName} : {Math.Round(progress, 2)}%");
+                IProgress<double> progressReporter = new Progress<double>(progress =>
+                {
+                    Debug.WriteLine($"Progression de {backupName} : {Math.Round(progress, 2)}%");
 
-            });
+                    if (_communicationStrategy != null)
+                    {
+                        _ = _communicationStrategy.SendAsync($"BackupProgress:{backupName}:{Math.Round(progress, 2)}");
+                        BackupProgressUpdated?.Invoke(backupName, progress);
+                    }
+                });
 
+                bool success = await _backupController.ExecuteBackup(backupName, cancellationToken, progressReporter, choosenSize);
+                string response = success ? $"BackupSuccess:{backupName}" : $"BackupFailed:{backupName}";
+                bckName = backupName;
 
-            bool success = await _backupController.ExecuteBackup(backupName, cancellationToken, progressReporter, choosenSize);
-
-            string response = success ? $"BackupSuccess:{backupName}" : $"BackupFailed:{backupName}";
-            if (_communicationStrategy != null)
-            {
-                await _communicationStrategy.SendAsync(response);
+                if (_communicationStrategy != null)
+                {
+                    await _communicationStrategy.SendAsync(response);
+                }
             }
         }
 
@@ -174,11 +209,46 @@ namespace interface_projet.Controllers
             await Task.CompletedTask;
         }
 
-        private async Task HandleSomeOtherCommandAsync(string data)
+        private async Task HandleBackupProgressAsync(string data)
         {
-            Debug.WriteLine($"[Serveur] Traitement d'une autre commande : {data}");
+            Debug.WriteLine($"[Client] Mise à jour de la progression : {data}");
+
+            string[] parts = data.Split(':', 2);
+            if (parts.Length < 2) return;
+
+            string backupName = parts[0];
+            if (!double.TryParse(parts[1], out double progress)) return;
+
+            BackupProgressUpdated?.Invoke(backupName, progress);
             await Task.CompletedTask;
         }
+
+        private async Task HandlePauseBackupAsync(string backupNames)
+        {
+            Debug.WriteLine($"[Serveur] Demande de pause reçue pour : {backupNames}");
+            // Manque de temps 
+            return;
+        }
+
+
+
+        private async Task HandleResumeBackupAsync(string backupNames)
+        {
+            Debug.WriteLine($"[Serveur] Demande de pause reçue pour : {backupNames}");
+            // Manque de temps 
+            return;
+
+        }
+
+
+        private async Task HandleStopBackupAsync(string backupName)
+        {
+            Debug.WriteLine($"[Serveur] Arrêt de la sauvegarde : {backupName}");
+
+            return;
+        }
+
+        
 
 
     }

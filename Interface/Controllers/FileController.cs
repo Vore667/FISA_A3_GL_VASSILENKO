@@ -140,7 +140,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
                     bool isLarge = IsSizeTooBig(fi, maxSizeMb);
                     if (isLarge)
                     {
-                        System.Windows.MessageBox.Show($"Le fichier '{fi.Name}' est trop volumineux. Il sera copié en dernier.");
+                        Debug.WriteLine($"Le fichier '{fi.Name}' est trop volumineux. Il sera copié en dernier.");
                     }
 
                     try
