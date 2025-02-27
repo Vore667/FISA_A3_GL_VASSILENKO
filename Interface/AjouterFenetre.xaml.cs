@@ -12,11 +12,13 @@ namespace WpfApp
     {
         private MainWindow mainWindow;
         private readonly CommandController _commandController;
+        private readonly CommunicationController _commFacade;
 
-        public AjouterFenetre(MainWindow mainWindow)
+        public AjouterFenetre(MainWindow mainWindow, CommunicationController commFacade)
         {
             InitializeComponent();
             _commandController = new CommandController();
+            _commFacade = commFacade;
             this.mainWindow = mainWindow; 
         }
 
@@ -53,7 +55,7 @@ namespace WpfApp
             }
         }
 
-        private void ButtonValider_Click(object sender, RoutedEventArgs e)
+        private async void ButtonValider_Click(object sender, RoutedEventArgs e)
         {
             string nom = txtNom.Text;
             string? source = lblSource.Content.ToString();
@@ -71,12 +73,12 @@ namespace WpfApp
             var addCommand = new AddBackupCommand(mainWindow.backupController,nom, source, destination , typeSauvegarde, crypter);
             _commandController.SetCommand(addCommand);
             _commandController.ExecuteCommands();
+            await _commFacade.SendAsync("AddBackup:UpdateBackupList");
 
             Debug.WriteLine("Tâche ajoutée avec succès !");
             mainWindow.LoadBackupModels();
             this.Close();
            
-
         }
     }
 }
