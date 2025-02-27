@@ -13,22 +13,23 @@ namespace interface_projet.Command
         private readonly BackupController _backupController;
         private readonly string _backupName;
         private readonly CancellationTokenSource _cancellationTokenSource;
-        private readonly Action<double> _updateProgress;
+        private readonly IProgress<double> _progressReporter;
         private readonly int _choosenSize;
 
         public ExecuteBackupCommand(BackupController backupController, string backupName,
-            CancellationTokenSource cancellationTokenSource, Action<double> updateProgress, int choosenSize)
+            CancellationTokenSource cancellationTokenSource, IProgress<double> progressReporter, int choosenSize)
         {
             _backupController = backupController;
             _backupName = backupName;
             _cancellationTokenSource = cancellationTokenSource;
-            _updateProgress = updateProgress;
+            _progressReporter = progressReporter;
             _choosenSize = choosenSize;
         }
 
         public async void Execute()
         {
-            await _backupController.ExecuteBackup(_backupName, _cancellationTokenSource.Token, _updateProgress, _choosenSize);
+            await _backupController.ExecuteBackup(_backupName, _cancellationTokenSource.Token, _progressReporter, _choosenSize);
         }
     }
+
 }

@@ -143,12 +143,14 @@ namespace interface_projet.Controllers
             using var cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = cancellationTokenSource.Token;
 
-            Action<double> progressUpdate = progress =>
+            IProgress<double> progressReporter = new Progress<double>(progress =>
             {
                 Debug.WriteLine($"Progression de {backupName} : {Math.Round(progress, 2)}%");
-            };
 
-            bool success = await _backupController.ExecuteBackup(backupName, cancellationToken, progressUpdate, choosenSize);
+            });
+
+
+            bool success = await _backupController.ExecuteBackup(backupName, cancellationToken, progressReporter, choosenSize);
 
             string response = success ? $"BackupSuccess:{backupName}" : $"BackupFailed:{backupName}";
             if (_communicationStrategy != null)
