@@ -33,15 +33,18 @@ namespace interface_projet.Models
         }
 
         // Executer la backup, c'est appelé via la fonction BackupExecute. Appelle les fonctions qui vont copier les fichiers.
-        public async Task<List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)>> Execute(CancellationToken cancellationToken, Action<double> onProgressUpdate, int choosenSize)
+        public async Task<List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)>> Execute(
+            CancellationToken cancellationToken,
+            IProgress<double> progress,
+            int choosenSize)
         {
-            if (this.Type == "1") //Su save complete on copie tout le dossier
+            if (this.Type == "1") // Sauvegarde complète : on copie tout le dossier
             {
-                return await fileController.CopyFiles(Source, Destination, Crypter, false, cancellationToken, onProgressUpdate, choosenSize);
+                return await fileController.CopyFiles(Source, Destination, Crypter, false, cancellationToken, progress.Report, choosenSize);
             }
-            else //Sinon on copie seulement les fichiers modifiés au cours des 24 dernières heures
+            else // Sinon, on copie seulement les fichiers modifiés au cours des 24 dernières heures
             {
-                return await fileController.CopyFiles(Source, Destination, Crypter, true, cancellationToken, onProgressUpdate, choosenSize);
+                return await fileController.CopyFiles(Source, Destination, Crypter, true, cancellationToken, progress.Report, choosenSize);
             }
         }
 

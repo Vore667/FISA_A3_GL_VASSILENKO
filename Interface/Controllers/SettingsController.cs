@@ -5,7 +5,7 @@ using System.IO;
 
 namespace interface_projet.Controllers
 {
-    internal class SettingsController
+    public class SettingsController
     {
         private readonly ILang langController;
         private readonly LogController logController;

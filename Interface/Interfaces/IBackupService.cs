@@ -4,7 +4,7 @@ namespace Projet_Easy_Save_grp_4.Interfaces
 {
     internal interface IBackupService
     {
-        public void AddBackup(string? name, string? source, string? destination, string? type)
+        public void AddBackup(string? name, string? source, string? destination, string? type, bool crypter)
         {
             // Ajouter une backup
         }
