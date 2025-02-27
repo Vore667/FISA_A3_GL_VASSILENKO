@@ -1,0 +1,12 @@
+C:\Users\leoho\Documents\programmation\Genie logiciel\FINAL\Project_Easy_Save_grp_4\LogClassLibraryVue\obj\Debug\net8.0\LogClassLibraryVue.csproj.AssemblyReference.cache
+C:\Users\leoho\Documents\programmation\Genie logiciel\FINAL\Project_Easy_Save_grp_4\LogClassLibraryVue\obj\Debug\net8.0\LogClassLibraryVue.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\leoho\Documents\programmation\Genie logiciel\FINAL\Project_Easy_Save_grp_4\LogClassLibraryVue\obj\Debug\net8.0\LogClassLibraryVue.AssemblyInfoInputs.cache
+C:\Users\leoho\Documents\programmation\Genie logiciel\FINAL\Project_Easy_Save_grp_4\LogClassLibraryVue\obj\Debug\net8.0\LogClassLibraryVue.AssemblyInfo.cs
+C:\Users\leoho\Documents\programmation\Genie logiciel\FINAL\Project_Easy_Save_grp_4\LogClassLibraryVue\obj\Debug\net8.0\LogClassLibraryVue.csproj.CoreCompileInputs.cache
+C:\Users\leoho\Documents\programmation\Genie logiciel\FINAL\Project_Easy_Save_grp_4\LogClassLibraryVue\bin\Debug\net8.0\LogClassLibraryVue.deps.json
+C:\Users\leoho\Documents\programmation\Genie logiciel\FINAL\Project_Easy_Save_grp_4\LogClassLibraryVue\bin\Debug\net8.0\LogClassLibraryVue.dll
+C:\Users\leoho\Documents\programmation\Genie logiciel\FINAL\Project_Easy_Save_grp_4\LogClassLibraryVue\bin\Debug\net8.0\LogClassLibraryVue.pdb
+C:\Users\leoho\Documents\programmation\Genie logiciel\FINAL\Project_Easy_Save_grp_4\LogClassLibraryVue\obj\Debug\net8.0\LogClassLibraryVue.dll
+C:\Users\leoho\Documents\programmation\Genie logiciel\FINAL\Project_Easy_Save_grp_4\LogClassLibraryVue\obj\Debug\net8.0\refint\LogClassLibraryVue.dll
+C:\Users\leoho\Documents\programmation\Genie logiciel\FINAL\Project_Easy_Save_grp_4\LogClassLibraryVue\obj\Debug\net8.0\LogClassLibraryVue.pdb
+C:\Users\leoho\Documents\programmation\Genie logiciel\FINAL\Project_Easy_Save_grp_4\LogClassLibraryVue\obj\Debug\net8.0\ref\LogClassLibraryVue.dll
