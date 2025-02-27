@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace Projet_Easy_Save_grp_4.Controllers
 {
-    internal class BackupController : IBackupService
+    public class BackupController : IBackupService
     {
         private List<BackupModel> tasks;
         private const string SaveFilePath = "backup_tasks.json";

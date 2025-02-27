@@ -27,9 +27,12 @@ namespace WpfApp
             string logDirectory = interface_projet.Properties.Settings.Default.LogsPath;
             string logType = interface_projet.Properties.Settings.Default.LogsType;
             LogController.Instance.Initialize(logDirectory, logType);
+            LangController langController = LangController.Instance;
+            LogController logController = LogController.Instance;
+            backupController = new BackupController(logDirectory, logController);
 
             _isServerMode = isServerMode;
-            _commFacade = new CommunicationController();
+            _commFacade = new CommunicationController(backupController);
             _commFacade.Configure(_isServerMode, "http://localhost:5000/ws/");
             _commFacade.OnMessageReceived += (msg) =>
             {
@@ -46,9 +49,7 @@ namespace WpfApp
                 });
             };
 
-            LangController langController = LangController.Instance;
-            LogController logController = LogController.Instance;
-            backupController = new BackupController(logDirectory, logController);
+            
             LangController.LanguageChanged += RefreshDataGridHeaders;
             LoadBackupModels();
         }
@@ -171,13 +172,23 @@ namespace WpfApp
         private async void ButtonExecute_Click(object sender, RoutedEventArgs e)
         {
             int choosenSize = interface_projet.Properties.Settings.Default.MaxSize;
-            var selectedItems = dgBackupModels.SelectedItems.Cast<BackupItem>().ToList();
+            var selectedItems = dgBackupModels.SelectedItems.Cast<BackupItem>().Where(item => item != null).ToList();
+
             if (!selectedItems.Any())
             {
                 MessageBox.Show(FindResource("NoItemSelected") as string);
                 return;
             }
-            await _commFacade.SendAsync($"Execute backup");
+
+            if (!_isServerMode)
+            {
+                // 🟢 Mode Client : Envoie la commande au serveur
+                string backupNames = string.Join(";", selectedItems.Select(item => item.Name));
+                await _commFacade.SendAsync($"ExecuteBackup: {backupNames}");
+                return; // ⬅ Évite d'exécuter localement
+            }
+
+            // 🔴 Mode Serveur : Exécuter la sauvegarde localement
             _cancellationTokenSource = new CancellationTokenSource();
 
             btnStopBackup.Visibility = Visibility.Visible;
@@ -187,7 +198,7 @@ namespace WpfApp
             lblProgress.Content = "0%";
 
             int globalTotalFiles = selectedItems
-                .Where(item => !string.IsNullOrEmpty(item.Source)) 
+                .Where(item => !string.IsNullOrEmpty(item.Source))
                 .Sum(item => Directory.GetFiles(item.Source!, "*", SearchOption.AllDirectories).Length);
 
             ExecutionList = selectedItems.Select(item => item.Name).ToList();
@@ -205,14 +216,13 @@ namespace WpfApp
             };
 
             // Lancer chaque sauvegarde et transmettre le callback updateProgress
-            var BackupModels = selectedItems
-                .Where(item => !string.IsNullOrEmpty(item.Name)) 
+            var backupTasks = selectedItems
+                .Where(item => !string.IsNullOrEmpty(item.Name))
                 .Select(item => backupController.ExecuteBackup(item.Name!, _cancellationTokenSource.Token, updateProgress, choosenSize))
                 .ToList();
 
-
-            // On attend la fin de tt les saves avec WhenAll
-            bool[] results = await Task.WhenAll(BackupModels);
+            // Attendre la fin de toutes les sauvegardes
+            bool[] results = await Task.WhenAll(backupTasks);
 
             btnStopBackup.Visibility = Visibility.Collapsed;
             btnPauseBackup.Visibility = Visibility.Collapsed;
@@ -228,13 +238,14 @@ namespace WpfApp
                 progressBar.Value = 0;
                 lblProgress.Content = "0%";
             }
-            else if(!results.Any(r => !r) && !_cancellationTokenSource.IsCancellationRequested)
+            else if (!results.Any(r => !r) && !_cancellationTokenSource.IsCancellationRequested)
             {
                 MessageBox.Show(FindResource("BackupCompleted") as string);
                 progressBar.Value = 0;
                 lblProgress.Content = "0%";
             }
         }
+
 
 
 
