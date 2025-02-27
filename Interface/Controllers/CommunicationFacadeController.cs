@@ -128,6 +128,11 @@ namespace interface_projet.Controllers
             if (_messageHandlers.TryGetValue(command, out var handler))
             {
                 await handler(data); // Appel de la méthode associée
+
+                if (_isServerMode && _communicationStrategy != null)
+                {
+                    await _communicationStrategy.SendAsync($"ServerExecuted:{message}");
+                }
             }
             else
             {
@@ -161,7 +166,11 @@ namespace interface_projet.Controllers
 
         private async Task HandleAddBackupAsync(string data)
         {
-            Debug.WriteLine($"[Serveur] Traitement d'une autre commande : {data}");
+            // Notifier tous les clients connectés
+            if (_communicationStrategy != null)
+            {
+                await _communicationStrategy.SendAsync("ServerExecuted:UpdateBackupList");
+            }
             await Task.CompletedTask;
         }
 

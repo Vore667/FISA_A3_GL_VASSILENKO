@@ -33,10 +33,11 @@ namespace interface_projet
         private MainWindow mainWindow;
         private SettingsController settingsController;
 
-        public Settings(MainWindow mainWindow)
+        public Settings(MainWindow mainWindow, CommunicationController commFacade)
         {
             InitializeComponent();
             this.mainWindow = mainWindow; // On récupère la référence passée
+            _commFacade = commFacade;
 
             // Récupération des instances de contrôleurs
             ILang langController = LangController.Instance;

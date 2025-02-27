@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Forms;
 using System.Windows.Threading;
 using interface_projet;
 using interface_projet.Command;
@@ -43,15 +44,8 @@ namespace WpfApp
             _commFacade.OnMessageReceived += (msg) =>
             {
                 Dispatcher.Invoke(() =>
-                {
-                    if (msg.StartsWith("Pause backup"))
-                    {
-                        TogglePauseExecution(isPaused);
-                    }
-                    else
-                    {
-                        LoadBackupModels();
-                    }
+                
+                    LoadBackupModels();
                 });
             };
 
@@ -82,11 +76,11 @@ namespace WpfApp
         {
             dgBackupModels.Columns.Clear();
 
-            dgBackupModels.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupName"), Binding = new Binding("Name"), Width = new DataGridLength(150) });
-            dgBackupModels.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupSource"), Binding = new Binding("Source"), Width = new DataGridLength(1, DataGridLengthUnitType.Star) });
-            dgBackupModels.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupDestination"), Binding = new Binding("Destination"), Width = new DataGridLength(1, DataGridLengthUnitType.Star) });
-            dgBackupModels.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupType"), Binding = new Binding("Type"), Width = new DataGridLength(100) });
-            dgBackupModels.Columns.Add(new DataGridCheckBoxColumn { Header = FindResource("BackupEncryption"), Binding = new Binding("Cryptage"), Width = new DataGridLength(80) });
+            dgBackupModels.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupName"), Binding = new System.Windows.Data.Binding("Name"), Width = new DataGridLength(150) });
+            dgBackupModels.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupSource"), Binding = new System.Windows.Data.Binding("Source"), Width = new DataGridLength(1, DataGridLengthUnitType.Star) });
+            dgBackupModels.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupDestination"), Binding = new System.Windows.Data.Binding("Destination"), Width = new DataGridLength(1, DataGridLengthUnitType.Star) });
+            dgBackupModels.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupType"), Binding = new System.Windows.Data.Binding("Type"), Width = new DataGridLength(100) });
+            dgBackupModels.Columns.Add(new DataGridCheckBoxColumn { Header = FindResource("BackupEncryption"), Binding = new System.Windows.Data.Binding("Cryptage"), Width = new DataGridLength(80) });
         }
 
         private void BtnRefresh_Click(object sender, RoutedEventArgs e) => LoadBackupModels();
@@ -138,7 +132,7 @@ namespace WpfApp
         {
             try
             {
-                Settings settings = new Settings(this);
+                Settings settings = new Settings(this,_commFacade);
                 settings.ShowDialog();
             }
             catch (Exception ex)
@@ -150,7 +144,13 @@ namespace WpfApp
 
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
-            AjouterFenetre fenetre = new AjouterFenetre(this);
+            if (!_isServerMode)
+            {
+                System.Windows.Forms.MessageBox.Show("Impossible d'ajouter des taches en tant que client");
+                return;
+            }
+
+            AjouterFenetre fenetre = new AjouterFenetre(this, _commFacade);
             fenetre.ShowDialog();
 
             LoadBackupModels();
@@ -161,7 +161,7 @@ namespace WpfApp
             var selectedItems = dgBackupModels.SelectedItems.Cast<BackupItem>().ToList();
             if (!selectedItems.Any())
             {
-                MessageBox.Show(FindResource("NoItemSelected") as string);
+                System.Windows.Forms.MessageBox.Show(FindResource("NoItemSelected") as string);
                 return;
             }
 
@@ -173,7 +173,9 @@ namespace WpfApp
 
             _commandController.ExecuteCommands();
             LoadBackupModels();
-            await _commFacade.SendAsync("Delete backup");
+
+            await _commFacade.SendAsync("Message:DeleteBackup");
+
         }
 
         private async void ButtonExecute_Click(object sender, RoutedEventArgs e)
@@ -183,7 +185,7 @@ namespace WpfApp
 
             if (!selectedItems.Any())
             {
-                MessageBox.Show(FindResource("NoItemSelected") as string);
+                System.Windows.Forms.MessageBox.Show(FindResource("NoItemSelected") as string);
                 return;
             }
 
@@ -234,6 +236,7 @@ namespace WpfApp
 
         private void btnStopBackup_Click(object sender, RoutedEventArgs e)
         {
+
             if (ExecutionList.Any())
             {
                 var stopCommand = new StopBackupCommand(GetCancellationTokenSource, ExecutionList, ResetUI);
