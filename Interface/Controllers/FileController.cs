@@ -73,6 +73,8 @@ namespace Projet_Easy_Save_grp_4.Controllers
             return fileinfo.Length > (maxSizeMb * 1024 * 1024);
         }
 
+
+
         public async Task<List<(string FilePath, long TransferTime, long FileSize, long EncryptionTime)>> CopyFiles(
             string sourceDirectory,
             string destinationDirectory,
@@ -98,10 +100,14 @@ namespace Projet_Easy_Save_grp_4.Controllers
 
                 LoadConfiguration();
 
+                // Récupération et ordonnancement des fichiers
                 var allFiles = Directory.GetFiles(sourceDirectory, "*", SearchOption.AllDirectories).ToList();
                 var priorityFiles = allFiles.Where(f => _priorityExtensions.Contains(Path.GetExtension(f).ToLower())).ToList();
                 var otherFiles = allFiles.Except(priorityFiles).ToList();
-                var orderedFiles = priorityFiles.Concat(otherFiles);
+                var orderedFiles = priorityFiles.Concat(otherFiles).ToList();
+
+                int totalFiles = orderedFiles.Count;
+                int processedFiles = 0;
 
                 foreach (string file in orderedFiles)
                 {
@@ -109,8 +115,14 @@ namespace Projet_Easy_Save_grp_4.Controllers
                     await WaitForResumeWhileJobAppRunning(cancellationToken);
                     cancellationToken.ThrowIfCancellationRequested();
 
+                    // Si l'on ne copie que les fichiers modifiés et que le fichier ne répond pas au critère, on passe au suivant.
                     if (copyOnlyModified && File.GetLastWriteTime(file) <= DateTime.Now.AddDays(-1))
+                    {
+                        processedFiles++;
+                        double progress = processedFiles * 100.0 / totalFiles;
+                        onProgressUpdate?.Invoke(progress);
                         continue;
+                    }
 
                     string relativePath = Path.GetRelativePath(sourceDirectory, file);
                     string destFile = Path.Combine(destinationDirectory, relativePath);
@@ -156,7 +168,6 @@ namespace Projet_Easy_Save_grp_4.Controllers
                         }
 
                         fileCopyMetrics.Add((file, transferTime, fi.Length, encryptionTime));
-                        onProgressUpdate?.Invoke(0);
                     }
                     finally
                     {
@@ -164,6 +175,14 @@ namespace Projet_Easy_Save_grp_4.Controllers
                         {
                             System.Windows.MessageBox.Show($"Le fichier '{fi.Name}' a été copié en dernier.");
                         }
+                    }
+
+                    // Mise à jour de la progression après chaque fichier traité
+                    processedFiles++;
+                    double progressPercentage = processedFiles * 100.0 / totalFiles;
+                    if (!cancellationToken.IsCancellationRequested)
+                    {
+                        onProgressUpdate?.Invoke(progressPercentage);
                     }
                 }
             }
@@ -179,5 +198,6 @@ namespace Projet_Easy_Save_grp_4.Controllers
 
             return fileCopyMetrics;
         }
+
     }
 }

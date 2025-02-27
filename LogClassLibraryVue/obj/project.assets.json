@@ -214,23 +214,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Mark Vassilenko\\.nuget\\packages\\": {},
+    "C:\\Users\\leoho\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "\\\\vmware-host\\Shared Folders\\Bureau\\FISA_A3_GL_VASSILENKO\\LogClassLibraryVue\\LogClassLibraryVue.csproj",
+      "projectUniqueName": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\FINAL\\Project_Easy_Save_grp_4\\LogClassLibraryVue\\LogClassLibraryVue.csproj",
       "projectName": "LogClassLibraryVue",
-      "projectPath": "\\\\vmware-host\\Shared Folders\\Bureau\\FISA_A3_GL_VASSILENKO\\LogClassLibraryVue\\LogClassLibraryVue.csproj",
-      "packagesPath": "C:\\Users\\Mark Vassilenko\\.nuget\\packages\\",
-      "outputPath": "\\\\vmware-host\\Shared Folders\\Bureau\\FISA_A3_GL_VASSILENKO\\LogClassLibraryVue\\obj\\",
+      "projectPath": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\FINAL\\Project_Easy_Save_grp_4\\LogClassLibraryVue\\LogClassLibraryVue.csproj",
+      "packagesPath": "C:\\Users\\leoho\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\leoho\\Documents\\programmation\\Genie logiciel\\FINAL\\Project_Easy_Save_grp_4\\LogClassLibraryVue\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Mark Vassilenko\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\leoho\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -239,6 +239,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
