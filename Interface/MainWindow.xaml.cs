@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Threading;
 using interface_projet;
+using interface_projet.Command;
 using interface_projet.Controllers;
 using interface_projet.Models;
 using LogClassLibraryVue;
@@ -14,9 +15,10 @@ namespace WpfApp
 {
     public partial class MainWindow : Window
     {
-        private BackupController backupController;
-        private bool _isServerMode;
-        private CommunicationController _commFacade;
+        public  BackupController backupController;
+        private readonly CommandController _commandController;
+        private readonly bool _isServerMode;
+        private readonly CommunicationController _commFacade;
         private CancellationTokenSource? _cancellationTokenSource;
         private List<string> ExecutionList = new List<string>();
         private bool isOnPause = false;
@@ -24,14 +26,14 @@ namespace WpfApp
         public MainWindow(bool isServerMode)
         {
             InitializeComponent();
+            _isServerMode = isServerMode;
             string logDirectory = interface_projet.Properties.Settings.Default.LogsPath;
             string logType = interface_projet.Properties.Settings.Default.LogsType;
             LogController.Instance.Initialize(logDirectory, logType);
-            LangController langController = LangController.Instance;
-            LogController logController = LogController.Instance;
-            backupController = new BackupController(logDirectory, logController);
 
-            _isServerMode = isServerMode;
+            backupController = new BackupController(logDirectory, LogController.Instance);
+            _commandController = new CommandController();
+
             _commFacade = new CommunicationController(backupController);
             _commFacade.Configure(_isServerMode, "http://localhost:5000/ws/");
             _commFacade.OnMessageReceived += (msg) =>
@@ -49,7 +51,6 @@ namespace WpfApp
                 });
             };
 
-            
             LangController.LanguageChanged += RefreshDataGridHeaders;
             LoadBackupModels();
         }
@@ -138,35 +139,25 @@ namespace WpfApp
             LoadBackupModels();
         }
 
-        public async void AjouterTache(string nom, string source, string destination, string typeSauvegarde, bool crypter)
-        {
-            backupController.AddBackup(nom, source, destination, typeSauvegarde, crypter);
-            LoadBackupModels();
-            await _commFacade.SendAsync($"New Backup {nom}{source}{destination}{typeSauvegarde}{crypter}");
-
-        }
-
         private async void ButtonDelete_Click(object sender, RoutedEventArgs e)
         {
             var selectedItems = dgBackupModels.SelectedItems.Cast<BackupItem>().ToList();
-
-            if (selectedItems.Any())
-            {
-                foreach (var selectedItem in selectedItems)
-                {
-                    if (!string.IsNullOrEmpty(selectedItem.Name)) 
-                    {
-                        backupController.DeleteBackup(selectedItem.Name);
-                    }
-                }
-                LoadBackupModels();
-                await _commFacade.SendAsync("Delete backup");
-            }
-
-            else
+            if (!selectedItems.Any())
             {
                 MessageBox.Show(FindResource("NoItemSelected") as string);
+                return;
             }
+
+            foreach (var selectedItem in selectedItems)
+            {
+                var deleteCommand = new DeleteBackupCommand(backupController, selectedItem.Name);
+                _commandController.SetCommand(deleteCommand);
+            }
+
+            _commandController.ExecuteCommands();
+            LoadBackupModels();
+            await _commFacade.SendAsync("Delete backup");
+
         }
 
         private async void ButtonExecute_Click(object sender, RoutedEventArgs e)
@@ -182,26 +173,14 @@ namespace WpfApp
 
             if (!_isServerMode)
             {
-                // 🟢 Mode Client : Envoie la commande au serveur
                 string backupNames = string.Join(";", selectedItems.Select(item => item.Name));
-                await _commFacade.SendAsync($"ExecuteBackup: {backupNames}");
-                return; // ⬅ Évite d'exécuter localement
+                await _commFacade.SendAsync($"ExecuteBackup:{backupNames}");
+                return;
             }
 
-            // 🔴 Mode Serveur : Exécuter la sauvegarde localement
             _cancellationTokenSource = new CancellationTokenSource();
-
-            btnStopBackup.Visibility = Visibility.Visible;
-            btnPauseBackup.Visibility = Visibility.Visible;
-
-            progressBar.Value = 0;
-            lblProgress.Content = "0%";
-
-            int globalTotalFiles = selectedItems
-                .Where(item => !string.IsNullOrEmpty(item.Source))
-                .Sum(item => Directory.GetFiles(item.Source!, "*", SearchOption.AllDirectories).Length);
-
             ExecutionList = selectedItems.Select(item => item.Name).ToList();
+            int globalTotalFiles = selectedItems.Sum(item => Directory.GetFiles(item.Source!, "*", SearchOption.AllDirectories).Length);
 
             int globalFilesCopied = 0;
             Action<double> updateProgress = _ =>
@@ -215,35 +194,13 @@ namespace WpfApp
                 });
             };
 
-            // Lancer chaque sauvegarde et transmettre le callback updateProgress
-            var backupTasks = selectedItems
-                .Where(item => !string.IsNullOrEmpty(item.Name))
-                .Select(item => backupController.ExecuteBackup(item.Name!, _cancellationTokenSource.Token, updateProgress, choosenSize))
-                .ToList();
-
-            // Attendre la fin de toutes les sauvegardes
-            bool[] results = await Task.WhenAll(backupTasks);
-
-            btnStopBackup.Visibility = Visibility.Collapsed;
-            btnPauseBackup.Visibility = Visibility.Collapsed;
-            btnPlayBackup.Visibility = Visibility.Collapsed;
-
-            progressBar.Value = 100;
-            lblProgress.Content = "100%";
-            ExecutionList.Clear();
-
-            if (results.Any(r => !r) && !_cancellationTokenSource.IsCancellationRequested)
+            foreach (var item in selectedItems)
             {
-                MessageBox.Show(FindResource("BackupFailed") as string);
-                progressBar.Value = 0;
-                lblProgress.Content = "0%";
+                var executeCommand = new ExecuteBackupCommand(backupController, item.Name, _cancellationTokenSource, updateProgress, choosenSize);
+                _commandController.SetCommand(executeCommand);
             }
-            else if (!results.Any(r => !r) && !_cancellationTokenSource.IsCancellationRequested)
-            {
-                MessageBox.Show(FindResource("BackupCompleted") as string);
-                progressBar.Value = 0;
-                lblProgress.Content = "0%";
-            }
+
+            _commandController.ExecuteCommands();
         }
 
 
@@ -280,8 +237,8 @@ namespace WpfApp
 
         private void TogglePauseExecution()
         {
-            foreach (string item in ExecutionList)
-                backupController.PauseExecution(item);
+            //foreach (string item in ExecutionList)
+                //backupController.PauseExecution(item);
         }
     }
 

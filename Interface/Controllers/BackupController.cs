@@ -4,6 +4,7 @@ using Projet_Easy_Save_grp_4.Interfaces;
 using interface_projet.Models;
 using LogClassLibraryVue;
 using System.Windows;
+using System.Diagnostics;
 
 namespace Projet_Easy_Save_grp_4.Controllers
 {
@@ -174,6 +175,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
         // Trouver une backup via son nom, utilisée pour les fonctions executer et supprimer
         public BackupModel? FindBackup(string name)
         {
+            Debug.WriteLine("[FindBackup] Recherche de la sauvegarde : " + name);
             BackupModel? task = tasks.Find(t => t.Name == name);
             if (task == null)
             {

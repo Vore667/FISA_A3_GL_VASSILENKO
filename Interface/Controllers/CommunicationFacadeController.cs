@@ -15,6 +15,8 @@ namespace interface_projet.Controllers
         private readonly BackupController _backupController;
         private bool _isServerMode;
         private ICommunicationStrategy? _communicationStrategy;
+        private readonly Dictionary<string, Func<string, Task>> _messageHandlers;
+
 
         public event Action<string>? OnMessageReceived
         {
@@ -34,6 +36,15 @@ namespace interface_projet.Controllers
         {
             _communicationModel = new CommunicationModel();
             _backupController = backupController;
+
+            // Initialisation du dictionnaire de gestionnaires de messages
+            _messageHandlers = new Dictionary<string, Func<string, Task>>
+            {
+                { "ExecuteBackup", HandleExecuteBackupAsync },
+                { "SomeOtherCommand", HandleSomeOtherCommandAsync },
+                { "AddBackup", HandleAddBackupAsync }
+
+            };
         }
 
         public void Configure(bool isServerMode, string uri)
@@ -108,33 +119,56 @@ namespace interface_projet.Controllers
 
         private async void HandleReceivedMessage(string message)
         {
-            if (_isServerMode && message.StartsWith("ExecuteBackup:"))
+            string[] parts = message.Split(':', 2);
+            if (parts.Length < 2) return; // Vérification de format correct
+
+            string command = parts[0];
+            string data = parts[1];
+
+            if (_messageHandlers.TryGetValue(command, out var handler))
             {
-                string backupName = message.Replace("ExecuteBackup:", "").Trim();
-                Debug.WriteLine($"[Serveur] Exécution de la sauvegarde : {backupName}");
-                int choosenSize = interface_projet.Properties.Settings.Default.MaxSize;
-
-                // Création d'un CancellationTokenSource si besoin
-                using var cancellationTokenSource = new CancellationTokenSource();
-                var cancellationToken = cancellationTokenSource.Token;
-
-                // Action pour mettre à jour la progression
-                Action<double> progressUpdate = progress =>
-                {
-                    Debug.WriteLine($"Progression de {backupName} : {Math.Round(progress, 2)}%");
-                };
-
-                // Exécution du backup
-                bool success = await _backupController.ExecuteBackup(backupName, cancellationToken, progressUpdate,choosenSize);
-
-                // Envoi de la réponse au client
-                string response = success ? $"BackupSuccess:{backupName}" : $"BackupFailed:{backupName}";
-                if (_communicationStrategy != null)
-                {
-                    await _communicationStrategy.SendAsync(response);
-                }
+                await handler(data); // Appel de la méthode associée
+            }
+            else
+            {
+                Debug.WriteLine($"[Serveur] Commande inconnue reçue : {command}");
             }
         }
+
+        private async Task HandleExecuteBackupAsync(string backupName)
+        {
+            Debug.WriteLine($"[Serveur] Exécution de la sauvegarde : {backupName}");
+            int choosenSize = interface_projet.Properties.Settings.Default.MaxSize;
+
+            using var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
+
+            Action<double> progressUpdate = progress =>
+            {
+                Debug.WriteLine($"Progression de {backupName} : {Math.Round(progress, 2)}%");
+            };
+
+            bool success = await _backupController.ExecuteBackup(backupName, cancellationToken, progressUpdate, choosenSize);
+
+            string response = success ? $"BackupSuccess:{backupName}" : $"BackupFailed:{backupName}";
+            if (_communicationStrategy != null)
+            {
+                await _communicationStrategy.SendAsync(response);
+            }
+        }
+
+        private async Task HandleAddBackupAsync(string data)
+        {
+            Debug.WriteLine($"[Serveur] Traitement d'une autre commande : {data}");
+            await Task.CompletedTask;
+        }
+
+        private async Task HandleSomeOtherCommandAsync(string data)
+        {
+            Debug.WriteLine($"[Serveur] Traitement d'une autre commande : {data}");
+            await Task.CompletedTask;
+        }
+
 
     }
 }
