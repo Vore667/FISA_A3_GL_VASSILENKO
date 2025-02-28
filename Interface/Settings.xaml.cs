@@ -31,12 +31,14 @@ namespace interface_projet
     public partial class Settings : Window
     {
         private MainWindow mainWindow;
+        private readonly CommunicationController _commFacade;
         private SettingsController settingsController;
 
-        public Settings(MainWindow mainWindow)
+        public Settings(MainWindow mainWindow, CommunicationController commFacade)
         {
             InitializeComponent();
             this.mainWindow = mainWindow; // On récupère la référence passée
+            _commFacade = commFacade;
 
             // Récupération des instances de contrôleurs
             ILang langController = LangController.Instance;

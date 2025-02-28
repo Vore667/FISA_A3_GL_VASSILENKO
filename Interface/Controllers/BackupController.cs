@@ -4,6 +4,7 @@ using Projet_Easy_Save_grp_4.Interfaces;
 using interface_projet.Models;
 using LogClassLibraryVue;
 using System.Windows;
+using System.Diagnostics;
 
 namespace Projet_Easy_Save_grp_4.Controllers
 {
@@ -12,6 +13,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
         private List<BackupModel> tasks;
         private const string SaveFilePath = "backup_tasks.json";
         private readonly LogController logController;
+        public event Action<string>? BackupCompleted;
         // Lock pour les logs
         private static readonly object logLock = new object();
 
@@ -92,70 +94,76 @@ namespace Projet_Easy_Save_grp_4.Controllers
             if (task != null)
             {
                 task.PauseExecution();
+                Debug.WriteLine($"[BackupController] {name} mis en pause.");
             }
         }
 
 
         // Executer une backup
-        public async Task<bool> ExecuteBackup(string name, CancellationToken cancellationToken, Action<double> onProgressUpdate, int choosenSize)
+        public async Task<bool> ExecuteBackup(string name, CancellationToken cancellationToken, IProgress<double> progress, int choosenSize)
         {
             BackupModel? task = FindBackup(name);
             if (task != null)
             {
-                // Exécute la backup et récupère les mesures de chaque copie
-                var fileCopyMetrics = await task.Execute(cancellationToken, onProgressUpdate, choosenSize);
-
-                // Calculer la taille totale des fichiers
+                // Récupération de la liste de tous les fichiers à traiter
                 List<string> files = Directory.GetFiles(task.Source, "*.*", SearchOption.AllDirectories).ToList();
+                int totalFiles = files.Count;
                 long totalSize = 0;
                 foreach (string file in files)
                 {
                     FileInfo fi = new FileInfo(file);
                     totalSize += fi.Length;
                 }
-                long totalSizeFilesRemaining = totalSize;
-                int actual_files = 0;
 
-                // Parcours des métriques pour enregistrer les logs journaliers
+                long totalSizeFilesRemaining = totalSize;
+                int processedFiles = 0;
+
+                // Appel à la méthode Execute
+                var fileCopyMetrics = await task.Execute(cancellationToken, progress, choosenSize);
+
                 foreach (var (filePath, transferTime, fileSize, encryptionTime) in fileCopyMetrics)
                 {
-                    // Si la tâche est annulée, arrêter la sauvegarde
                     if (cancellationToken.IsCancellationRequested)
                     {
-                        logController.LogBackupExecution(task.Name, "Cancelled", files, totalSize, task.Source, task.Destination, actual_files, totalSizeFilesRemaining);
+                        lock (logLock)
+                        {
+                            logController.LogBackupExecution(task.Name, "Cancelled", files, totalSize, task.Source, task.Destination, processedFiles, totalSizeFilesRemaining);
+                        }
                         return false;
                     }
 
-
-                    //Verification du logiciel metier
                     if (encryptionTime == -100)
                     {
                         lock (logLock)
                         {
-                            logController.LogBackupExecution(task.Name, "Interrupted with job app", files, totalSize, task.Source, task.Destination, actual_files, totalSizeFilesRemaining);
+                            logController.LogBackupExecution(task.Name, "Interrupted with job app", files, totalSize, task.Source, task.Destination, processedFiles, totalSizeFilesRemaining);
                         }
                         return true;
                     }
 
-
                     totalSizeFilesRemaining -= fileSize;
+                    processedFiles++;
+                    double progressValue = processedFiles * 100.0 / totalFiles;
+                    progress.Report(progressValue);
+
                     lock (logLock)
                     {
-                        logController.LogBackupExecution(task.Name, "InProgress", files, totalSize, task.Source, task.Destination, actual_files, totalSizeFilesRemaining);
+                        logController.LogBackupExecution(task.Name, "InProgress", files, totalSize, task.Source, task.Destination, processedFiles, totalSizeFilesRemaining);
                         logController.LogBackupExecutionDay(task.Name, task.Source, task.Destination, fileSize, transferTime, encryptionTime);
                     }
-                    actual_files++;
                 }
 
-                // Log final
                 lock (logLock)
                 {
-                    logController.LogBackupExecution(task.Name, "Finished", files, totalSize, task.Source, task.Destination, actual_files, totalSizeFilesRemaining);
+                    logController.LogBackupExecution(task.Name, "Finished", files, totalSize, task.Source, task.Destination, processedFiles, totalSizeFilesRemaining);
                 }
+                BackupCompleted?.Invoke(task.Name);
                 return true;
             }
             return false;
         }
+
+
 
         // Supprimer une backup
         public void DeleteBackup(string name)
@@ -174,6 +182,7 @@ namespace Projet_Easy_Save_grp_4.Controllers
         // Trouver une backup via son nom, utilisée pour les fonctions executer et supprimer
         public BackupModel? FindBackup(string name)
         {
+            Debug.WriteLine("[FindBackup] Recherche de la sauvegarde : " + name);
             BackupModel? task = tasks.Find(t => t.Name == name);
             if (task == null)
             {

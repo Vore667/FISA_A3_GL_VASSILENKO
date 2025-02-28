@@ -1,55 +1,60 @@
-﻿
-using System.IO;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Forms;
 using System.Windows.Threading;
 using interface_projet;
+using interface_projet.Command;
 using interface_projet.Controllers;
+using interface_projet.Interfaces;
 using interface_projet.Models;
 using LogClassLibraryVue;
 using Projet_Easy_Save_grp_4.Controllers;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace WpfApp
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : System.Windows.Window
     {
-        private BackupController backupController;
-        private bool _isServerMode;
-        private CommunicationController _commFacade;
+        public BackupController backupController;
+        private readonly CommandController _commandController;
+        private readonly bool _isServerMode;
+        private readonly CommunicationController? _commFacade;
         private CancellationTokenSource? _cancellationTokenSource;
         private List<string> ExecutionList = new List<string>();
-        private bool isOnPause = false;
+        private bool isPaused = false;
+
+
 
         public MainWindow(bool isServerMode)
         {
             InitializeComponent();
+            _isServerMode = isServerMode;
             string logDirectory = interface_projet.Properties.Settings.Default.LogsPath;
             string logType = interface_projet.Properties.Settings.Default.LogsType;
             LogController.Instance.Initialize(logDirectory, logType);
-            LangController langController = LangController.Instance;
-            LogController logController = LogController.Instance;
-            backupController = new BackupController(logDirectory, logController);
 
-            _isServerMode = isServerMode;
-            _commFacade = new CommunicationController(backupController);
+            backupController = new BackupController(logDirectory, LogController.Instance);
+            _commandController = new CommandController();
+            backupController.BackupCompleted += OnBackupCompleted;
+
+
+            _commFacade = new CommunicationController(backupController, this);
             _commFacade.Configure(_isServerMode, "http://localhost:5000/ws/");
             _commFacade.OnMessageReceived += (msg) =>
             {
                 Dispatcher.Invoke(() =>
-                {
-                    if (msg.StartsWith("Pause backup"))
-                    {
-                        TogglePauseExecution();
-                    }
-                    else
-                    {
-                        LoadBackupModels();
-                    }
+                { 
+                    LoadBackupModels();
                 });
             };
 
-            
+            // Gestion bar de progression
+            if (_commFacade != null)
+            {
+                _commFacade.BackupProgressUpdated += UpdateProgressBar;
+            }
             LangController.LanguageChanged += RefreshDataGridHeaders;
             LoadBackupModels();
         }
@@ -60,8 +65,7 @@ namespace WpfApp
             {
                 txtStatus.Text = "Mode : Serveur";
                 txtStatus.Text = "Démarrage du serveur...";
-                // Démarrer le serveur dans la façade
-                await _commFacade.StartAsync(CancellationToken.None);
+                _commFacade.StartAsync(CancellationToken.None);
                 txtStatus.Text = "Serveur démarré sur ws://localhost:5000/ws/";
             }
             else
@@ -77,13 +81,12 @@ namespace WpfApp
         {
             dgBackupModels.Columns.Clear();
 
-            dgBackupModels.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupName"), Binding = new Binding("Name"), Width = new DataGridLength(150) });
-            dgBackupModels.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupSource"), Binding = new Binding("Source"), Width = new DataGridLength(1, DataGridLengthUnitType.Star) });
-            dgBackupModels.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupDestination"), Binding = new Binding("Destination"), Width = new DataGridLength(1, DataGridLengthUnitType.Star) });
-            dgBackupModels.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupType"), Binding = new Binding("Type"), Width = new DataGridLength(100) });
-            dgBackupModels.Columns.Add(new DataGridCheckBoxColumn { Header = FindResource("BackupEncryption"), Binding = new Binding("Cryptage"), Width = new DataGridLength(80) });
+            dgBackupModels.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupName"), Binding = new System.Windows.Data.Binding("Name"), Width = new DataGridLength(150) });
+            dgBackupModels.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupSource"), Binding = new System.Windows.Data.Binding("Source"), Width = new DataGridLength(1, DataGridLengthUnitType.Star) });
+            dgBackupModels.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupDestination"), Binding = new System.Windows.Data.Binding("Destination"), Width = new DataGridLength(1, DataGridLengthUnitType.Star) });
+            dgBackupModels.Columns.Add(new DataGridTextColumn { Header = FindResource("BackupType"), Binding = new System.Windows.Data.Binding("Type"), Width = new DataGridLength(100) });
+            dgBackupModels.Columns.Add(new DataGridCheckBoxColumn { Header = FindResource("BackupEncryption"), Binding = new System.Windows.Data.Binding("Cryptage"), Width = new DataGridLength(80) });
         }
-
 
         private void BtnRefresh_Click(object sender, RoutedEventArgs e) => LoadBackupModels();
 
@@ -116,57 +119,68 @@ namespace WpfApp
             await Window_LoadedAsync(sender, e);
         }
 
+        private CancellationTokenSource GetCancellationTokenSource() => _cancellationTokenSource ?? new CancellationTokenSource();
+
+        private void ResetUI()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                btnStopBackup.Visibility = Visibility.Collapsed;
+                btnPauseBackup.Visibility = Visibility.Collapsed;
+                btnPlayBackup.Visibility = Visibility.Collapsed;
+                progressBar.Value = 0;
+                lblProgress.Content = "0%";
+            });
+        }
+
         private void BtnParametres_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Settings settings = new Settings(this);
+                Settings settings = new Settings(this,_commFacade);
                 settings.ShowDialog();
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"Erreur : {ex.Message}\nInnerException : {ex.InnerException?.Message}",
-                    "Erreur WebSocket", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.Forms.MessageBox.Show($"Erreur : {ex.Message}\nInnerException : {ex.InnerException?.Message}",
+                    "Erreur WebSocket", (MessageBoxButtons)MessageBoxButton.OK, (MessageBoxIcon)MessageBoxImage.Error);
             }
         }
 
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
-            AjouterFenetre fenetre = new AjouterFenetre(this);
+            if (!_isServerMode)
+            {
+                System.Windows.Forms.MessageBox.Show("Impossible d'ajouter des taches en tant que client");
+                return;
+            }
+
+            AjouterFenetre fenetre = new AjouterFenetre(this, _commFacade);
             fenetre.ShowDialog();
 
             LoadBackupModels();
         }
 
-        public async void AjouterTache(string nom, string source, string destination, string typeSauvegarde, bool crypter)
-        {
-            backupController.AddBackup(nom, source, destination, typeSauvegarde, crypter);
-            LoadBackupModels();
-            await _commFacade.SendAsync($"New Backup {nom}{source}{destination}{typeSauvegarde}{crypter}");
-
-        }
-
         private async void ButtonDelete_Click(object sender, RoutedEventArgs e)
         {
             var selectedItems = dgBackupModels.SelectedItems.Cast<BackupItem>().ToList();
-
-            if (selectedItems.Any())
+            if (!selectedItems.Any())
             {
-                foreach (var selectedItem in selectedItems)
-                {
-                    if (!string.IsNullOrEmpty(selectedItem.Name)) 
-                    {
-                        backupController.DeleteBackup(selectedItem.Name);
-                    }
-                }
-                LoadBackupModels();
-                await _commFacade.SendAsync("Delete backup");
+                System.Windows.Forms.MessageBox.Show(FindResource("NoItemSelected") as string);
+                return;
             }
 
-            else
+            foreach (var selectedItem in selectedItems)
             {
-                MessageBox.Show(FindResource("NoItemSelected") as string);
+                var deleteCommand = new DeleteBackupCommand(backupController, selectedItem.Name);
+                _commandController.SetCommand(deleteCommand);
             }
+
+            _commandController.ExecuteCommands();
+            LoadBackupModels();
+
+            await _commFacade.SendAsync("Message:DeleteBackup");
+
         }
 
         private async void ButtonExecute_Click(object sender, RoutedEventArgs e)
@@ -176,112 +190,125 @@ namespace WpfApp
 
             if (!selectedItems.Any())
             {
-                MessageBox.Show(FindResource("NoItemSelected") as string);
+                System.Windows.Forms.MessageBox.Show(FindResource("NoItemSelected") as string);
                 return;
             }
 
             if (!_isServerMode)
             {
-                // 🟢 Mode Client : Envoie la commande au serveur
                 string backupNames = string.Join(";", selectedItems.Select(item => item.Name));
-                await _commFacade.SendAsync($"ExecuteBackup: {backupNames}");
-                return; // ⬅ Évite d'exécuter localement
+                _commFacade.SendAsync($"ExecuteBackup:{backupNames}");
+                btnStopBackup.Visibility = Visibility.Visible;
+                btnPauseBackup.Visibility = Visibility.Visible;
+                return;
             }
 
-            // 🔴 Mode Serveur : Exécuter la sauvegarde localement
             _cancellationTokenSource = new CancellationTokenSource();
-
-            btnStopBackup.Visibility = Visibility.Visible;
-            btnPauseBackup.Visibility = Visibility.Visible;
-
-            progressBar.Value = 0;
-            lblProgress.Content = "0%";
-
-            int globalTotalFiles = selectedItems
-                .Where(item => !string.IsNullOrEmpty(item.Source))
-                .Sum(item => Directory.GetFiles(item.Source!, "*", SearchOption.AllDirectories).Length);
-
+            // Stockage des noms de sauvegardes en cours d'exécution
             ExecutionList = selectedItems.Select(item => item.Name).ToList();
 
-            int globalFilesCopied = 0;
-            Action<double> updateProgress = _ =>
+            // Création d'un objet IProgress pour mettre à jour l'interface
+            IProgress<double> progressReporter = new Progress<double>(progress =>
             {
-                int filesCopied = Interlocked.Increment(ref globalFilesCopied);
-                double progress = (filesCopied / (double)globalTotalFiles) * 100;
-                Dispatcher.Invoke(() =>
+                progressBar.Value = progress;
+                lblProgress.Content = $"{Math.Round(progress, 2)}%";
+
+                if (Math.Round(progress, 2) >= 100)
                 {
-                    progressBar.Value = progress;
-                    lblProgress.Content = $"{Math.Round(progress, 2)}%";
-                });
-            };
+                    ResetUI();
+                }
+            });
 
-            // Lancer chaque sauvegarde et transmettre le callback updateProgress
-            var backupTasks = selectedItems
-                .Where(item => !string.IsNullOrEmpty(item.Name))
-                .Select(item => backupController.ExecuteBackup(item.Name!, _cancellationTokenSource.Token, updateProgress, choosenSize))
-                .ToList();
-
-            // Attendre la fin de toutes les sauvegardes
-            bool[] results = await Task.WhenAll(backupTasks);
-
-            btnStopBackup.Visibility = Visibility.Collapsed;
-            btnPauseBackup.Visibility = Visibility.Collapsed;
-            btnPlayBackup.Visibility = Visibility.Collapsed;
-
-            progressBar.Value = 100;
-            lblProgress.Content = "100%";
-            ExecutionList.Clear();
-
-            if (results.Any(r => !r) && !_cancellationTokenSource.IsCancellationRequested)
+            // Enregistrement des commandes d'exécution en passant le progressReporter
+            foreach (var item in selectedItems)
             {
-                MessageBox.Show(FindResource("BackupFailed") as string);
+                var executeCommand = new ExecuteBackupCommand(backupController, _commFacade, item.Name, _cancellationTokenSource, progressReporter, choosenSize);
+                _commandController.SetCommand(executeCommand);
+            }
+
+            _commandController.ExecuteCommands();
+            btnStopBackup.Visibility = Visibility.Visible;
+            btnPauseBackup.Visibility = Visibility.Visible;
+        }
+        private void UpdateProgressBar(string backupName, double progress)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                progressBar.Value = progress;
+                lblProgress.Content = progress + "%";
+                if (Math.Round(progress, 2) >= 100)
+                {
+                    ResetUI();
+                }
+            });
+        }
+        private void OnBackupCompleted(string backupName)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                System.Windows.Forms.MessageBox.Show((string)FindResource("BackupCompleted"));
                 progressBar.Value = 0;
                 lblProgress.Content = "0%";
-            }
-            else if (!results.Any(r => !r) && !_cancellationTokenSource.IsCancellationRequested)
-            {
-                MessageBox.Show(FindResource("BackupCompleted") as string);
-                progressBar.Value = 0;
-                lblProgress.Content = "0%";
-            }
+            });
         }
 
-
-
-
-        private void btnStopBackup_Click(object sender, RoutedEventArgs e)
+        private async void btnStopBackup_Click(object sender, RoutedEventArgs e)
         {
-            _cancellationTokenSource?.Cancel();
-            MessageBox.Show(FindResource("BackupStopExec") as string);
-            btnStopBackup.Visibility = Visibility.Collapsed;
-            btnPauseBackup.Visibility = Visibility.Collapsed;
-            btnPlayBackup.Visibility = Visibility.Collapsed;
-            progressBar.Value = 0;
-            lblProgress.Content = "0%";
+            if (!_isServerMode)
+            {
+                _commFacade.SendAsync($"StopBackup:{ExecutionList}");
+            }
+
+            if (ExecutionList.Any())
+            {
+                var stopCommand = new StopBackupCommand(GetCancellationTokenSource, ExecutionList, ResetUI);
+                stopCommand.Execute();
+            }
         }
 
         private async void btnPauseBackup_Click(object sender, RoutedEventArgs e)
         {
-            isOnPause = true;
-            btnPlayBackup.Visibility = Visibility.Visible;
-            btnPauseBackup.Visibility = Visibility.Collapsed;
-            TogglePauseExecution();
-            await _commFacade.SendAsync($"Pause backup");
+            if (!_isServerMode)
+            {
+                string backups = string.Join(";", ExecutionList);
+                await _commFacade.SendAsync($"PauseBackup:{backups}");
+                return; 
+            }
+
+            if (ExecutionList.Any())
+            {
+                var pauseCommand = new PauseBackupCommand(backupController, ExecutionList, TogglePauseExecution);
+                pauseCommand.Execute();
+            }
         }
+
 
         private async void btnPlayBackup_Click(object sender, RoutedEventArgs e)
         {
-            isOnPause = false;
-            btnPlayBackup.Visibility = Visibility.Collapsed;
-            btnPauseBackup.Visibility = Visibility.Visible;
-            TogglePauseExecution();
-            await _commFacade.SendAsync($"Pause backup");
+            if (!_isServerMode)
+            {
+                string backups = string.Join(";", ExecutionList);
+                await _commFacade.SendAsync($"ResumeBackup:{backups}");
+                return;
+            }
+
+            if (ExecutionList.Any())
+            {
+                var playCommand = new PlayBackupCommand(backupController, ExecutionList, TogglePauseExecution);
+                playCommand.Execute();
+            }
         }
 
-        private void TogglePauseExecution()
+        public async void TogglePauseExecution(bool pause)
         {
-            foreach (string item in ExecutionList)
-                backupController.PauseExecution(item);
+            isPaused = pause;
+            Dispatcher.Invoke(() =>
+            {
+                btnPlayBackup.Visibility = isPaused ? Visibility.Visible : Visibility.Collapsed;
+                btnPauseBackup.Visibility = isPaused ? Visibility.Collapsed : Visibility.Visible;
+            });
+
+           
         }
     }
 
