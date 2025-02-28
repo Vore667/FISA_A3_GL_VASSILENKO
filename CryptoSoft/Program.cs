@@ -1,13 +1,24 @@
-﻿using System;
+using System;
 using System.IO;
+using System.Threading;
 using CryptoSoftcConsole;
 
 namespace CryptoSoft
 {
     public class CryptoService
     {
+        private static Mutex mutex = new Mutex(true, "CryptoSoft_Unique_Instance");
+
         public static void Main()
         {
+            if (!mutex.WaitOne(TimeSpan.Zero, true))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("CryptoSoft est déjà en cours d'exécution.");
+                Console.ResetColor();
+                return;
+            }
+
             Console.Title = "CryptoSoft - Chiffrement de fichiers";
 
             Console.WriteLine("===== CryptoSoft =====");
@@ -18,8 +29,7 @@ namespace CryptoSoft
             do
             {
                 Console.Write("Entrez le chemin du fichier à chiffrer : ");
-                cheminFichier = Console.ReadLine() ?? "";
-
+                cheminFichier = Console.ReadLine();
 
                 if (string.IsNullOrWhiteSpace(cheminFichier) || !File.Exists(cheminFichier))
                 {
@@ -33,7 +43,7 @@ namespace CryptoSoft
             do
             {
                 Console.Write("Entrez la clé de chiffrement : ");
-                cle = Console.ReadLine() ?? "";
+                cle = Console.ReadLine();
 
                 if (string.IsNullOrWhiteSpace(cle))
                 {
@@ -63,6 +73,9 @@ namespace CryptoSoft
 
             Console.WriteLine("\nAppuyez sur une touche pour quitter...");
             Console.ReadKey();
+
+            // Libération du Mutex à la fin
+            mutex.ReleaseMutex();
         }
 
         public static void Transformer(string cheminFichier, string cle)
